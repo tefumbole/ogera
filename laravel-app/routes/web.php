@@ -61,9 +61,9 @@ Route::get('/api/public/events', 'PublicEventController@apiList');
 Route::get('/api/public/events/{slug}', 'PublicEventController@apiShow');
 Route::get('/trainings', 'TrainingController@trainings')->name('beyond.trainings');
 // Register Now — disabled for Ogera (menu + routes)
-Route::get('/register-now', function () { abort(404); })->name('beyond.register');
-Route::post('/register-now', function () { abort(404); })->name('training.register');
-Route::get('/registration-confirmation/{reference}', function () { abort(404); })->name('training.registered');
+Route::get('/register-now', 'DisabledFeatureController')->name('beyond.register');
+Route::post('/register-now', 'DisabledFeatureController')->name('training.register');
+Route::get('/registration-confirmation/{reference}', 'DisabledFeatureController')->name('training.registered');
 Route::redirect('/registration', '/');
 
 // Legacy upload URLs (missing /public/) → correct static path
@@ -82,12 +82,12 @@ Route::post('/rentals', 'PublicRentalController@store')->name('beyond.rentals.st
 Route::get('/rentals/confirmation/{reference}', 'PublicRentalController@confirmation')->name('beyond.rentals.confirmation');
 
 // Permissions (public) — disabled for Ogera
-Route::get('/permissions', function () { abort(404); })->name('beyond.permissions');
-Route::get('/permissions/name-search', function () { abort(404); })->name('beyond.permissions.search');
-Route::post('/permissions', function () { abort(404); })->name('beyond.permissions.store');
-Route::post('/permissions/verify', function () { abort(404); })->name('beyond.permissions.verify');
-Route::post('/permissions/resend-otp', function () { abort(404); })->name('beyond.permissions.resend');
-Route::get('/permissions/confirmation/{reference}', function () { abort(404); })->name('beyond.permissions.confirmation');
+Route::get('/permissions', 'DisabledFeatureController')->name('beyond.permissions');
+Route::get('/permissions/name-search', 'DisabledFeatureController')->name('beyond.permissions.search');
+Route::post('/permissions', 'DisabledFeatureController')->name('beyond.permissions.store');
+Route::post('/permissions/verify', 'DisabledFeatureController')->name('beyond.permissions.verify');
+Route::post('/permissions/resend-otp', 'DisabledFeatureController')->name('beyond.permissions.resend');
+Route::get('/permissions/confirmation/{reference}', 'DisabledFeatureController')->name('beyond.permissions.confirmation');
 
 // Student portal (training) — requires Beyond auth + OTP
 Route::middleware(['beyond.auth', 'beyond.otp'])->group(function () {
@@ -97,12 +97,12 @@ Route::middleware(['beyond.auth', 'beyond.otp'])->group(function () {
 });
 
 // Job board / Apply Now (public) — disabled for Ogera
-Route::get('/apply-now', function () { abort(404); })->name('apply.index');
-Route::get('/apply-now/{id}', function () { abort(404); })->name('apply.show');
-Route::post('/apply-now/{id}', function () { abort(404); })->name('apply.store');
-Route::get('/application-confirmation/{reference}', function () { abort(404); })->name('apply.confirmation');
-Route::get('/application-agreement/{token}', function () { abort(404); })->name('apply.agreement');
-Route::post('/application-agreement/{token}', function () { abort(404); })->name('apply.agreement.sign');
+Route::get('/apply-now', 'DisabledFeatureController')->name('apply.index');
+Route::get('/apply-now/{id}', 'DisabledFeatureController')->name('apply.show');
+Route::post('/apply-now/{id}', 'DisabledFeatureController')->name('apply.store');
+Route::get('/application-confirmation/{reference}', 'DisabledFeatureController')->name('apply.confirmation');
+Route::get('/application-agreement/{token}', 'DisabledFeatureController')->name('apply.agreement');
+Route::post('/application-agreement/{token}', 'DisabledFeatureController')->name('apply.agreement.sign');
 
 // Applicant portal — requires Beyond auth + OTP
 Route::middleware(['beyond.auth', 'beyond.otp'])->group(function () {
@@ -127,12 +127,12 @@ Route::post('/task-invite/{token}/accept', 'TaskInviteController@accept')->name(
 Route::post('/task-invite/{token}/decline', 'TaskInviteController@decline')->name('task.invite.decline');
 
 // Shareholders — disabled for Ogera
-Route::get('/shareholders', function () { abort(404); })->name('shareholders.landing');
-Route::post('/shareholders/accept', function () { abort(404); })->name('shareholders.accept');
-Route::get('/shares', function () { abort(404); })->name('shareholders.shares');
-Route::post('/shares', function () { abort(404); })->name('shareholders.store');
-Route::get('/shareholder-confirmation/{reference}', function () { abort(404); })->name('shareholders.confirmation');
-Route::get('/verify/agreement/{id}', function () { abort(404); })->name('shareholders.verify');
+Route::get('/shareholders', 'DisabledFeatureController')->name('shareholders.landing');
+Route::post('/shareholders/accept', 'DisabledFeatureController')->name('shareholders.accept');
+Route::get('/shares', 'DisabledFeatureController')->name('shareholders.shares');
+Route::post('/shares', 'DisabledFeatureController')->name('shareholders.store');
+Route::get('/shareholder-confirmation/{reference}', 'DisabledFeatureController')->name('shareholders.confirmation');
+Route::get('/verify/agreement/{id}', 'DisabledFeatureController')->name('shareholders.verify');
 Route::redirect('/share-purchase', '/');
 
 // Public payslip verification (QR / reference lookup)

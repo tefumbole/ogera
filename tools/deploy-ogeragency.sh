@@ -71,7 +71,7 @@ remote() { ssh "${SSH_OPTS[@]}" "${SSH_USER}@${SSH_HOST}" "$@"; }
 # .env, uploads and storage hold live state and are never overwritten. vendor/
 # is rebuilt on the host so the archive stays small.
 echo "==> Sync to ${DOMAIN}"
-rsync -az --delete --human-readable "${RSYNC_EXTRA[@]}" \
+rsync -az --delete --human-readable ${RSYNC_EXTRA[@]+"${RSYNC_EXTRA[@]}"} \
     -e "ssh -p ${SSH_PORT} -i ${SSH_KEY} -o StrictHostKeyChecking=accept-new" \
     --exclude='/vendor/' \
     --exclude='/node_modules/' \
@@ -111,7 +111,7 @@ chmod -R 775 storage bootstrap/cache
 chmod 755 artisan
 \$PHP artisan migrate --force
 \$PHP artisan config:cache
-\$PHP artisan route:cache
+\$PHP artisan route:cache || \$PHP artisan route:clear
 \$PHP artisan view:cache
 \$PHP artisan cache:clear || true
 "
