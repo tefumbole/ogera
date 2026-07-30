@@ -23,6 +23,9 @@ class CourseManagerController extends Controller
     {
         $this->courses = $courses;
         $this->middleware(function ($request, $next) {
+            if (\App\Support\SiteMenu::isSideDisabled('courses')) {
+                abort(404);
+            }
             if (Auth::check()) {
                 $role = Role::find(Auth::user()->role_id);
                 if ($role) {

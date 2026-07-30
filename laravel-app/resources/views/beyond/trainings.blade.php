@@ -21,7 +21,6 @@
         <p class="text-lg text-blue-200 mb-8 max-w-3xl mx-auto">Hands-on training in AI, Cloud, Security, Networking, and more — designed for 2026 and beyond</p>
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
             <a href="#programs" class="bg-brand-gold hover:bg-[#C19B2A] text-brand-blue px-8 py-4 text-lg font-bold shadow-lg hover:scale-105 transition-transform rounded-full">Explore Programs</a>
-            <a href="{{ url('/register-now') }}" class="border-2 border-white text-white hover:bg-white hover:text-brand-blue px-8 py-4 text-lg font-bold shadow-lg hover:scale-105 transition-all rounded-full">Register Now</a>
         </div>
     </div>
 </section>
@@ -106,11 +105,6 @@
                                        class="inline-flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold">
                                         <i data-lucide="message-circle" class="w-4 h-4"></i> Inquire about {{ $module['title'] }}
                                     </a>
-                                    <a href="{{ url('/register-now') }}?module={{ urlencode($module['title']) }}"
-                                       class="inline-flex items-center justify-center gap-2 text-white px-6 py-3 rounded-lg font-semibold hover:scale-105 transition-transform"
-                                       style="background-color: {{ $module['color'] }}">
-                                        Register for {{ $module['title'] }} <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -150,12 +144,9 @@
 <section class="py-20 bg-gradient-to-br from-brand-blue via-[#0052A3] to-brand-blue relative overflow-hidden">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
         <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">Ready to Transform Your Career?</h2>
-        <p class="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">Join thousands of professionals who have upgraded their skills with Beyond Enterprise</p>
-        <a href="{{ url('/register-now') }}" class="inline-block bg-brand-gold text-brand-blue hover:bg-[#C19B2A] px-12 py-6 text-xl font-bold rounded-full shadow-2xl hover:scale-110 transition-transform">
-            Enroll Now — Limited Seats Available
-        </a>
+        <p class="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">Join thousands of professionals who have upgraded their skills with Ogera</p>
         <div class="flex flex-col sm:flex-row items-center justify-center gap-6 mt-8 text-blue-200 text-sm">
-            <a href="mailto:info@beyondtechworld.com" class="hover:text-brand-gold">info@beyondtechworld.com</a>
+            <a href="mailto:info@ogeragency.com" class="hover:text-brand-gold">info@ogeragency.com</a>
             <span class="hidden sm:inline text-blue-400">•</span>
             <a href="tel:+237675321739" class="hover:text-brand-gold">+237 675 321 739</a>
         </div>

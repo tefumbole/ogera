@@ -49,17 +49,13 @@
         'trainings'    => ['label' => 'Training', 'url' => url('/trainings')],
         'events'       => ['label' => 'Events', 'url' => url('/events')],
         'rentals'      => ['label' => 'Rentals', 'url' => url('/rentals')],
-        'register'     => ['label' => 'Register Now', 'url' => url('/register-now')],
-        'apply'        => ['label' => 'Apply Now', 'url' => url('/apply-now'), 'special' => true],
-        'permissions'  => ['label' => 'Permissions', 'url' => url('/permissions')],
         'about'        => ['label' => 'About Us', 'url' => url('/about')],
         'gallery'      => ['label' => 'Gallery', 'url' => url('/gallery')],
-        'shareholders' => ['label' => 'Shareholders', 'url' => url('/shareholders')],
     ];
     $navLinks = [];
     foreach (\App\Support\SiteMenu::landingOrder() as $navKey) {
         // Legacy saved menus may still include "contact" — skip; contact lives on About Us
-        if ($navKey === 'contact') {
+        if ($navKey === 'contact' || \App\Support\SiteMenu::isLandingDisabled($navKey)) {
             continue;
         }
         if (isset($navDefs[$navKey])) {
@@ -210,7 +206,6 @@
                     <a href="{{ url('/services') }}" class="text-gray-300 hover:text-brand-gold">Services</a>
                     <a href="{{ url('/projects') }}" class="text-gray-300 hover:text-brand-gold">Projects</a>
                     <a href="{{ url('/events') }}" class="text-gray-300 hover:text-brand-gold">Events</a>
-                    <a href="{{ url('/shareholders') }}" class="text-gray-300 hover:text-brand-gold">Shareholders Portal</a>
                 </nav>
             </div>
             <div>

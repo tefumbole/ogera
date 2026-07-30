@@ -10,10 +10,29 @@ use App\SiteSetting;
  */
 class SiteMenu
 {
+    /**
+     * Public landing keys that stay in the codebase but must not appear in the
+     * header, Site Content reorder UI, or saved menu order.
+     */
+    public static function disabledLandingKeys()
+    {
+        return ['register', 'apply', 'permissions', 'shareholders'];
+    }
+
+    /**
+     * Admin sidebar keys disabled with the matching public menus:
+     * Permissions, Apply Now (Job Board), Register Now (Courses).
+     * Shareholders has no admin sidebar entry.
+     */
+    public static function disabledSideKeys()
+    {
+        return ['permissions', 'jobs', 'courses'];
+    }
+
     /** Public site header items: key => label (default order). */
     public static function landingItems()
     {
-        return [
+        $items = [
             'home'         => 'Home',
             'trainings'    => 'Training',
             'events'       => 'Events',
@@ -26,13 +45,19 @@ class SiteMenu
             'shareholders' => 'Shareholders',
             // Contact is merged into About Us (#contact) — not a separate nav item
         ];
+
+        foreach (self::disabledLandingKeys() as $key) {
+            unset($items[$key]);
+        }
+
+        return $items;
     }
 
     /** Admin sidebar top-level items: key => label (default order). Keys match
      *  the sidebar collapse targets (#product, #purchase, ...). */
     public static function sideItems()
     {
-        return [
+        $items = [
             'dashboard'    => 'Dashboard',
             'site-content' => 'Site Content',
             'leaders'      => 'About Us Leaders',
@@ -65,6 +90,22 @@ class SiteMenu
             'report'       => 'Reports',
             'setting'      => 'Settings',
         ];
+
+        foreach (self::disabledSideKeys() as $key) {
+            unset($items[$key]);
+        }
+
+        return $items;
+    }
+
+    public static function isLandingDisabled($key)
+    {
+        return in_array($key, self::disabledLandingKeys(), true);
+    }
+
+    public static function isSideDisabled($key)
+    {
+        return in_array($key, self::disabledSideKeys(), true);
     }
 
     /**

@@ -23,6 +23,9 @@ class JobBoardController extends Controller
         $this->jobs = $jobs;
         $this->applications = $applications;
         $this->middleware(function ($request, $next) {
+            if (\App\Support\SiteMenu::isSideDisabled('jobs')) {
+                abort(404);
+            }
             if (Auth::check()) {
                 $role = Role::find(Auth::user()->role_id);
                 if ($role) {

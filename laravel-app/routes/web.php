@@ -60,10 +60,11 @@ Route::get('/events/{slug}', 'PublicEventController@show')->name('beyond.event.d
 Route::get('/api/public/events', 'PublicEventController@apiList');
 Route::get('/api/public/events/{slug}', 'PublicEventController@apiShow');
 Route::get('/trainings', 'TrainingController@trainings')->name('beyond.trainings');
-Route::get('/register-now', 'TrainingController@registerNow')->name('beyond.register');
-Route::post('/register-now', 'TrainingController@storeRegistration')->name('training.register');
-Route::get('/registration-confirmation/{reference}', 'TrainingController@registered')->name('training.registered');
-Route::redirect('/registration', '/register-now');
+// Register Now — disabled for Ogera (menu + routes)
+Route::get('/register-now', function () { abort(404); })->name('beyond.register');
+Route::post('/register-now', function () { abort(404); })->name('training.register');
+Route::get('/registration-confirmation/{reference}', function () { abort(404); })->name('training.registered');
+Route::redirect('/registration', '/');
 
 // Legacy upload URLs (missing /public/) → correct static path
 Route::get('/uploads/applications/{file}', function ($file) {
@@ -80,12 +81,13 @@ Route::get('/rentals', 'PublicRentalController@index')->name('beyond.rentals');
 Route::post('/rentals', 'PublicRentalController@store')->name('beyond.rentals.store');
 Route::get('/rentals/confirmation/{reference}', 'PublicRentalController@confirmation')->name('beyond.rentals.confirmation');
 
-Route::get('/permissions', 'PublicPermissionController@index')->name('beyond.permissions');
-Route::get('/permissions/name-search', 'PublicPermissionController@searchNames')->name('beyond.permissions.search');
-Route::post('/permissions', 'PublicPermissionController@store')->name('beyond.permissions.store');
-Route::post('/permissions/verify', 'PublicPermissionController@verify')->name('beyond.permissions.verify');
-Route::post('/permissions/resend-otp', 'PublicPermissionController@resendOtp')->name('beyond.permissions.resend');
-Route::get('/permissions/confirmation/{reference}', 'PublicPermissionController@confirmation')->name('beyond.permissions.confirmation');
+// Permissions (public) — disabled for Ogera
+Route::get('/permissions', function () { abort(404); })->name('beyond.permissions');
+Route::get('/permissions/name-search', function () { abort(404); })->name('beyond.permissions.search');
+Route::post('/permissions', function () { abort(404); })->name('beyond.permissions.store');
+Route::post('/permissions/verify', function () { abort(404); })->name('beyond.permissions.verify');
+Route::post('/permissions/resend-otp', function () { abort(404); })->name('beyond.permissions.resend');
+Route::get('/permissions/confirmation/{reference}', function () { abort(404); })->name('beyond.permissions.confirmation');
 
 // Student portal (training) — requires Beyond auth + OTP
 Route::middleware(['beyond.auth', 'beyond.otp'])->group(function () {
@@ -94,13 +96,13 @@ Route::middleware(['beyond.auth', 'beyond.otp'])->group(function () {
     Route::post('/student/feedback', 'StudentDashboardController@submitFeedback')->name('student.feedback');
 });
 
-// Job board / Apply Now (public)
-Route::get('/apply-now', 'ApplyController@index')->name('apply.index');
-Route::get('/apply-now/{id}', 'ApplyController@show')->name('apply.show');
-Route::post('/apply-now/{id}', 'ApplyController@store')->name('apply.store');
-Route::get('/application-confirmation/{reference}', 'ApplyController@confirmation')->name('apply.confirmation');
-Route::get('/application-agreement/{token}', 'ApplicationAgreementController@show')->name('apply.agreement');
-Route::post('/application-agreement/{token}', 'ApplicationAgreementController@sign')->name('apply.agreement.sign');
+// Job board / Apply Now (public) — disabled for Ogera
+Route::get('/apply-now', function () { abort(404); })->name('apply.index');
+Route::get('/apply-now/{id}', function () { abort(404); })->name('apply.show');
+Route::post('/apply-now/{id}', function () { abort(404); })->name('apply.store');
+Route::get('/application-confirmation/{reference}', function () { abort(404); })->name('apply.confirmation');
+Route::get('/application-agreement/{token}', function () { abort(404); })->name('apply.agreement');
+Route::post('/application-agreement/{token}', function () { abort(404); })->name('apply.agreement.sign');
 
 // Applicant portal — requires Beyond auth + OTP
 Route::middleware(['beyond.auth', 'beyond.otp'])->group(function () {
@@ -124,13 +126,14 @@ Route::get('/task-invite/{token}', 'TaskInviteController@show')->name('task.invi
 Route::post('/task-invite/{token}/accept', 'TaskInviteController@accept')->name('task.invite.accept');
 Route::post('/task-invite/{token}/decline', 'TaskInviteController@decline')->name('task.invite.decline');
 
-Route::get('/shareholders', 'ShareholderController@landing')->name('shareholders.landing');
-Route::post('/shareholders/accept', 'ShareholderController@acceptTerms')->name('shareholders.accept');
-Route::get('/shares', 'ShareholderController@shares')->name('shareholders.shares');
-Route::post('/shares', 'ShareholderController@store')->name('shareholders.store');
-Route::get('/shareholder-confirmation/{reference}', 'ShareholderController@confirmation')->name('shareholders.confirmation');
-Route::get('/verify/agreement/{id}', 'ShareholderController@verify')->name('shareholders.verify');
-Route::redirect('/share-purchase', '/shares');
+// Shareholders — disabled for Ogera
+Route::get('/shareholders', function () { abort(404); })->name('shareholders.landing');
+Route::post('/shareholders/accept', function () { abort(404); })->name('shareholders.accept');
+Route::get('/shares', function () { abort(404); })->name('shareholders.shares');
+Route::post('/shares', function () { abort(404); })->name('shareholders.store');
+Route::get('/shareholder-confirmation/{reference}', function () { abort(404); })->name('shareholders.confirmation');
+Route::get('/verify/agreement/{id}', function () { abort(404); })->name('shareholders.verify');
+Route::redirect('/share-purchase', '/');
 
 // Public payslip verification (QR / reference lookup)
 Route::get('/verify/payslip/{code}', 'PayslipVerifyController@show')->name('payslip.verify');

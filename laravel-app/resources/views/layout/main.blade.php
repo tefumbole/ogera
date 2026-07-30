@@ -1287,7 +1287,7 @@
                             ['role_id', $role->id]
                         ])->first() : null;
                         ?>
-                        @if($permissions_module_active || $hrm_for_perms_active)
+                        @if(!\App\Support\SiteMenu::isSideDisabled('permissions') && ($permissions_module_active || $hrm_for_perms_active))
                             <li><a href="#staff-permissions" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-checkmark"></i><span>Permissions</span></a>
                                 <ul id="staff-permissions" class="collapse list-unstyled ">
                                     <li id="perm-requests-menu">
@@ -1386,7 +1386,7 @@
                                 ['role_id', $role->id]
                             ])->first() : null;
                         @endphp
-                        @if($jobs_module_active)
+                        @if(!\App\Support\SiteMenu::isSideDisabled('jobs') && $jobs_module_active)
                             <li><a href="#jobs-module" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-briefcase"></i><span>Job Board</span></a>
                                 <ul id="jobs-module" class="collapse list-unstyled ">
                                     <li id="jobs-list-menu"><a href="{{ route('jobs.index') }}">Job Postings</a></li>
@@ -1429,7 +1429,7 @@
                                 ['role_id', $role->id]
                             ])->first() : null;
                         @endphp
-                        @if($courses_module_active)
+                        @if(!\App\Support\SiteMenu::isSideDisabled('courses') && $courses_module_active)
                             <li><a href="#courses-module" aria-expanded="false" data-toggle="collapse"> <i class="fa fa-graduation-cap"></i><span>Courses</span></a>
                                 <ul id="courses-module" class="collapse list-unstyled ">
                                     <li id="courses-list-menu"><a href="{{ route('courses.index') }}">Course List</a></li>
