@@ -1,21 +1,14 @@
 @extends('beyond.layout')
 
-@section('title', 'About Beyond Enterprise | Our Vision & Team')
-@section('meta_description', 'Learn about Beyond Enterprise — our history, mission, leadership, and commitment to technological excellence in Rwanda and beyond.')
+@section('title', 'About OGERA Agency')
+@section('meta_description', 'Learn about OGERA Agency — business development, events, and equipment rental crafted in Kigali.')
 
 @section('content')
 
-<section class="relative py-20 bg-brand-blue text-white overflow-hidden">
-    <div class="absolute inset-0 opacity-10">
-        <div class="absolute inset-0 bg-cover bg-center" style="background-image:url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop');"></div>
-    </div>
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h1 class="text-4xl md:text-6xl font-bold mb-6">{{ \App\Support\SiteContent::text('about.hero_title', 'Bridging Technology & Innovation') }}</h1>
-        <p class="text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto font-light">
-            {{ \App\Support\SiteContent::text('about.hero_subtitle', 'We are a premier IT consultancy and infrastructure firm dedicated to transforming businesses through cutting-edge technology solutions.') }}
-        </p>
-    </div>
-</section>
+@include('beyond.partials.hero', [
+    'title' => \App\Support\SiteContent::text('about.hero_title', 'About OGERA'),
+    'subtitle' => \App\Support\SiteContent::text('about.hero_subtitle', 'Business development, unforgettable events, and premium equipment rental — crafted for brands and hosts who expect more.'),
+])
 
 <section class="py-16 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -127,7 +120,7 @@
     <div class="max-w-4xl mx-auto px-4">
         <h2 class="text-3xl font-bold mb-6">{{ \App\Support\SiteContent::text('about.cta_heading', 'Ready to work with us?') }}</h2>
         <p class="text-xl mb-8 opacity-90">{{ \App\Support\SiteContent::text('about.cta_text', "Let's build something extraordinary together.") }}</p>
-        <a href="https://wa.me/237675321739" target="_blank" rel="noopener"
+        <a href="https://wa.me/250786887936" target="_blank" rel="noopener"
            class="inline-flex items-center gap-2 bg-brand-gold text-brand-blue font-bold text-lg px-8 py-4 rounded-full hover:bg-white hover:scale-105 transition-all">
             <i data-lucide="message-circle" class="w-5 h-5"></i> Chat on WhatsApp
         </a>

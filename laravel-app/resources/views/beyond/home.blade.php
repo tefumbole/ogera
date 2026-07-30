@@ -1,231 +1,255 @@
 @extends('beyond.layout')
 
-@section('title', 'IT Consultancy & AV Solutions')
-@section('meta_description', 'Beyond Enterprise — your technology bridge to Kigali. IT consultancy, networking, CCTV security, and professional audio-visual solutions in Rwanda.')
+@section('title', 'Business · Events · Rentals')
+@section('meta_description', 'OGERA Agency — business development, event management, and equipment rental in Kigali, Rwanda.')
 
 @section('content')
 
 @php
-    $services = [
-        ['icon' => 'network', 'title' => 'IT Consultancy', 'desc' => 'Enterprise-grade IT solutions and infrastructure planning'],
-        ['icon' => 'share-2', 'title' => 'Networks', 'desc' => 'Professional networking design, deployment, and management'],
-        ['icon' => 'shield', 'title' => 'CCTV & Security', 'desc' => 'Advanced surveillance and security systems'],
-        ['icon' => 'mic', 'title' => 'Sound & Audio', 'desc' => 'Professional audio engineering for events and venues'],
-        ['icon' => 'monitor', 'title' => 'Screens & Lighting', 'desc' => 'LED screens and professional lighting solutions'],
-        ['icon' => 'cable', 'title' => 'Fiber Optics', 'desc' => 'High-speed fiber connectivity and splicing services'],
-    ];
-    $whyUs = [
-        ['icon' => 'check-circle-2', 'title' => 'Engineering Standards', 'desc' => 'Built with precision and best practices'],
-        ['icon' => 'shield', 'title' => 'Reliability', 'desc' => 'Dependable systems you can trust'],
-        ['icon' => 'zap', 'title' => 'Fast Support', 'desc' => 'Quick response times and expert assistance'],
-        ['icon' => 'trending-up', 'title' => 'Scalable Solutions', 'desc' => 'Systems that grow with your needs'],
-    ];
-    $industries = [
-        ['icon' => 'building-2', 'name' => 'Companies'],
-        ['icon' => 'church', 'name' => 'Churches'],
-        ['icon' => 'calendar', 'name' => 'Events'],
-        ['icon' => 'school', 'name' => 'Schools'],
-        ['icon' => 'heart', 'name' => 'NGOs'],
-        ['icon' => 'home', 'name' => 'Homes'],
-    ];
-    $testimonials = [
-        ['name' => 'Client A', 'role' => 'CEO, Tech Company', 'content' => 'Beyond Enterprise delivered exceptional networking solutions for our office. Professional and reliable.'],
-        ['name' => 'Client B', 'role' => 'Event Organizer', 'content' => 'Their sound and lighting setup made our event unforgettable. Highly recommended!'],
-        ['name' => 'Client C', 'role' => 'School Administrator', 'content' => 'The CCTV system they installed has greatly improved our campus security.'],
-    ];
+    $hero = \App\Support\OgeraLandingContent::hero();
+    $about = \App\Support\OgeraLandingContent::about();
+    $services = \App\Support\OgeraLandingContent::services();
+    $why = \App\Support\OgeraLandingContent::why();
+    $stats = array_values(array_filter(\App\Support\OgeraLandingContent::statistics(), function ($s) {
+        return !empty($s['value']);
+    }));
+    $framework = \App\Support\OgeraLandingContent::framework();
+    $cta = \App\Support\OgeraLandingContent::cta();
+
+    $heroImageUrl = \App\Support\SiteContent::image('home.hero_image', $hero['image']);
+    $heroImageUrl .= (strpos($heroImageUrl, '?') === false ? '?' : '&') . 'v=' . rawurlencode(\App\Support\AppVersion::label());
+    $heroVideo = $hero['video'];
+
+    $galleryItems = collect();
+    try {
+        $galleryItems = \App\GalleryItem::published()->ordered()->take(4)->get();
+    } catch (\Throwable $e) {
+        $galleryItems = collect();
+    }
 @endphp
 
 {{-- Hero --}}
-@php
-    $heroImageUrl = \App\Support\SiteContent::image('home.hero_image', '/public/branding/ogera-hero.jpg');
-    // Cache-bust so browsers pick up the clean asset after deploys.
-    $heroImageUrl .= (strpos($heroImageUrl, '?') === false ? '?' : '&') . 'v=' . rawurlencode(\App\Support\AppVersion::label());
-@endphp
-<section class="relative min-h-screen flex flex-col items-center justify-center overflow-hidden py-20 md:py-0">
-    <div class="absolute inset-0 overflow-hidden" aria-hidden="true">
-        <img
-            src="{{ $heroImageUrl }}"
-            alt=""
-            width="1920"
-            height="960"
-            fetchpriority="high"
-            decoding="async"
-            class="ogera-hero-zoom absolute inset-0 h-full w-full object-cover object-center"
-        >
-        {{-- Light scrim only — keep the photograph sharp and visible --}}
-        <div class="absolute inset-0 bg-black/35"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-[#003D82]/75 via-[#003D82]/20 to-transparent"></div>
+<section class="ogera-hero" id="top">
+    <div class="ogera-hero__media" aria-hidden="true">
+        @if ($heroVideo)
+            <video class="ogera-hero__video" autoplay muted loop playsinline poster="{{ $heroImageUrl }}">
+                <source src="{{ $heroVideo }}" type="video/mp4">
+            </video>
+        @else
+            <img
+                src="{{ $heroImageUrl }}"
+                alt=""
+                width="1920"
+                height="960"
+                fetchpriority="high"
+                decoding="async"
+                class="ogera-hero__photo"
+            >
+        @endif
+        <div class="ogera-hero__scrim"></div>
     </div>
 
-    @for ($i = 0; $i < 6; $i++)
-        <div class="absolute w-2 h-2 rounded-full bg-brand-gold/40 floaty"
-             style="left: {{ 10 + $i * 15 }}%; top: {{ 20 + ($i % 3) * 25 }}%; animation-delay: {{ $i * 0.4 }}s;"></div>
-    @endfor
-
-    <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center w-full mt-20 md:mt-0">
-        <div class="mb-8 flex flex-col items-center ogera-hero-rise">
-            <img src="{{ \App\Support\SiteBrand::logoUrl($general_setting ?? null) }}" alt="{{ \App\Support\SiteBrand::siteTitle($general_setting ?? null) }}" class="h-20 md:h-24 w-auto object-contain mb-6 drop-shadow-2xl">
-            <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-4 drop-shadow-2xl tracking-tight">
-                {!! \App\Support\SiteContent::html('home.hero_title', 'Your Technology Bridge to <span class="text-brand-gold">Kigali</span>') !!}
-            </h1>
-            <p class="text-xl md:text-2xl text-white/90 font-light max-w-3xl mx-auto drop-shadow-md">
-                {{ \App\Support\SiteContent::text('home.hero_subtitle', 'Professional IT Consultancy, Enterprise Networking, and Audio-Visual Production, Cloud, AI and Cyber') }}
-            </p>
+    <div class="ogera-hero__inner">
+        <p class="ogera-hero__eyebrow ogera-reveal">{{ $hero['eyebrow'] }}</p>
+        <h1 class="ogera-hero__title ogera-reveal">{!! $hero['title'] !!}</h1>
+        <p class="ogera-hero__desc ogera-reveal">{{ $hero['description'] }}</p>
+        <div class="ogera-hero__actions ogera-reveal">
+            @foreach ($hero['ctas'] as $btn)
+                <a href="{{ $btn['url'] }}" class="ogera-btn ogera-btn--{{ $btn['style'] }}">{{ $btn['label'] }}</a>
+            @endforeach
         </div>
-        <div class="w-full flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 flex-wrap">
-            <a href="{{ url('/trainings') }}"
-               class="bg-brand-gold hover:bg-[#b5952f] text-brand-blue h-14 px-8 text-lg font-bold shadow-[0_0_15px_rgba(212,175,55,0.4)] rounded-full hover:scale-105 transition-transform inline-flex items-center justify-center">
-                {{ \App\Support\SiteContent::text('home.cta_primary', 'Get a Free Quotation') }} <i data-lucide="arrow-right" class="ml-2 w-5 h-5"></i>
-            </a>
-            <a href="{{ url('/rentals') }}"
-               class="h-14 px-8 text-lg font-bold rounded-full shadow-xl hover:shadow-2xl bg-white/15 hover:bg-white/25 border border-brand-gold/80 backdrop-blur-sm text-brand-gold inline-flex items-center justify-center gap-2 transition-all">
-                <i data-lucide="package" class="w-5 h-5"></i> Rentals
-            </a>
-            <a href="https://wa.me/237675321739" target="_blank" rel="noopener"
-               class="h-14 px-8 text-lg font-bold rounded-full shadow-xl hover:shadow-2xl bg-brand-light/40 hover:bg-brand-light/60 border border-white/30 backdrop-blur-sm text-white inline-flex items-center justify-center gap-2 transition-all">
-                <i data-lucide="message-circle" class="w-5 h-5"></i> Chat on WhatsApp
-            </a>
+        <p class="ogera-hero__meta ogera-reveal">
+            <i data-lucide="map-pin" class="w-4 h-4"></i> {{ $hero['meta'] }}
+        </p>
+    </div>
+
+    <a href="#about" class="ogera-scroll" aria-label="Scroll to about">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9l6 6 6-6"/></svg>
+    </a>
+</section>
+
+{{-- About + Mission / Vision --}}
+<section class="ogera-section" id="about" style="background: var(--og-warm); scroll-margin-top: 5rem;">
+    <div class="ogera-container">
+        <p class="ogera-label">{{ $about['label'] }}</p>
+        <h2 class="ogera-heading">{!! $about['heading'] !!}</h2>
+        <p class="ogera-lede">{{ $about['body'] }}</p>
+
+        <div class="ogera-cards ogera-cards--2">
+            <div class="ogera-card ogera-card--mission">
+                <div class="ogera-card__title">{{ $about['mission']['title'] }}</div>
+                <p class="ogera-card__body">{{ $about['mission']['body'] }}</p>
+            </div>
+            <div class="ogera-card ogera-card--vision">
+                <div class="ogera-card__title">{{ $about['vision']['title'] }}</div>
+                <p class="ogera-card__body">{{ $about['vision']['body'] }}</p>
+            </div>
         </div>
     </div>
 </section>
 
 {{-- Services --}}
-<section class="py-16 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-12">
-            <h2 class="text-4xl font-bold text-brand-blue mb-4">{{ \App\Support\SiteContent::text('home.services_heading', 'Our Services') }}</h2>
-            <p class="text-xl text-gray-600">{{ \App\Support\SiteContent::text('home.services_subheading', 'Comprehensive technology solutions for your needs') }}</p>
+<section class="ogera-section" id="services" style="scroll-margin-top: 5rem;">
+    <div class="ogera-container">
+        <p class="ogera-label">{{ $services['label'] }}</p>
+        <h2 class="ogera-heading">{!! $services['heading'] !!}</h2>
+
+        <div class="ogera-cards ogera-cards--3">
+            @foreach ($services['items'] as $item)
+                <div class="ogera-card ogera-card--service">
+                    <div class="ogera-card__num">{{ $item['num'] }}</div>
+                    <h3 class="ogera-card__title">{{ $item['title'] }}</h3>
+                    <p class="ogera-card__body">{{ $item['body'] }}</p>
+                    <a href="{{ $item['url'] }}" class="ogera-card__link">
+                        {{ $item['cta'] }} <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                </div>
+            @endforeach
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            @foreach ($services as $s)
-                <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 p-8 border border-gray-100">
-                    <div class="text-brand-light mb-4"><i data-lucide="{{ $s['icon'] }}" class="w-12 h-12"></i></div>
-                    <h3 class="text-2xl font-semibold text-brand-blue mb-3">{{ $s['title'] }}</h3>
-                    <p class="text-gray-700">{{ $s['desc'] }}</p>
+
+        <div class="mt-10 text-center">
+            <a href="{{ url('/services') }}" class="ogera-btn ogera-btn--dark">Explore all services</a>
+        </div>
+    </div>
+</section>
+
+{{-- Why OGERA --}}
+<section class="ogera-section" id="why" style="background: var(--og-warm); scroll-margin-top: 5rem;">
+    <div class="ogera-container">
+        <div class="ogera-split">
+            <div>
+                <p class="ogera-label">{{ $why['label'] }}</p>
+                <h2 class="ogera-heading">{{ $why['heading'] }}</h2>
+                <p class="ogera-lede">{{ $why['body'] }}</p>
+            </div>
+            <div class="ogera-strength">
+                @foreach ($why['strengths'] as $s)
+                    <div class="ogera-strength__item">
+                        <strong>{{ $s['title'] }}</strong>
+                        <p>{{ $s['body'] }}</p>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
+        @if (count($stats))
+            <div class="ogera-stats">
+                @foreach ($stats as $stat)
+                    <div class="ogera-stat">
+                        <div class="ogera-stat__value">{{ $stat['value'] }}</div>
+                        <div class="ogera-stat__label">{{ $stat['label'] }}</div>
+                    </div>
+                @endforeach
+            </div>
+        @endif
+    </div>
+</section>
+
+{{-- How We Work --}}
+<section class="ogera-section" id="how" style="scroll-margin-top: 5rem;">
+    <div class="ogera-container">
+        <p class="ogera-label">{{ $framework['label'] }}</p>
+        <h2 class="ogera-heading">{!! $framework['heading'] !!}</h2>
+
+        <div class="ogera-timeline">
+            @foreach ($framework['steps'] as $step)
+                <div class="ogera-step">
+                    <div class="ogera-step__n">{{ $step['num'] }}</div>
+                    <h3>{{ $step['title'] }}</h3>
+                    <p>{{ $step['body'] }}</p>
                 </div>
             @endforeach
         </div>
     </div>
 </section>
 
-{{-- Why Beyond --}}
-<section class="py-16 bg-brand-blue">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-12">
-            <h2 class="text-4xl font-bold text-white mb-4">{{ \App\Support\SiteContent::text('home.why_heading', 'Why Beyond Enterprise?') }}</h2>
-            <p class="text-xl text-gray-300">{{ \App\Support\SiteContent::text('home.why_subheading', 'Excellence in every solution we deliver') }}</p>
+{{-- Gallery strip --}}
+<section class="ogera-section" id="gallery" style="background: var(--og-warm); scroll-margin-top: 5rem;">
+    <div class="ogera-container">
+        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+            <div>
+                <p class="ogera-label">Gallery</p>
+                <h2 class="ogera-heading">Moments from our work</h2>
+            </div>
+            <a href="{{ url('/gallery') }}" class="ogera-btn ogera-btn--dark">View all</a>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            @foreach ($whyUs as $f)
-                <div class="bg-white/10 backdrop-blur-md rounded-xl p-6 text-center hover:bg-white/20 transition-all duration-300 border border-white/5">
-                    <div class="text-brand-gold mb-4 flex justify-center"><i data-lucide="{{ $f['icon'] }}" class="w-10 h-10"></i></div>
-                    <h3 class="text-xl font-semibold text-white mb-2">{{ $f['title'] }}</h3>
-                    <p class="text-gray-300 text-sm">{{ $f['desc'] }}</p>
-                </div>
-            @endforeach
-        </div>
+
+        @if ($galleryItems->isNotEmpty())
+            <div class="ogera-gallery-grid">
+                @foreach ($galleryItems as $item)
+                    @php $src = $item->fileUrl() ?: $item->media_url; @endphp
+                    @if ($src)
+                        <a href="{{ url('/gallery') }}">
+                            <img src="{{ $src }}" alt="{{ $item->title ?: 'Gallery' }}" loading="lazy">
+                        </a>
+                    @endif
+                @endforeach
+            </div>
+        @else
+            <p class="ogera-lede" style="margin-top: 1.5rem;">Gallery highlights will appear here once published from Site Content.</p>
+        @endif
     </div>
 </section>
 
-{{-- Industries --}}
-<section class="py-16 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-12">
-            <h2 class="text-4xl font-bold text-brand-blue mb-4">{{ \App\Support\SiteContent::text('home.industries_heading', 'Industries We Serve') }}</h2>
-            <p class="text-xl text-gray-600">{{ \App\Support\SiteContent::text('home.industries_subheading', 'Trusted by diverse organizations across Africa and the World') }}</p>
-        </div>
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            @foreach ($industries as $ind)
-                <div class="bg-white rounded-xl shadow-md p-6 text-center border border-gray-100 hover:shadow-lg transition-shadow">
-                    <div class="text-brand-light mb-3 flex justify-center"><i data-lucide="{{ $ind['icon'] }}" class="w-10 h-10"></i></div>
-                    <h3 class="text-lg font-semibold text-brand-blue">{{ $ind['name'] }}</h3>
-                </div>
-            @endforeach
-        </div>
-    </div>
-</section>
-
-{{-- Events --}}
+{{-- Upcoming events (controller-provided) --}}
 @if(!empty($homeEvents) && $homeEvents->isNotEmpty())
-<section class="py-16 bg-white border-t border-gray-100">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-12">
-            <h2 class="text-4xl font-bold text-brand-blue mb-4">Upcoming Events</h2>
-            <p class="text-xl text-gray-600">Highlights and events from Beyond Enterprise</p>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<section class="ogera-section">
+    <div class="ogera-container">
+        <p class="ogera-label">Events</p>
+        <h2 class="ogera-heading">Upcoming highlights</h2>
+        <div class="ogera-cards ogera-cards--3" style="margin-top: 2.5rem;">
             @foreach($homeEvents as $ev)
-                <a href="{{ url('/events/' . $ev['slug']) }}" class="group block bg-white rounded-xl border border-gray-200 hover:border-brand-blue hover:shadow-xl transition overflow-hidden">
-                    <div class="relative h-44 bg-gray-200 overflow-hidden">
+                <a href="{{ url('/events/' . $ev['slug']) }}" class="ogera-card ogera-card--service" style="text-decoration:none; overflow:hidden; padding:0;">
+                    <div style="aspect-ratio:16/10; background:var(--og-grey); overflow:hidden;">
                         @if(!empty($ev['flyer']))
-                            <img src="{{ $ev['flyer'] }}" alt="{{ $ev['title'] }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                        @else
-                            <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-brand-blue to-brand-light">
-                                <i data-lucide="calendar" class="w-12 h-12 text-white opacity-60"></i>
-                            </div>
-                        @endif
-                        @if(!empty($ev['start']))
-                            <span class="absolute top-3 right-3 bg-brand-gold text-brand-blue text-xs font-bold px-3 py-1 rounded-full">{{ $ev['start']->format('M d') }}</span>
+                            <img src="{{ $ev['flyer'] }}" alt="{{ $ev['title'] }}" style="width:100%;height:100%;object-fit:cover;">
                         @endif
                     </div>
-                    <div class="p-5">
-                        <h3 class="text-lg font-bold text-gray-900 group-hover:text-brand-blue line-clamp-2 mb-2">{{ $ev['title'] }}</h3>
+                    <div style="padding:1.25rem 1.4rem 1.5rem;">
+                        <h3 class="ogera-card__title" style="font-size:1.2rem;">{{ $ev['title'] }}</h3>
                         @if(!empty($ev['start']))
-                            <p class="text-sm text-gray-600 mb-1"><i data-lucide="calendar" class="w-4 h-4 inline text-brand-blue"></i> {{ $ev['start']->format('D, M j, Y g:i A') }}</p>
-                        @endif
-                        @if(!empty($ev['venue']))
-                            <p class="text-sm text-gray-600 line-clamp-1"><i data-lucide="map-pin" class="w-4 h-4 inline text-brand-blue"></i> {{ $ev['venue'] }}</p>
+                            <p class="ogera-card__body" style="margin:0;">{{ $ev['start']->format('D, M j, Y g:i A') }}</p>
                         @endif
                     </div>
                 </a>
             @endforeach
         </div>
-        <div class="text-center mt-10">
-            <a href="{{ url('/events') }}" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-brand-blue text-white font-semibold hover:bg-brand-dark transition">
-                View all events <i data-lucide="arrow-right" class="w-4 h-4"></i>
-            </a>
+        <div class="mt-8 text-center">
+            <a href="{{ url('/events') }}" class="ogera-btn ogera-btn--dark">View all events</a>
         </div>
     </div>
 </section>
 @endif
 
-{{-- Testimonials --}}
-<section class="py-16 bg-gray-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-12">
-            <h2 class="text-4xl font-bold text-brand-blue mb-4">{{ \App\Support\SiteContent::text('home.testimonials_heading', 'What Our Clients Say') }}</h2>
-            <p class="text-xl text-gray-600">{{ \App\Support\SiteContent::text('home.testimonials_subheading', 'Trusted by businesses and organizations across Kigali') }}</p>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            @foreach ($testimonials as $t)
-                <div class="bg-white rounded-xl shadow-md p-8 border border-gray-200">
-                    <p class="text-gray-700 italic mb-6">"{{ $t['content'] }}"</p>
-                    <div>
-                        <p class="font-semibold text-brand-blue">{{ $t['name'] }}</p>
-                        <p class="text-sm text-gray-500">{{ $t['role'] }}</p>
-                    </div>
-                </div>
-            @endforeach
+{{-- Testimonials — empty until real content exists --}}
+<section class="ogera-section" id="testimonials" style="scroll-margin-top: 5rem;">
+    <div class="ogera-container" style="text-align:center;">
+        <p class="ogera-label">Testimonials</p>
+        <h2 class="ogera-heading" style="margin-left:auto;margin-right:auto;">Client voices</h2>
+        <p class="ogera-lede" style="margin-left:auto;margin-right:auto;">
+            Client stories will appear here once approved. Until then, we’d love to hear about your project.
+        </p>
+        <div style="margin-top:1.75rem;">
+            <a href="{{ url('/about') }}#contact" class="ogera-btn ogera-btn--primary">Start a Project</a>
         </div>
     </div>
 </section>
 
-{{-- CTA --}}
-<section class="py-16 bg-gradient-to-r from-brand-blue via-brand-light to-brand-blue">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-4xl font-bold text-white mb-6">{{ \App\Support\SiteContent::text('home.cta_heading', 'Ready to Get Started?') }}</h2>
-        <p class="text-xl text-gray-200 mb-8">{{ \App\Support\SiteContent::text('home.cta_text', 'Contact us today for a consultation and let us bridge your technology needs.') }}</p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="https://wa.me/237675321739" target="_blank" rel="noopener"
-               class="px-8 py-4 text-lg rounded-lg shadow-xl hover:shadow-2xl bg-[#25D366] hover:bg-[#1EBE57] text-white font-semibold inline-flex items-center justify-center gap-2">
-                <i data-lucide="message-circle" class="w-5 h-5"></i> Chat on WhatsApp
-            </a>
-            <a href="mailto:info@beyondtechworld.com"
-               class="bg-white text-brand-blue hover:bg-gray-100 px-8 py-4 text-lg rounded-lg shadow-xl hover:shadow-2xl font-semibold inline-flex items-center justify-center gap-2">
-                <i data-lucide="mail" class="w-5 h-5"></i> Email Us
-            </a>
+{{-- Final CTA --}}
+<section class="ogera-section" style="padding-top:0;">
+    <div class="ogera-container">
+        <div class="ogera-cta-band">
+            <h2>{{ $cta['heading'] }}</h2>
+            <p>{{ $cta['body'] }}</p>
+            <div class="ogera-cta-band__actions">
+                <a href="{{ $cta['primary']['url'] }}" class="ogera-btn ogera-btn--primary">{{ $cta['primary']['label'] }}</a>
+                <a href="{{ $cta['secondary']['url'] }}" class="ogera-btn ogera-btn--ghost">{{ $cta['secondary']['label'] }}</a>
+            </div>
         </div>
     </div>
 </section>
+
+{{-- Contact on home too for #contact deep links from nav when on home --}}
+@include('beyond.partials.contact_section')
 
 @endsection

@@ -1,18 +1,16 @@
 @extends('beyond.layout')
 
 @section('title', 'Equipment Rentals')
-@section('meta_description', 'Request equipment rentals from Beyond Enterprise.')
+@section('meta_description', 'Request equipment rentals from OGERA Agency in Kigali.')
 
 @section('content')
-<div class="min-h-screen bg-gray-50 pb-20">
-    <div class="bg-gradient-to-r from-brand-blue via-[#004e9a] to-brand-dark text-white py-16 px-4">
-        <div class="max-w-4xl mx-auto text-center">
-            <h1 class="text-4xl md:text-5xl font-extrabold mb-4">Equipment Rentals</h1>
-            <p class="text-lg text-blue-100">Submit a booking request — our team will confirm availability and follow up on WhatsApp.</p>
-        </div>
-    </div>
+<div class="min-h-screen pb-20" style="background: var(--og-warm, #f8f6ef);">
+    @include('beyond.partials.hero', [
+        'title' => 'Equipment Rentals',
+        'subtitle' => 'Submit a booking request — our team will confirm availability and follow up on WhatsApp.',
+    ])
 
-    <div class="max-w-3xl mx-auto px-4 -mt-8">
+    <div class="max-w-3xl mx-auto px-4 -mt-6 relative z-10">
         <div class="bg-white rounded-xl shadow-xl border border-gray-100 p-6 md:p-8">
             @if($errors->any())
                 <div class="mb-4 bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm">
@@ -31,11 +29,11 @@
                         <label class="text-sm font-semibold text-gray-700">WhatsApp Number *</label>
                         <div class="flex gap-2 mt-1">
                             <select name="country_code" class="rounded-md border border-gray-200 px-2 py-2 w-28">
-                                @foreach(['+237','+250','+256','+254','+233','+234','+1','+44'] as $code)
-                                    <option value="{{ $code }}" @if(old('country_code','+237')===$code) selected @endif>{{ $code }}</option>
+                                @foreach(['+250','+237','+256','+254','+233','+234','+1','+44'] as $code)
+                                    <option value="{{ $code }}" @if(old('country_code','+250')===$code) selected @endif>{{ $code }}</option>
                                 @endforeach
                             </select>
-                            <input required name="phone" value="{{ old('phone') }}" class="flex-1 rounded-md border border-gray-200 px-3 py-2" placeholder="675 321 739">
+                            <input required name="phone" value="{{ old('phone') }}" class="flex-1 rounded-md border border-gray-200 px-3 py-2" placeholder="786 887 936">
                         </div>
                     </div>
                     <div>

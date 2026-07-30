@@ -1,11 +1,16 @@
 @extends('beyond.layout')
 
 @section('title', 'Events & Highlights')
-@section('meta_description', 'Discover upcoming events, workshops, and highlights from Beyond Enterprise.')
+@section('meta_description', 'Discover upcoming events, workshops, and highlights from OGERA Agency.')
 
 @section('content')
 
-<section class="py-10 bg-gray-50 min-h-screen">
+@include('beyond.partials.hero', [
+    'title' => 'Events & <em>Highlights</em>',
+    'subtitle' => 'Discover upcoming events and moments from OGERA Agency.',
+])
+
+<section class="py-10 min-h-screen" style="background: var(--og-warm, #f8f6ef);">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <form method="GET" action="{{ url('/events') }}" class="mb-8 flex flex-col md:flex-row gap-4 items-stretch md:items-end">
             <div class="flex-1">

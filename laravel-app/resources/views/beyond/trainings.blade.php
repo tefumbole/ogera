@@ -12,18 +12,13 @@
 
 @section('content')
 
-<section class="bg-gradient-to-br from-brand-blue via-[#0052A3] to-brand-blue pt-24 pb-20">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6">
-            Professional <span class="text-brand-gold">IT Training</span>
-        </h1>
-        <p class="text-xl md:text-2xl text-blue-100 mb-4 max-w-4xl mx-auto">Master cutting-edge technologies with industry-leading programs</p>
-        <p class="text-lg text-blue-200 mb-8 max-w-3xl mx-auto">Hands-on training in AI, Cloud, Security, Networking, and more — designed for 2026 and beyond</p>
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
-            <a href="#programs" class="bg-brand-gold hover:bg-[#C19B2A] text-brand-blue px-8 py-4 text-lg font-bold shadow-lg hover:scale-105 transition-transform rounded-full">Explore Programs</a>
-        </div>
-    </div>
-</section>
+@include('beyond.partials.hero', [
+    'title' => 'Professional <em>Training</em>',
+    'subtitle' => 'Hands-on programs designed to build real capability — explore what is available and get in touch to enroll.',
+])
+<div class="ogera-container text-center -mt-8 mb-8 relative z-10">
+    <a href="#programs" class="ogera-btn ogera-btn--primary">Explore Programs</a>
+</div>
 
 <section class="py-12 bg-white border-b border-gray-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

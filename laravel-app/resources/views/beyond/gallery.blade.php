@@ -1,13 +1,13 @@
 @extends('beyond.layout')
 
-@section('title', 'Gallery | Beyond Enterprise')
-@section('meta_description', 'Explore events, projects, and highlights from Beyond Enterprise — photos and videos from our work across Kigali and beyond.')
+@section('title', 'Gallery | OGERA Agency')
+@section('meta_description', 'Explore events, projects, and highlights from OGERA Agency — photos and videos from our work in Kigali.')
 
 @section('content')
 
 @include('beyond.partials.hero', [
-    'title' => \App\Support\SiteContent::html('gallery.hero_title', 'Our <span class="text-brand-gold">Gallery</span>'),
-    'subtitle' => \App\Support\SiteContent::text('gallery.hero_subtitle', 'Events, projects, and moments from Beyond Enterprise'),
+    'title' => \App\Support\SiteContent::html('gallery.hero_title', 'Our <em>Gallery</em>'),
+    'subtitle' => \App\Support\SiteContent::text('gallery.hero_subtitle', 'Events, projects, and moments from OGERA Agency'),
 ])
 
 <section class="py-16 bg-white">
