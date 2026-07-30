@@ -20,7 +20,7 @@ class SiteBrand
             }
         }
 
-        return url('/branding/beyond-logo.png');
+        return url('public/branding/beyond-logo.png');
     }
 
     public static function siteTitle($generalSetting = null)
