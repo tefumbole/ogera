@@ -80,10 +80,19 @@ class HomeController extends Controller
 
         $user->refresh();
 
+        $whatsappDisabled = ! app(\App\Services\Messaging\NotificationRouter::class)->whatsappEnabled();
+        $fallbackCode = session('local_otp_code');
+        if (! $fallbackCode && $whatsappDisabled && ! empty($user->otp)
+            && $user->otp_time > date('Y-m-d H:i:s', strtotime('-5 minutes'))) {
+            $fallbackCode = $user->otp;
+        }
+
         return view('otp_screen', [
             'resend_seconds' => $this->otpResendSecondsRemaining($user),
-            'whatsapp_error' => session('whatsapp_error'),
-            'local_otp_code' => session('local_otp_code'),
+            'whatsapp_error' => session('whatsapp_error') ?: ($whatsappDisabled
+                ? 'WhatsApp delivery is currently disabled — use the code shown below.'
+                : null),
+            'local_otp_code' => $fallbackCode,
         ]);
     }
 
@@ -165,6 +174,17 @@ class HomeController extends Controller
 
         $result = app(\App\Services\Messaging\NotificationRouter::class)
             ->sendWhatsAppOtp($phone, $otp, 'login', 10);
+
+        // WhatsApp delivery is turned off (MESSAGING_WHATSAPP_ENABLED=false): there is no
+        // channel to deliver the code, so surface it on the (secured) OTP screen instead of
+        // locking the admin out. Real delivery resumes automatically once Wasender is enabled.
+        if (! empty($result['skipped'])) {
+            $user->update(['otp' => $otp, 'otp_time' => date('Y-m-d H:i:s')]);
+            session()->flash('local_otp_code', $otp);
+            session()->flash('whatsapp_error', 'WhatsApp delivery is currently disabled — use the code shown below.');
+
+            return $otp;
+        }
 
         if (empty($result['success'])) {
             // Local/dev: still issue the OTP so admins can continue when WhatsApp is down.

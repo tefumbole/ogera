@@ -8,11 +8,22 @@
     <title>{{$general_setting->site_title}}</title>
     <link rel="icon" type="image/png" href="{{ asset('public/logo/'.($general_setting->site_logo ?: 'beyond-logo.png')) }}" />
     <link rel="stylesheet" href="{{ asset('public/assets/css/vendors/bootstrap.min.css') }}" type="text/css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --og-forest: #033D2E;
+            --og-green: #07513D;
+            --og-black: #071711;
+            --og-gold: #D8AD4A;
+            --og-gold-light: #F1D58B;
+            --og-warm: #F8F6EF;
+        }
         body {
             margin: 0;
-            font-family: "Nunito", sans-serif;
-            background: #063a83;
+            font-family: "Jost", "Nunito", -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(140deg, var(--og-forest) 0%, var(--og-black) 100%);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -22,96 +33,118 @@
         }
         .otp-card {
             width: 100%;
-            max-width: 460px;
-            border-radius: 18px;
+            max-width: 500px;
+            border-radius: 22px;
             background: #fff;
-            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.22);
-            padding: 36px 32px 28px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+            padding: 44px 40px 34px;
             text-align: center;
+            border-top: 5px solid var(--og-gold);
         }
         .auth-logo {
-            width: 88px;
-            height: 88px;
+            width: 96px;
+            height: 96px;
             object-fit: contain;
-            margin: 0 auto 14px;
+            margin: 0 auto 18px;
             display: block;
             background: transparent;
         }
         .auth-title {
-            margin: 0 0 24px;
-            color: #0b3f90;
-            font-size: clamp(24px, 4.5vw, 34px);
-            font-weight: 800;
-            line-height: 1.2;
+            margin: 0 0 6px;
+            color: var(--og-forest);
+            font-family: "Cormorant Garamond", Georgia, serif;
+            font-size: clamp(40px, 7vw, 56px);
+            font-weight: 600;
+            line-height: 1.05;
             word-break: break-word;
+        }
+        .auth-subtitle {
+            margin: 0 0 28px;
+            color: var(--og-green);
+            font-size: clamp(15px, 2.4vw, 18px);
+            font-weight: 400;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
         }
         .otp-input {
             width: 100%;
-            height: 56px;
-            border: 2px solid #c6ab47;
-            border-radius: 12px;
+            height: 68px;
+            border: 2px solid var(--og-gold);
+            border-radius: 14px;
             text-align: center;
-            font-size: 28px;
-            font-weight: 800;
-            letter-spacing: 10px;
-            padding-left: 10px;
-            margin-bottom: 14px;
+            font-size: 34px;
+            font-weight: 600;
+            letter-spacing: 14px;
+            padding-left: 14px;
+            color: var(--og-forest);
+            margin-bottom: 16px;
         }
         .otp-input:focus {
             outline: none;
-            border-color: #b49332;
-            box-shadow: 0 0 0 2px rgba(180, 147, 50, 0.2);
+            border-color: var(--og-green);
+            box-shadow: 0 0 0 3px rgba(7, 81, 61, 0.18);
         }
         .btn-verify {
             width: 100%;
-            height: 50px;
+            height: 58px;
             border: 0;
-            border-radius: 10px;
-            background: #0b3f90;
-            color: #fff;
-            font-size: 18px;
-            font-weight: 700;
+            border-radius: 12px;
+            background: var(--og-forest);
+            color: var(--og-warm);
+            font-size: 21px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            transition: background 0.2s ease;
+        }
+        .btn-verify:hover {
+            background: var(--og-green);
         }
         .otp-meta {
-            margin: 12px 0 4px;
-            font-size: 14px;
+            margin: 16px 0 4px;
+            font-size: 16px;
             color: #5d677a;
         }
+        .otp-meta strong {
+            color: var(--og-forest);
+        }
         .otp-resend {
-            margin-top: 14px;
+            margin-top: 16px;
         }
         .otp-resend button {
             border: 0;
             background: transparent;
             color: #8a92a3;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 600;
             padding: 0;
         }
         .otp-resend button.is-ready {
-            color: #0b3f90;
+            color: var(--og-green);
             cursor: pointer;
         }
         .otp-resend button:disabled {
             cursor: not-allowed;
         }
         .otp-back {
-            margin-top: 16px;
+            margin-top: 20px;
         }
         .otp-back a {
             color: #5d677a;
-            font-size: 14px;
+            font-size: 16px;
             text-decoration: none;
         }
+        .otp-back a:hover {
+            color: var(--og-forest);
+        }
         .app-version {
-            margin-top: 18px;
-            color: rgba(255, 255, 255, 0.72);
-            font-size: 12px;
-            letter-spacing: 0.04em;
+            margin-top: 22px;
+            color: rgba(248, 246, 239, 0.7);
+            font-size: 13px;
+            letter-spacing: 0.06em;
         }
         .alert {
             text-align: left;
-            font-size: 14px;
+            font-size: 15px;
         }
     </style>
 </head>
@@ -125,6 +158,7 @@
         <img src="{{ asset('public/logo/'.$general_setting->site_logo) }}" alt="{{$appName}}" class="auth-logo">
     @endif
     <h1 class="auth-title">{{$appName}}</h1>
+    <p class="auth-subtitle">Secure Sign-in</p>
 
     @if($errors->has('name'))
         <div class="alert alert-danger">{{ $errors->first('name') }}</div>
@@ -136,18 +170,18 @@
         <div class="alert alert-danger">{{ session()->get('not_permitted') }}</div>
     @endif
     @if(!empty($whatsapp_error))
-        <div class="alert alert-danger">{{ $whatsapp_error }}</div>
+        <div class="alert alert-warning">{{ $whatsapp_error }}</div>
     @endif
     @if(!empty($local_otp_code))
-        <div class="alert alert-info" style="background:#e8f1ff;color:#0b3f90;border:1px solid #b6d0f5;">
-            Local OTP (WhatsApp unavailable): <strong style="letter-spacing:4px;font-size:1.25rem;">{{ $local_otp_code }}</strong>
+        <div class="alert" style="background:#eef6f1;color:var(--og-forest);border:1px solid var(--og-gold);">
+            Your verification code: <strong style="letter-spacing:6px;font-size:1.4rem;color:var(--og-forest);">{{ $local_otp_code }}</strong>
         </div>
     @endif
 
     @if(Auth::user()->is_active)
         <form action="{{ route('check.otp.store') }}" method="post">
             @csrf
-            <input id="otp-code" class="otp-input" type="text" name="otp" maxlength="6" placeholder="000000" required>
+            <input id="otp-code" class="otp-input" type="text" name="otp" maxlength="6" placeholder="000000" required inputmode="numeric" autocomplete="one-time-code">
             @if ($errors->has('otp'))
                 <div class="alert alert-danger">{{ $errors->first('otp') }}</div>
             @endif
