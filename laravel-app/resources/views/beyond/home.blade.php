@@ -36,9 +36,25 @@
 @endphp
 
 {{-- Hero --}}
+@php
+    $heroImageUrl = \App\Support\SiteContent::image('home.hero_image', '/public/branding/ogera-hero.jpg');
+    // Cache-bust so browsers pick up the clean asset after deploys.
+    $heroImageUrl .= (strpos($heroImageUrl, '?') === false ? '?' : '&') . 'v=' . rawurlencode(\App\Support\AppVersion::label());
+@endphp
 <section class="relative min-h-screen flex flex-col items-center justify-center overflow-hidden py-20 md:py-0">
-    <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" style="background-image:url('{{ \App\Support\SiteContent::image('home.hero_image', '/public/branding/ogera-hero.jpg') }}');">
-        <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-black/25"></div>
+    <div class="absolute inset-0 overflow-hidden" aria-hidden="true">
+        <img
+            src="{{ $heroImageUrl }}"
+            alt=""
+            width="1920"
+            height="960"
+            fetchpriority="high"
+            decoding="async"
+            class="ogera-hero-zoom absolute inset-0 h-full w-full object-cover object-center"
+        >
+        {{-- Light scrim only — keep the photograph sharp and visible --}}
+        <div class="absolute inset-0 bg-black/35"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#003D82]/75 via-[#003D82]/20 to-transparent"></div>
     </div>
 
     @for ($i = 0; $i < 6; $i++)
@@ -47,7 +63,7 @@
     @endfor
 
     <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center w-full mt-20 md:mt-0">
-        <div class="mb-8 flex flex-col items-center">
+        <div class="mb-8 flex flex-col items-center ogera-hero-rise">
             <img src="{{ \App\Support\SiteBrand::logoUrl($general_setting ?? null) }}" alt="{{ \App\Support\SiteBrand::siteTitle($general_setting ?? null) }}" class="h-20 md:h-24 w-auto object-contain mb-6 drop-shadow-2xl">
             <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-4 drop-shadow-2xl tracking-tight">
                 {!! \App\Support\SiteContent::html('home.hero_title', 'Your Technology Bridge to <span class="text-brand-gold">Kigali</span>') !!}

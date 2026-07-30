@@ -37,6 +37,28 @@
         body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
         @keyframes floaty { 0%,100% { transform: translateY(0); opacity:.4 } 50% { transform: translateY(-20px); opacity:.9 } }
         .floaty { animation: floaty 4s ease-in-out infinite; }
+        /* AlphaBridge-style hero: start slightly zoomed, ease back to 1x on load. */
+        @keyframes ogera-hero-zoom {
+            from { transform: scale(1.08); }
+            to   { transform: scale(1); }
+        }
+        @keyframes ogera-hero-rise {
+            from { opacity: 0; transform: translateY(28px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .ogera-hero-zoom {
+            transform: scale(1.08);
+            transform-origin: center center;
+            will-change: transform;
+            animation: ogera-hero-zoom 12s ease-out forwards;
+        }
+        .ogera-hero-rise {
+            animation: ogera-hero-rise 0.9s ease-out both;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .ogera-hero-zoom { animation: none; transform: scale(1); }
+            .ogera-hero-rise { animation: none; }
+        }
         [x-cloak] { display:none !important; }
     </style>
     @stack('head')
