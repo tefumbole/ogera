@@ -37,8 +37,8 @@
 
 {{-- Hero --}}
 <section class="relative min-h-screen flex flex-col items-center justify-center overflow-hidden py-20 md:py-0">
-    <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" style="background-image:url('{{ \App\Support\SiteContent::image('home.hero_image', '/branding/beyond-hero.png') }}');">
-        <div class="absolute inset-0 bg-black/15"></div>
+    <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" style="background-image:url('{{ \App\Support\SiteContent::image('home.hero_image', '/public/branding/ogera-hero.jpg') }}');">
+        <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-black/25"></div>
     </div>
 
     @for ($i = 0; $i < 6; $i++)

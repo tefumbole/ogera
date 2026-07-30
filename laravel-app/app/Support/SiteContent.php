@@ -63,7 +63,7 @@ class SiteContent
                 'fields' => [
                     'hero_title'            => ['html', 'Hero title (HTML allowed)', 'Your Technology Bridge to <span class="text-brand-gold">Kigali</span>'],
                     'hero_subtitle'         => ['textarea', 'Hero subtitle', 'Professional IT Consultancy, Enterprise Networking, and Audio-Visual Production, Cloud, AI and Cyber'],
-                    'hero_image'            => ['image', 'Hero background image', '/branding/beyond-hero.png'],
+                    'hero_image'            => ['image', 'Hero background image', '/public/branding/ogera-hero.jpg'],
                     'cta_primary'           => ['text', 'Hero primary button text', 'Get a Free Quote'],
                     'services_heading'      => ['text', 'Services heading', 'Our Services'],
                     'services_subheading'   => ['text', 'Services subheading', 'Comprehensive technology solutions for your needs'],
