@@ -63,10 +63,9 @@
         ['label' => 'Home', 'url' => url('/'), 'match' => 'exact'],
         ['label' => 'About', 'url' => url('/about'), 'match' => 'path'],
         ['label' => 'Services', 'url' => url('/services'), 'match' => 'path'],
-        ['label' => 'Why OGERA', 'url' => url('/') . '#why', 'home_only' => true],
-        ['label' => 'How We Work', 'url' => url('/') . '#how', 'home_only' => true],
+        ['label' => 'Events', 'url' => url('/events'), 'match' => 'path'],
+        ['label' => 'Rentals', 'url' => url('/rentals'), 'match' => 'path'],
         ['label' => 'Gallery', 'url' => url('/gallery'), 'match' => 'path'],
-        ['label' => 'Testimonials', 'url' => url('/') . '#testimonials', 'home_only' => true],
         ['label' => 'Contact', 'url' => url('/about') . '#contact', 'match' => 'contact'],
     ];
     $currentUrl = rtrim(url()->current(), '/');
