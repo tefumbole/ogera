@@ -196,6 +196,17 @@
 .ogera-btn--dark:hover {
   background: var(--og-green);
 }
+.ogera-btn--outline {
+  background: rgba(7, 23, 17, 0.55);
+  color: var(--og-warm);
+  border-color: rgba(248, 246, 239, 0.32);
+  backdrop-filter: blur(4px);
+}
+.ogera-btn--outline:hover {
+  background: rgba(7, 23, 17, 0.72);
+  border-color: rgba(241, 213, 139, 0.7);
+  color: var(--og-gold-light);
+}
 
 /* Sections */
 .ogera-section {
@@ -313,9 +324,9 @@
   margin-top: 1.15rem;
   font-family: var(--og-serif);
   font-weight: 300;
-  font-size: clamp(2.2rem, 5vw, 4.2rem);
-  line-height: 1.1;
-  max-width: 18ch;
+  font-size: clamp(2.4rem, 5.4vw, 4.6rem);
+  line-height: 1.08;
+  max-width: 24ch;
   text-shadow: 0 2px 40px rgba(0, 0, 0, 0.45);
 }
 .ogera-hero__title em {
@@ -330,9 +341,29 @@
   color: rgba(248, 246, 239, 0.85);
 }
 .ogera-hero__actions {
-  margin-top: 2.25rem;
+  margin-top: 2.5rem;
   display: flex;
   flex-wrap: wrap;
+  gap: 1rem;
+}
+.ogera-hero__actions .ogera-btn {
+  padding: 1.05em 2.1em;
+  font-size: 1rem;
+}
+.ogera-hero__link {
+  margin-top: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--og-gold);
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  transition: gap 0.2s ease, color 0.2s ease;
+}
+.ogera-hero__link:hover {
+  color: var(--og-gold-light);
   gap: 0.85rem;
 }
 .ogera-hero__meta {

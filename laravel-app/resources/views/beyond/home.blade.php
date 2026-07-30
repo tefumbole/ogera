@@ -55,12 +55,16 @@
         <p class="ogera-hero__desc ogera-reveal">{{ $hero['description'] }}</p>
         <div class="ogera-hero__actions ogera-reveal">
             @foreach ($hero['ctas'] as $btn)
-                <a href="{{ $btn['url'] }}" class="ogera-btn ogera-btn--{{ $btn['style'] }}">{{ $btn['label'] }}</a>
+                <a href="{{ $btn['url'] }}" class="ogera-btn ogera-btn--{{ $btn['style'] }}">
+                    {{ $btn['label'] }} <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
             @endforeach
         </div>
-        <p class="ogera-hero__meta ogera-reveal">
-            <i data-lucide="map-pin" class="w-4 h-4"></i> {{ $hero['meta'] }}
-        </p>
+        @if (!empty($hero['link']))
+            <a href="{{ $hero['link']['url'] }}" class="ogera-hero__link ogera-reveal">
+                {{ $hero['link']['label'] }} <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+        @endif
     </div>
 
     <a href="#about" class="ogera-scroll" aria-label="Scroll to about">

@@ -11,17 +11,17 @@ class OgeraLandingContent
     public static function hero()
     {
         return [
-            'eyebrow' => 'OGERA Agency · Kigali',
-            'title' => 'Where ambition meets <em>excellence</em>',
-            'description' => 'Business development, unforgettable events, and premium equipment rental — crafted for brands and hosts who expect more.',
+            'eyebrow' => 'Strategy • Events • Execution',
+            'title' => 'We turn bold ideas into<br><em>remarkable outcomes.</em>',
+            'description' => 'Business development, consultancy, event planning and premium rentals—delivered with clarity, creativity and precision.',
             'image' => asset('public/branding/ogera-hero.jpg'),
             // Set a public path later (e.g. branding/ogera-hero.mp4) to enable video.
             'video' => null,
             'ctas' => [
-                ['label' => 'Grow My Business', 'url' => url('/about') . '?service=business#contact', 'style' => 'primary'],
-                ['label' => 'Plan My Event', 'url' => url('/events'), 'style' => 'ghost'],
-                ['label' => 'Rent Equipment', 'url' => url('/rentals'), 'style' => 'ghost'],
+                ['label' => 'Plan My Event', 'url' => url('/events'), 'style' => 'primary'],
+                ['label' => 'Grow My Business', 'url' => url('/about') . '?service=business#contact', 'style' => 'outline'],
             ],
+            'link' => ['label' => 'Explore Rentals', 'url' => url('/rentals')],
             'meta' => 'Mövenpick Hotel · KN 4 Avenue · Kigali',
         ];
     }
