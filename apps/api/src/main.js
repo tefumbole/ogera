@@ -43,7 +43,7 @@ app.get('/health', async (_req, res) => {
     await pool.query('SELECT 1');
     res.json({
       ok: true,
-      service: 'alphabridge-api',
+      service: 'ogera-api',
       version: APP_VERSION,
       database: process.env.DB_NAME,
       backend: 'mysql',

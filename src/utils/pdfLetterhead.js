@@ -5,7 +5,7 @@ export function getAppOrigin() {
   if (typeof window !== 'undefined' && window.location?.origin) {
     return window.location.origin;
   }
-  return import.meta.env.VITE_APP_URL || 'https://www.beyondtechworld.com';
+  return import.meta.env.VITE_APP_URL || 'https://www.ogera.rw';
 }
 
 export function getAgreementVerifyUrl(shareholderId) {

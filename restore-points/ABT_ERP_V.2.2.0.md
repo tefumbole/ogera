@@ -26,6 +26,6 @@ git checkout -b restore-abt-v2.2.0 ABT_ERP_V.2.2.0
 
 ## Redeploy production
 
-```bash
-ssh myvps "cd /var/www/beyondtechworld && git pull && cd laravel-app && php artisan migrate --force && php artisan view:clear && php artisan config:clear"
-```
+> **Not applicable to Ogera.** This restore point predates the fork and described a
+> deployment to BeyondTechWorld, which is a separate live system. Ogera must never deploy
+> to it. The original command has been removed so it cannot be run from this repository.

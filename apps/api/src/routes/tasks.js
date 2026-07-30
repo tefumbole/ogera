@@ -7,7 +7,7 @@ import { COMPANY_NAME } from '../constants/branding.js';
 
 const router = Router();
 
-const APP_BASE = process.env.APP_BASE_URL || 'https://beyondtechworld.com';
+const APP_BASE = process.env.APP_BASE_URL || 'https://ogera.rw';
 
 const BRAND_FOOTER = `_${COMPANY_NAME}_`;
 const DIVIDER = '━━━━━━━━━━━━━━━';

@@ -1,6 +1,9 @@
 import { supabase } from '@/lib/customSupabaseClient';
 import { logEmailSent } from './emailLoggingService';
 
+const ADMIN_NOTIFICATION_EMAIL =
+  import.meta.env.VITE_ADMIN_EMAIL || 'admin@ogera.rw';
+
 /**
  * Invokes the generic 'send-email' edge function.
  */
@@ -173,7 +176,7 @@ export const sendAdminNotification = async (registrationData) => {
   return invokeEmailFunction(
     'send-email',
     {
-      to: 'admin@beyondtechworld.com',
+      to: ADMIN_NOTIFICATION_EMAIL,
       subject: 'New Course Registration Received',
       templateType: 'admin_registration_notification',
       data: {
@@ -186,7 +189,7 @@ export const sendAdminNotification = async (registrationData) => {
     },
     null,
     'admin_notification',
-    'admin@beyondtechworld.com'
+    ADMIN_NOTIFICATION_EMAIL
   );
 };
 

@@ -1,12 +1,19 @@
-# Local MySQL for offline Ogera development (no internet required after first pull).
-# Uses port 3307 and its own volume so it can never reach the Homebrew MySQL on 3306.
+# Ogera's own isolated stack.
+#
+# Everything here is namespaced to Ogera: its own compose project, network, volume,
+# container names, and — most importantly — its own MySQL *server*. The Homebrew MySQL
+# on 3306 hosts other projects' databases; this one only ever contains `ogera` and
+# `ogera_laravel`, so a wrong database name here fails instead of reaching another system.
+name: ogera
+
 services:
   mysql:
     image: mysql:8.0
     container_name: ogera-mysql
     restart: unless-stopped
     ports:
-      - "3307:3306"
+      # Host 3307 keeps this server entirely separate from Homebrew MySQL on 3306.
+      - "127.0.0.1:3307:3306"
     environment:
       MYSQL_ROOT_PASSWORD: ogera_local
       MYSQL_DATABASE: ogera
@@ -14,7 +21,52 @@ services:
       MYSQL_PASSWORD: ogera_local
     volumes:
       - ogera_mysql_data:/var/lib/mysql
-    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d:ro
+    command: >-
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+    networks:
+      - ogera
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pogera_local"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+  api:
+    build:
+      context: ./apps/api
+    container_name: ogera-api
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3003:3003"
+    env_file:
+      - path: ./apps/api/.env
+        required: false
+    environment:
+      # Override the host-oriented values from .env so the container talks to the
+      # sibling service rather than anything listening on the Mac.
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: ogera
+      DB_PASSWORD: ogera_local
+      DB_NAME: ogera
+      PORT: 3003
+    depends_on:
+      mysql:
+        condition: service_healthy
+    volumes:
+      - ./apps/api/src:/app/src:ro
+      - ogera_api_uploads:/app/uploads
+    networks:
+      - ogera
 
 volumes:
   ogera_mysql_data:
+  ogera_api_uploads:
+
+networks:
+  ogera:
+    name: ogera_net

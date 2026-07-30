@@ -16,13 +16,13 @@ export const CONTACT_PHONE_DISPLAY =
   import.meta.env.VITE_CONTACT_PHONE_DISPLAY || '+237 675 321 739';
 
 export const WEBSITE_URL =
-  import.meta.env.VITE_SITE_URL || 'https://beyondtechworld.com';
+  import.meta.env.VITE_SITE_URL || 'https://ogera.rw';
 
 export const WEBSITE_HOST =
-  import.meta.env.VITE_WEBSITE_HOST || 'www.beyondtechworld.com';
+  import.meta.env.VITE_WEBSITE_HOST || 'www.ogera.rw';
 
 export const CONTACT_EMAIL =
-  import.meta.env.VITE_CONTACT_EMAIL || 'info@beyondtechworld.com';
+  import.meta.env.VITE_CONTACT_EMAIL || 'info@ogera.rw';
 
 export const DEFAULT_LOGO_URL =
   import.meta.env.VITE_LOGO_URL || '/branding/beyond-logo.png';

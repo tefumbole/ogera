@@ -7,7 +7,7 @@ import { getPool } from './pool.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
-const email = process.env.SEED_ADMIN_EMAIL || 'admin@beyondtechworld.com';
+const email = process.env.SEED_ADMIN_EMAIL || 'admin@ogera.rw';
 const password = process.env.SEED_ADMIN_PASSWORD || 'ChangeMe@123456';
 
 const pool = getPool();

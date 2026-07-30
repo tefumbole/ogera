@@ -6,9 +6,9 @@ import { supabase } from '@/lib/customSupabaseClient';
  * NO circular dependencies - does not import WhatsAppService
  */
 
-// Admin credentials (hardcoded for security)
-const ADMIN_PHONE = '+237675321739';
-const ADMIN_EMAIL = 'admin@beyondtechworld.com';
+// Admin credentials
+const ADMIN_PHONE = import.meta.env.VITE_ADMIN_PHONE_NUMBER || '+237675321739';
+const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL || 'admin@ogera.rw';
 
 /**
  * Get admin account from profiles table

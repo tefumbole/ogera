@@ -2,16 +2,46 @@
 # Auto-increment the app version on every commit.
 # Source of truth: laravel-app/VERSION (semver x.y.z), read by App\Support\AppVersion.
 #
-# Scheme:
-#   patch 0–9, then roll to next minor (2.3.9 → 2.4.0)
-#   minor 0–9, then roll to next major (2.9.9 → 3.0.0)
+# Scheme (mirrored in tools/bump-version.js):
+#   patch 1–9, then roll to next minor (1.0.9 → 1.1.0)
+#   minor 0–9, then roll to next major (1.9.9 → 2.0.1)
+# A new major line starts at x.0.1, not x.0.0.
 #
 # Skip once with:  SKIP_VERSION_BUMP=1 git commit ...
 set -euo pipefail
 
+ROOT="$(git rev-parse --show-toplevel)"
+cd "$ROOT"
+
+# --- Isolation: never commit a line that reaches AlphaBridge or BeyondTechWorld. ----
+# Only newly added lines are scanned, and only for things that can actually act on
+# those systems — their databases, MySQL users, server paths and PM2 processes.
+# Files whose job is to describe the boundary are exempt.
+DANGEROUS='beyondtech_laravel|/var/www/(beyondtechworld|alphabridge)|beyondtechworld-api|alphabridge-api|tefumbole/BeyondTechWorld|-u[[:space:]]*(beyond|abt)\b|DB_(NAME|DATABASE|USERNAME|USER)=(beyond|abt|alphabridge|beyondtech)'
+EXEMPT='^(README\.md|\.cursor/rules/|\.githooks/|tools/guard-isolation\.sh|restore-points/)'
+
+offenders=""
+while IFS= read -r file; do
+  [ -z "$file" ] && continue
+  echo "$file" | grep -Eq "$EXEMPT" && continue
+  added="$(git diff --cached -U0 -- "$file" | grep '^+' | grep -v '^+++' || true)"
+  if echo "$added" | grep -Eq "$DANGEROUS"; then
+    offenders="${offenders}  ${file}\n"
+  fi
+done < <(git diff --cached --name-only --diff-filter=ACM)
+
+if [ -n "$offenders" ]; then
+  echo "" >&2
+  echo "COMMIT BLOCKED — these files add references that could reach another project:" >&2
+  printf '%b' "$offenders" >&2
+  echo "" >&2
+  echo "Ogera may only use its own databases (ogera, ogera_laravel), user 'ogera'," >&2
+  echo "and its own repository. Remove the offending lines and commit again." >&2
+  exit 1
+fi
+
 [ "${SKIP_VERSION_BUMP:-0}" = "1" ] && exit 0
 
-ROOT="$(git rev-parse --show-toplevel)"
 FILE="$ROOT/laravel-app/VERSION"
 [ -f "$FILE" ] || exit 0
 
@@ -34,6 +64,7 @@ fi
 if [ "$minor" -ge 10 ]; then
   minor=0
   major=$((major + 1))
+  patch=1
 fi
 
 next="${major}.${minor}.${patch}"

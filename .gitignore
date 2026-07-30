@@ -3,13 +3,23 @@ dist/
 .env
 .env.local
 .env.*.local
+.env.bak-*
 apps/api/.env
+apps/api/.env.bak-*
+laravel-app/.env.bak-*
 data/export/
 data/import/
 backups/
 apps/api/uploads/
 .DS_Store
 *.log
+ogeragency-coming-soon.zip
 .vite/
 myvps
 myvps.pub
+
+# Editor lock files and scratch screenshots
+~$*
+*.docx#
+ef2e5581-5cc9-47ca-962c-b1d10df91cdb.png
+ogeragency-coming-soon/

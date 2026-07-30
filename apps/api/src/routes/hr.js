@@ -6,7 +6,7 @@ import { sendTextMessage, formatPhoneNumber } from '../services/wasenderWhatsApp
 import { COMPANY_NAME as BRAND } from '../constants/branding.js';
 
 const router = Router();
-const APP_BASE = process.env.APP_BASE_URL || 'https://beyondtechworld.com';
+const APP_BASE = process.env.APP_BASE_URL || 'https://ogera.rw';
 
 const STAFF_DEFAULT_PERMISSIONS = [
   'menu.tasks', 'tasks.view', 'tasks.create',

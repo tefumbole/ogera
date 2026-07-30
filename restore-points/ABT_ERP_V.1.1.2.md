@@ -24,10 +24,9 @@ git checkout -b restore-abt-v1.1.2 ABT_ERP_V.1.1.2
 
 ## Redeploy production
 
-```bash
-cd /var/www/alphabridge
-bash tools/deploy-alphabridge-vps.sh
-```
+> **Not applicable to Ogera.** This restore point predates the fork and described a
+> deployment to AlphaBridge, which is a separate live system. Ogera must never deploy to
+> it. The original command has been removed so it cannot be run from this repository.
 
 ## Create the next restore point
 

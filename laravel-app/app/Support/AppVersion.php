@@ -22,16 +22,17 @@ class AppVersion
             return self::normalizeSemver($configured);
         }
 
-        return '2.3.0';
+        return '1.0.1';
     }
 
     /**
-     * Canonical ERP display: BCL_ERP_V2.3.0
-     * Bump scheme: patch 0–9 → next minor; minor 0–9 → next major (2.9.9 → 3.0.0).
+     * Canonical ERP display: OGERA_ERP_V1.0.1
+     * Bump scheme: patch 1–9 → next minor (1.0.9 → 1.1.0);
+     *              minor 0–9 → next major (1.9.9 → 2.0.1).
      */
     public static function erp()
     {
-        return 'BCL_ERP_V'.self::label();
+        return 'OGERA_ERP_V'.self::label();
     }
 
     /**
@@ -92,11 +93,12 @@ class AppVersion
     protected static function normalizeSemver($value)
     {
         $value = trim((string) $value);
+        $value = preg_replace('/^OGERA_ERP_V\.?/i', '', $value);
         $value = preg_replace('/^BCL_ERP_V\.?/i', '', $value);
         $value = preg_replace('/^ABT_ERP_V\.?/i', '', $value);
         $value = preg_replace('/^BCL\s*V\.?\s*/i', '', $value);
         $value = ltrim($value, 'vV');
 
-        return $value !== '' ? $value : '2.3.0';
+        return $value !== '' ? $value : '1.0.1';
     }
 }

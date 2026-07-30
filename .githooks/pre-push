@@ -1,9 +1,26 @@
 #!/usr/bin/env bash
-# Auto-bump ERP patch version before push (unless this push already updates appVersion.js).
+# Blocks pushes that leave Ogera, then auto-bumps the ERP patch version.
 set -euo pipefail
 
 ROOT="$(git rev-parse --show-toplevel)"
 cd "$ROOT"
+
+# --- Isolation: this repository may only ever push to Ogera's own remote. -----
+PUSH_URL="${2:-}"
+if [[ -n "$PUSH_URL" ]] && ! echo "$PUSH_URL" | grep -qi 'tefumbole/ogera'; then
+  echo "" >&2
+  echo "PUSH BLOCKED — destination is not Ogera's repository:" >&2
+  echo "  $PUSH_URL" >&2
+  echo "" >&2
+  echo "Ogera may only push to github.com/tefumbole/ogera." >&2
+  exit 1
+fi
+
+bash tools/guard-isolation.sh >/dev/null || {
+  echo "" >&2
+  echo "PUSH BLOCKED — isolation check failed. Run: npm run guard" >&2
+  exit 1
+}
 
 if [[ "${SKIP_VERSION_BUMP:-}" == "1" ]]; then
   exit 0
@@ -27,7 +44,9 @@ while read -r local_ref local_sha remote_ref remote_sha; do
     continue
   fi
 
-  NEXT="$(node tools/bump-version.js | awk '{print $3}')"
+  # Sync only. laravel-app/VERSION is the source of truth and pre-commit already
+  # advanced it, so bumping again here would overshoot what was deployed.
+  NEXT="$(node tools/bump-version.js --sync | awk '{print $3}')"
   git add src/constants/appVersion.js apps/api/src/constants/appVersion.js
   git commit -m "chore: bump version to ${NEXT}" --no-verify
 done

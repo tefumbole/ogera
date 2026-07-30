@@ -27,7 +27,7 @@ export function getAppBaseUrl() {
   if (typeof window !== 'undefined' && window.location?.origin) {
     return window.location.origin;
   }
-  return import.meta.env.VITE_APP_URL || 'https://beyondtechworld.com';
+  return import.meta.env.VITE_APP_URL || 'https://ogera.rw';
 }
 
 export function buildTaskInviteUrl(inviteToken) {

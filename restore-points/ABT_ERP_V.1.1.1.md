@@ -25,16 +25,10 @@ git checkout -b restore-abt-v1.1.1 ABT_ERP_V.1.1.1
 
 ## Restore production database (if needed)
 
-Production backups created by `tools/push-local-to-vps.sh` live on the VPS under:
-
-`/var/www/alphabridge/backups/production-before-local-*.sql`
-
-Redeploy after checkout:
-
-```bash
-cd /var/www/alphabridge
-bash tools/deploy-alphabridge-vps.sh
-```
+> **Not applicable to Ogera.** This restore point predates the fork. The production
+> database and backups it referred to belong to AlphaBridge, a separate live system, and
+> the deploy command has been removed so it cannot be run from this repository.
+> For Ogera, restore locally from `backups/` instead — see `npm run local:backup`.
 
 ## Create the next restore point
 

@@ -50,7 +50,8 @@ try {
   console.log('\nMigration complete.');
 } catch (error) {
   if (error.code === 'ER_ACCESS_DENIED_ERROR') {
-    console.error('\nMySQL access denied. Check apps/api/.env and Hostinger Remote MySQL whitelist for VPS IP 187.124.2.238');
+    console.error('\nMySQL access denied. Check DB_HOST/DB_PORT/DB_USER/DB_PASSWORD in apps/api/.env.');
+    console.error("Ogera's database is 'ogera', reached as user 'ogera' on 127.0.0.1 (Homebrew 3306 or the ogera-mysql container on 3307).");
   }
   throw error;
 } finally {

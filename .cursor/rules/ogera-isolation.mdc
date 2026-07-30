@@ -26,8 +26,27 @@ Those are separate live systems. Nothing done here may ever affect them.
 | Laravel database | `ogera_laravel` |
 | Node API database | `ogera` |
 | MySQL user | `ogera` (privileges on those two databases only) |
-| MySQL host | Homebrew MySQL, `127.0.0.1:3306` on the user's Mac |
+| MySQL host | `ogera-mysql` container, `127.0.0.1:3307` (preferred) |
+| MySQL host (fallback) | Homebrew MySQL, `127.0.0.1:3306` — shared instance, grants-only isolation |
+| Docker project | `ogera` (network `ogera_net`, volumes `ogera_mysql_data`, `ogera_api_uploads`) |
 | Git remote | `github.com/tefumbole/ogera` |
+
+Ogera runs its own MySQL **server** in a container, so the other projects' databases do
+not exist in it at all. Prefer it over the shared Homebrew instance:
+`npm run stack:up`, and `npm run stack:migrate-data` to move existing local data into it.
+
+## Enforcement (do not bypass)
+
+These are wired in and must stay that way:
+
+- `tools/guard-isolation.sh` — runs before every dev, build, db and deploy npm script.
+  Fails if any env file names a foreign database/user/host, if a git remote is not Ogera's,
+  or if cross-project deploy tooling reappears. Run manually with `npm run guard`.
+- `.githooks/pre-push` — refuses to push anywhere except `github.com/tefumbole/ogera`.
+- `.githooks/pre-commit` — refuses to commit newly added lines referencing the other
+  projects' databases, MySQL users, `/var/www` paths, or PM2 processes.
+
+Never disable these, add bypass flags, or add exemptions to widen them.
 
 ## Production
 
@@ -41,4 +60,5 @@ reuse the AlphaBridge or BeyondTechWorld paths, process names, or credentials.
 ## Local work that needs no permission
 
 `npm run dev`, `npm run dev:api`, `npm run dev:local`, `npm run db:migrate`,
-`npm run local:backup`, `bash tools/setup-ogera-db.sh`, local Docker MySQL on port 3307.
+`npm run local:backup`, `npm run guard`, `bash tools/setup-ogera-db.sh`, and the Ogera
+Docker stack (`npm run stack:up`, `stack:down`, `stack:logs`, `stack:migrate-data`).

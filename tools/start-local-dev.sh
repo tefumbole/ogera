@@ -5,6 +5,9 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
+bash tools/guard-isolation.sh || exit 1
+echo ""
+
 if [ ! -f .env ]; then
   cp .env.local.example .env
   echo "Created .env from .env.local.example"
@@ -31,33 +34,45 @@ ensure_api_env_port() {
 
 echo "Checking MySQL..."
 
-# Prefer the Homebrew MySQL on 3306 — that is where the seeded Ogera data lives.
-# Docker on 3307 is only a fallback, and starts out empty.
-if mysql_ready 3306; then
-  echo "Using Homebrew MySQL on port 3306."
-  ensure_api_env_port 3306
-elif mysql_ready 3307; then
-  echo "Using MySQL on port 3307."
+# Prefer Ogera's own container on 3307. It is a separate MySQL *server* that contains
+# nothing but ogera and ogera_laravel, so no other project is even reachable from it.
+# The Homebrew server on 3306 is shared with other projects; Ogera's user has no grants
+# there, but it is still a shared instance, so it is only a fallback.
+if mysql_ready 3307; then
+  echo "Using Ogera's own MySQL container on port 3307 (fully isolated)."
   ensure_api_env_port 3307
-elif command -v docker >/dev/null 2>&1; then
-  echo "Homebrew MySQL unavailable — starting Docker MySQL on port 3307..."
-  docker compose up -d
-  for i in {1..30}; do
+elif command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1; then
+  echo "Starting Ogera's MySQL container on port 3307..."
+  docker compose up -d mysql
+  for _ in $(seq 1 60); do
     if docker compose exec -T mysql mysqladmin ping -h localhost -u root -pogera_local --silent 2>/dev/null; then
-      ensure_api_env_port 3307
       break
     fi
-    sleep 1
+    sleep 2
   done
+  if mysql_ready 3307; then
+    ensure_api_env_port 3307
+    echo "Container ready on 3307."
+  else
+    echo "Container did not become ready in time. Check: npm run stack:logs"
+    exit 1
+  fi
+elif mysql_ready 3306; then
+  echo "Ogera's container is unavailable — falling back to Homebrew MySQL on 3306."
+  echo "Note: 3306 is shared with other projects. Ogera's user has access only to"
+  echo "      'ogera' and 'ogera_laravel', but for full isolation start Docker and run:"
+  echo "        npm run stack:migrate-data"
+  ensure_api_env_port 3306
 else
   echo ""
   echo "MySQL is not running. Choose one option:"
   echo ""
-  echo "  A) Homebrew (recommended on Mac without Docker):"
+  echo "  A) Ogera's own container (recommended — fully isolated):"
+  echo "     start Docker Desktop, then: npm run stack:up"
+  echo ""
+  echo "  B) Homebrew MySQL (shared instance):"
   echo "     brew services start mysql"
   echo "     bash tools/setup-ogera-db.sh"
-  echo ""
-  echo "  B) Install Docker Desktop, then run: npm run dev:local"
   echo ""
   exit 1
 fi

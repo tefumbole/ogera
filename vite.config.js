@@ -212,7 +212,7 @@ const addTransformIndexHtml = {
 	name: 'add-transform-index-html',
 	transformIndexHtml(html) {
 		const company = process.env.VITE_COMPANY_NAME || 'Beyond Enterprise';
-		const siteUrl = process.env.VITE_SITE_URL || 'https://beyondtechworld.com';
+		const siteUrl = process.env.VITE_SITE_URL || 'https://ogera.rw';
 		const logoUrl = process.env.VITE_LOGO_URL || '/branding/beyond-logo.png';
 		html = html
 			.replace(/%VITE_COMPANY_NAME%/g, company)

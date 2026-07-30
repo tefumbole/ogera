@@ -31,11 +31,10 @@ git checkout -b restore-abt-v2.2.23 ABT_ERP_V.2.2.23
 
 ## Redeploy production
 
-```bash
-ssh myvps 'cd /var/www/beyondtechworld && git fetch --tags && git checkout ABT_ERP_V.2.2.23 && bash tools/deploy-beyondtechworld-laravel.sh --migrate-all'
-```
-
-After a restore, return `main` to latest intentionally — do not leave production on a detached tag unless planned.
+> **Not applicable to Ogera.** This restore point predates the fork and described a
+> deployment to BeyondTechWorld, which is a separate live system. Ogera must never deploy
+> to it. The original command has been removed so it cannot be run from this repository.
+> Ogera has no production host yet; when it gets one, write a deploy path scoped to it.
 
 ## Database / file backup
 
@@ -47,7 +46,7 @@ Production backup created with this restore point:
 | Uploads/logo tar (~19 MB) | `backups/production-files-ABT_ERP_V.2.2.23-20260715-215549.tar.gz` |
 | Manifest | `backups/production-ABT_ERP_V.2.2.23-20260715-215549.manifest.txt` |
 
-VPS copies: `/var/www/beyondtechworld/backups/production-ABT_ERP_V.2.2.23-20260715-215549.*`
+Those backups belong to BeyondTechWorld's server and are out of scope for Ogera.
 
 ## Create the next restore point
 

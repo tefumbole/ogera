@@ -1,3 +1,24 @@
+DirectoryIndex index.php
+
+# ---------------------------------------------------------------------------
+# On shared hosting the application root doubles as the document root, so every
+# framework directory sits under the web root. The front-controller rewrite only
+# covers paths that do NOT exist on disk, which means real files such as
+# .env, storage/logs/laravel.log and composer.json would otherwise be served.
+# Deny them explicitly.
+# ---------------------------------------------------------------------------
+RedirectMatch 404 ^/(app|bootstrap|config|database|resources|routes|storage|tests|tools|scripts|deploy|db-import|vendor)(/|$)
+RedirectMatch 404 ^/\.(env|git)
+
+<FilesMatch "(?i)^(\.env.*|\.git.*|composer\.(json|lock)|package(-lock)?\.json|artisan|server\.php|phpunit\.xml|webpack\.mix\.js|VERSION|manifest\.json|.*\.md|.*\.sql|.*\.log|.*\.bak|.*\.txt)$">
+    Require all denied
+</FilesMatch>
+
+# robots.txt is a legitimate exception to the .txt rule above.
+<Files "robots.txt">
+    Require all granted
+</Files>
+
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
@@ -20,12 +41,18 @@
     RewriteRule ^ index.php [L]
 </IfModule>
 
-# php -- BEGIN cPanel-generated handler, do not edit
-# Set the “ea-php74” package as the default “PHP” programming language.
+# ---------------------------------------------------------------------------
+# Pin PHP 7.4.
+#
+# Laravel 6.20 fatals on PHP 8.1+ because Illuminate\Support\Collection does not
+# declare the ArrayAccess return types that 8.1 began enforcing. The host serves
+# 8.3 by default and no longer offers 7.4 in the control panel, so the version is
+# selected here instead. Verified working on this host; 8.0 also boots if 7.4 is
+# ever withdrawn.
+# ---------------------------------------------------------------------------
 <IfModule mime_module>
-  AddHandler application/x-httpd-ea-php74___lsphp .php .php7 .phtml
+  AddHandler application/x-httpd-alt-php74___lsphp .php .php7 .phtml
 </IfModule>
-# php -- END cPanel-generated handler, do not edit
 
 # Static asset caching (PageSpeed quick win)
 <IfModule mod_expires.c>

@@ -1,40 +1,51 @@
 #!/usr/bin/env node
 /**
- * Increment ERP version (BCL_ERP_Vx.y.z) in frontend + API constants.
+ * Ogera ERP version bump — OGERA_ERP_Vx.y.z
  *
- * Scheme (same as .githooks/pre-commit):
- *   patch 0–9, then next minor (2.3.9 → 2.4.0)
- *   minor 0–9, then next major (2.9.9 → 3.0.0)
+ * Scheme (mirrored in .githooks/pre-commit and App\Support\AppVersion):
+ *   patch runs 1–9, then rolls to the next minor   1.0.9 -> 1.1.0
+ *   minor runs 0–9, then rolls to the next major   1.9.9 -> 2.0.1
  *
- * laravel-app/VERSION is the single source of truth when present.
+ * Note the major roll lands on patch 1, not 0, so a new major line starts at
+ * x.0.1 the way 1.0.1 did.
+ *
+ * laravel-app/VERSION holds the bare semver and is the single source of truth.
+ * The two JS constants are kept in step with it.
+ *
+ * Usage:
+ *   node tools/bump-version.js          bump VERSION, then sync the JS constants
+ *   node tools/bump-version.js --sync   only sync the JS constants to VERSION
  */
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const ROOT = path.resolve(__dirname, '..');
 
-const VERSION_FILES = [
+const PREFIX = 'OGERA_ERP_V';
+const FALLBACK = '1.0.1';
+
+const VERSION_FILE = path.join(ROOT, 'laravel-app/VERSION');
+const JS_VERSION_FILES = [
   path.join(ROOT, 'src/constants/appVersion.js'),
   path.join(ROOT, 'apps/api/src/constants/appVersion.js'),
 ];
 
-const VERSION_RE = /(?:BCL_ERP_V\.?|ABT_ERP_V\.)(\d+)\.(\d+)\.(\d+)/;
+// Accepts the current prefix and the two legacy ones, so old files still parse.
+const ANY_PREFIX = '(?:OGERA_ERP_V\\.?|BCL_ERP_V\\.?|ABT_ERP_V\\.)';
+const APP_VERSION_RE = new RegExp(
+  `export const APP_VERSION = '${ANY_PREFIX}(\\d+)\\.(\\d+)\\.(\\d+)';`
+);
 
-function readVersion(filePath) {
-  const content = fs.readFileSync(filePath, 'utf8');
-  const match = content.match(/export const APP_VERSION = '((?:BCL_ERP_V\.?|ABT_ERP_V\.)\d+\.\d+\.\d+)';/);
-  if (!match) throw new Error(`Could not read APP_VERSION from ${filePath}`);
-  return match[1];
-}
+export function nextSemver(semver) {
+  const match = String(semver).trim().match(/^(\d+)\.(\d+)\.(\d+)$/);
+  if (!match) throw new Error(`Invalid version: ${semver}`);
 
-function bumpVersionString(version) {
-  const match = version.match(VERSION_RE);
-  if (!match) throw new Error(`Invalid version format: ${version}`);
-  let major = Number(match[1]);
-  let minor = Number(match[2]);
-  let patch = Number(match[3]) + 1;
+  let [major, minor, patch] = match.slice(1).map(Number);
+
+  patch += 1;
   if (patch >= 10) {
     patch = 0;
     minor += 1;
@@ -42,37 +53,57 @@ function bumpVersionString(version) {
   if (minor >= 10) {
     minor = 0;
     major += 1;
+    // A new major line starts at x.0.1, matching how 1.0.1 began.
+    patch = 1;
   }
-  return `BCL_ERP_V${major}.${minor}.${patch}`;
+
+  return `${major}.${minor}.${patch}`;
 }
 
-function replaceVersionInFile(filePath, nextVersion) {
-  let content = fs.readFileSync(filePath, 'utf8');
-  content = content.replace(
-    /export const APP_VERSION = '(?:BCL_ERP_V\.?|ABT_ERP_V\.)\d+\.\d+\.\d+';/,
-    `export const APP_VERSION = '${nextVersion}';`
-  );
-  fs.writeFileSync(filePath, content);
+function readSemver() {
+  if (fs.existsSync(VERSION_FILE)) {
+    const raw = fs.readFileSync(VERSION_FILE, 'utf8').trim();
+    if (/^\d+\.\d+\.\d+$/.test(raw)) return raw;
+  }
+  // Fall back to whatever the JS constant says, so nothing is lost.
+  for (const file of JS_VERSION_FILES) {
+    if (!fs.existsSync(file)) continue;
+    const match = fs.readFileSync(file, 'utf8').match(APP_VERSION_RE);
+    if (match) return `${match[1]}.${match[2]}.${match[3]}`;
+  }
+  return FALLBACK;
 }
 
-function readLaravelVersion() {
-  const file = path.join(ROOT, 'laravel-app/VERSION');
-  if (!fs.existsSync(file)) return null;
-  const raw = fs.readFileSync(file, 'utf8').trim();
-  return /^\d+\.\d+\.\d+$/.test(raw) ? `BCL_ERP_V${raw}` : null;
+function writeSemver(semver) {
+  fs.writeFileSync(VERSION_FILE, `${semver}\n`);
+}
+
+function syncJsFiles(semver) {
+  const label = `${PREFIX}${semver}`;
+  for (const file of JS_VERSION_FILES) {
+    if (!fs.existsSync(file)) continue;
+    const content = fs.readFileSync(file, 'utf8');
+    const updated = content.replace(
+      APP_VERSION_RE,
+      `export const APP_VERSION = '${label}';`
+    );
+    if (updated !== content) fs.writeFileSync(file, updated);
+  }
+  return label;
 }
 
 function main() {
-  const current = readVersion(VERSION_FILES[0]);
-  // Prefer laravel-app/VERSION (pre-commit source of truth); else bump locally.
-  const next = readLaravelVersion() || bumpVersionString(current);
+  const syncOnly = process.argv.includes('--sync');
+  const current = readSemver();
+  const next = syncOnly ? current : nextSemver(current);
 
-  for (const filePath of VERSION_FILES) {
-    replaceVersionInFile(filePath, next);
-  }
+  if (!syncOnly) writeSemver(next);
+  syncJsFiles(next);
 
-  console.log(`${current} -> ${next}`);
-  return next;
+  // pre-push parses field 3 of this line, so keep the "A -> B" shape.
+  console.log(`${PREFIX}${current} -> ${PREFIX}${next}`);
 }
 
-main();
+if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(__filename)) {
+  main();
+}
