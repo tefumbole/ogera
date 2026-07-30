@@ -14,7 +14,7 @@ class OgeraLandingContent
             'eyebrow' => 'OGERA Agency · Kigali',
             'title' => 'Where ambition meets <em>excellence</em>',
             'description' => 'Business development, unforgettable events, and premium equipment rental — crafted for brands and hosts who expect more.',
-            'image' => asset('branding/ogera-hero.jpg'),
+            'image' => asset('public/branding/ogera-hero.jpg'),
             // Set a public path later (e.g. branding/ogera-hero.mp4) to enable video.
             'video' => null,
             'ctas' => [

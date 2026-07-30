@@ -44,7 +44,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
     @php $ogeraPublicCssV = file_exists(public_path('css/ogera-public.css')) ? filemtime(public_path('css/ogera-public.css')) : 1; @endphp
-    <link rel="stylesheet" href="{{ asset('css/ogera-public.css') }}?v={{ $ogeraPublicCssV }}">
+    <link rel="stylesheet" href="{{ asset('public/css/ogera-public.css') }}?v={{ $ogeraPublicCssV }}">
     @stack('head')
 </head>
 <body class="ogera-public flex flex-col min-h-screen"
