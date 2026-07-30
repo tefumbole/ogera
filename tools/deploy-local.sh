@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Apply latest AlphaBridge code to local MySQL + build frontend.
+# Apply latest Ogera code to local MySQL + build frontend.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -17,7 +17,7 @@ fi
 
 mysql_ready() {
   local port="$1"
-  mysql -u abt -palphabridge_local -h 127.0.0.1 -P "$port" -e "SELECT 1" >/dev/null 2>&1
+  mysql -u ogera -pogera_local -h 127.0.0.1 -P "$port" -e "SELECT 1" >/dev/null 2>&1
 }
 
 DB_PORT="$(grep '^DB_PORT=' apps/api/.env | cut -d= -f2 || echo 3306)"
@@ -43,7 +43,7 @@ fi
 DB_PORT="$(grep '^DB_PORT=' apps/api/.env | cut -d= -f2 || echo 3306)"
 if ! mysql_ready "$DB_PORT"; then
   echo "ERROR: Local MySQL not reachable on port ${DB_PORT}."
-  echo "Run: bash tools/setup-local-mysql.sh   OR   docker compose up -d"
+  echo "Run: bash tools/setup-ogera-db.sh   OR   docker compose up -d"
   exit 1
 fi
 

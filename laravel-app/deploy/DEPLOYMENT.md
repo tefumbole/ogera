@@ -52,18 +52,15 @@ composer install
 cp .env.example .env
 php artisan key:generate
 
-# 3. Configure DB in .env (local example)
-#    DB_DATABASE=beyondtech_laravel
-#    DB_USERNAME=beyond
-#    DB_PASSWORD=beyond_local
+# 3. Configure DB in .env (Ogera local)
+#    DB_DATABASE=ogera_laravel
+#    DB_USERNAME=ogera
+#    DB_PASSWORD=ogera_local
 
-# 4. Create the database + user (MySQL)
-#    CREATE DATABASE beyondtech_laravel CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-#    CREATE USER 'beyond'@'localhost' IDENTIFIED BY 'beyond_local';
-#    GRANT ALL PRIVILEGES ON beyondtech_laravel.* TO 'beyond'@'localhost';
+# 4. Create the database + user — from the repo root, run:
+#    bash tools/setup-ogera-db.sh
 
-# 5. Import legacy data, then run migrations
-mysql -u beyond -p beyondtech_laravel < db-import/mainmarket.sql
+# 5. Run migrations
 php artisan migrate
 
 # 6. Serve
@@ -128,7 +125,7 @@ The app schedules reminders and announcement/letter sends every minute. Add ONE
 cron entry so Laravel's scheduler runs:
 
 ```cron
-* * * * * cd /var/www/beyondtechworld && php artisan schedule:run >> /dev/null 2>&1
+* * * * * cd /path/to/ogera/laravel-app && php artisan schedule:run >> /dev/null 2>&1
 ```
 
 Scheduled jobs: `reminder:cron`, `announcements:send-scheduled`,
@@ -179,13 +176,11 @@ php artisan view:cache
 Never leave `storage/` or `bootstrap/cache` owned by `root`. PHP-FPM (`www-data`)
 must own them, or the admin dashboard 500s when Spatie permission cache is written.
 
-**Preferred (VPS):**
+After any manual artisan run on a server:
 
 ```bash
-bash tools/deploy-beyondtechworld-laravel.sh
-# or after any manual artisan:
 chown -R www-data:www-data storage bootstrap/cache
-# or run artisan as www-data:
+# or run artisan as www-data in the first place:
 sudo -u www-data php artisan view:clear
 ```
 
@@ -200,13 +195,13 @@ and backs up `.env` before pulling.
 
 ```bash
 # Run FROM the server, inside the site's public_html:
-./deploy/deploy-site.sh beyondtechworld.com
+./deploy/deploy-site.sh ogera.example
 # or
-SITE_ROOT=~/domains/beyondtechworld.com/public_html ./deploy/deploy-site.sh
+SITE_ROOT=~/domains/ogera.example/public_html ./deploy/deploy-site.sh
 ```
 
-> Do not run this locally — it targets a live server. Left for you to run
-> manually when deploying.
+> Do not run this locally — it targets a live server. Pass Ogera's own domain
+> only; never an AlphaBridge or BeyondTechWorld host.
 
 ---
 
@@ -231,7 +226,7 @@ rewrite rules on the server. (`server.php` is local-only and can stay ignored.)
 - [ ] `APP_ENV=production`
 - [ ] `APP_DEBUG=false`
 - [ ] `APP_KEY` set (`php artisan key:generate`)
-- [ ] `APP_URL=https://beyondtechworld.com`
+- [ ] `APP_URL` set to Ogera's own domain
 - [ ] `BEYOND_SKIP_OTP=false` (or unset)
 - [ ] Strong, non-root `DB_USERNAME` / `DB_PASSWORD`
 - [ ] HTTPS enabled (certbot); force redirect 80→443

@@ -2,15 +2,23 @@
 # Safe deploy for one Hostinger domain. Keeps .env, storage, and uploads intact.
 #
 # Usage:
-#   ./deploy/deploy-site.sh beyondtechworld.com
+#   ./deploy/deploy-site.sh ogera.example
 #
 # Run from the site's public_html directory, or pass SITE_ROOT:
-#   SITE_ROOT=~/domains/beyondtechworld.com/public_html ./deploy/deploy-site.sh
+#   SITE_ROOT=~/domains/ogera.example/public_html ./deploy/deploy-site.sh
 
 set -euo pipefail
 
 DOMAIN="${1:-}"
 SITE_ROOT="${SITE_ROOT:-}"
+
+# Ogera must never deploy over AlphaBridge or BeyondTechWorld.
+case "${DOMAIN}${SITE_ROOT}" in
+    *beyondtechworld*|*alphabridge*|*alpha-bridge*)
+        echo "Refusing to deploy: '${DOMAIN}${SITE_ROOT}' belongs to another project."
+        exit 1
+        ;;
+esac
 
 if [[ -z "$SITE_ROOT" ]]; then
     if [[ -z "$DOMAIN" ]]; then

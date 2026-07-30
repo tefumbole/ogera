@@ -1,50 +1,54 @@
-# Beyond Enterprise (BeyondTechWorld)
+# Ogera
 
-Web application for **Beyond Enterprise**, deployed at [beyondtechworld.com](https://beyondtechworld.com).
+Web application for **Ogera Rwanda Events**.
 
-Alpha Bridge runs separately at [alpha-bridge.net](https://alpha-bridge.net) on the same VPS (port 3003).
+Forked from the Beyond Enterprise codebase, but fully independent of it.
+
+## Isolation rule
+
+Ogera must never read from or write to AlphaBridge or BeyondTechWorld — not their
+databases, servers, PM2 processes, or nginx sites. All deploy tooling for those two
+sites has been removed from this repo on purpose. Do not add it back.
+
+| Belongs to Ogera | Never touch from here |
+|---|---|
+| `ogera_laravel`, `ogera` databases | `beyondtech_laravel`, `alphabridge` databases |
+| MySQL user `ogera` | MySQL users `beyond`, `abt` |
+| `github.com/tefumbole/ogera` | `github.com/tefumbole/BeyondTechWorld` |
 
 ## Local development
 
 ```bash
+brew services start mysql
+bash tools/setup-ogera-db.sh   # one time — creates the Ogera databases
 npm run dev:local
 ```
 
-## VPS ports
+Frontend runs on http://localhost:3000, API on http://localhost:3003.
 
-| Site | Domain | API port | PM2 process | Web root |
-|------|--------|----------|-------------|----------|
-| Alpha Bridge | alpha-bridge.net | 3003 | alphabridge-api | /var/www/alphabridge |
-| Beyond Enterprise | beyondtechworld.com | 3004 | beyondtechworld-api | /var/www/beyondtechworld |
+## Local databases
+
+Hosted by the Homebrew MySQL on this machine at `127.0.0.1:3306`.
+
+| Purpose | Database |
+|---------|----------|
+| Laravel app (`laravel-app`) | `ogera_laravel` |
+| Node API (`apps/api`) | `ogera` |
+
+Credentials live in `laravel-app/.env` and `apps/api/.env`, both of which are gitignored.
+The `ogera` MySQL user is granted privileges on those two databases only.
+
+## Backups
+
+```bash
+npm run local:backup   # dumps the Ogera database + uploads into backups/
+```
 
 ## Deploy
 
-```bash
-# Alpha Bridge (Node API)
-ssh myvps "cd /var/www/alphabridge && git pull && bash tools/deploy-alphabridge-vps.sh"
-
-# Beyond Enterprise — live Laravel site (use this for feature deploys)
-ssh myvps "cd /var/www/beyondtechworld && git pull && bash tools/deploy-beyondtechworld-laravel.sh"
-# optional: --migrate-all   or   --migrate-path=database/migrations/….php
-
-# Beyond Enterprise — Node API stack (port 3004 only; not the live Laravel admin)
-ssh myvps "cd /var/www/beyondtechworld && git pull && bash tools/deploy-beyondtechworld-vps.sh"
-```
-
-The Laravel script always restores `www-data` ownership on `storage/` and
-`bootstrap/cache` so admin does not 500 after root-run Artisan.
-
-## Beyond Enterprise database (separate from Alpha Bridge)
-
-Create in Hostinger hPanel → Databases → MySQL:
-
-- Database: `beyondtechworld` → `u152889834_beyondtechworld`
-- User: `u152889834_beyondtechworld` with full privileges
-- Remote MySQL: allow VPS IP `187.124.2.238`
-
-Then on VPS: copy `apps/api/.env.beyondtechworld.example` → `apps/api/.env` and run `bash tools/setup-beyondtechworld-db.sh`.
+Ogera has no server yet. Add deploy tooling only when Ogera gets its own host, and
+scope it to that host alone.
 
 ## Branding
 
-- **Beyond Enterprise**: logo `/branding/beyond-logo.png`, hero `/branding/beyond-hero.png`
-- Override via `.env`: `VITE_COMPANY_NAME`, `VITE_LOGO_URL`, `VITE_HERO_IMAGE_URL`, `VITE_ADMIN_PHONE_NUMBER`
+Override via `.env`: `VITE_COMPANY_NAME`, `VITE_LOGO_URL`, `VITE_HERO_IMAGE_URL`, `VITE_ADMIN_PHONE_NUMBER`.

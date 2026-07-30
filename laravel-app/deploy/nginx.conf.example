@@ -9,19 +9,19 @@
 # Target runtime: PHP 7.4 (ea-php74) + php-fpm, MySQL 5.7/8.0.
 #
 # Usage (do this on the server yourself — not run automatically):
-#   1. Copy to /etc/nginx/sites-available/beyondtechworld.conf
+#   1. Copy to /etc/nginx/sites-available/ogera.conf
 #   2. Edit server_name, root, and the fastcgi_pass socket to match your box.
-#   3. ln -s /etc/nginx/sites-available/beyondtechworld.conf /etc/nginx/sites-enabled/
+#   3. ln -s /etc/nginx/sites-available/ogera.conf /etc/nginx/sites-enabled/
 #   4. sudo nginx -t && sudo systemctl reload nginx
 # ---------------------------------------------------------------------------
 
 server {
     listen 80;
     listen [::]:80;
-    server_name beyondtechworld.com www.beyondtechworld.com;
+    server_name ogera.example www.ogera.example;
 
     # Project ROOT is the docroot (single-folder layout, root index.php).
-    root /var/www/beyondtechworld;
+    root /var/www/ogera;
     index index.php;
 
     charset utf-8;
@@ -68,8 +68,8 @@ server {
     gzip_min_length 1024;
 
     # ----- Logs -------------------------------------------------------------
-    access_log /var/log/nginx/beyondtechworld.access.log;
-    error_log  /var/log/nginx/beyondtechworld.error.log;
+    access_log /var/log/nginx/ogera.access.log;
+    error_log  /var/log/nginx/ogera.error.log;
 }
 
 # ---------------------------------------------------------------------------

@@ -1,19 +1,20 @@
-# Local MySQL for offline development (no internet required after first pull)
+# Local MySQL for offline Ogera development (no internet required after first pull).
+# Uses port 3307 and its own volume so it can never reach the Homebrew MySQL on 3306.
 services:
   mysql:
     image: mysql:8.0
-    container_name: alphabridge-mysql
+    container_name: ogera-mysql
     restart: unless-stopped
     ports:
       - "3307:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: alphabridge_local
-      MYSQL_DATABASE: alphabridge
-      MYSQL_USER: abt
-      MYSQL_PASSWORD: alphabridge_local
+      MYSQL_ROOT_PASSWORD: ogera_local
+      MYSQL_DATABASE: ogera
+      MYSQL_USER: ogera
+      MYSQL_PASSWORD: ogera_local
     volumes:
-      - alphabridge_mysql_data:/var/lib/mysql
+      - ogera_mysql_data:/var/lib/mysql
     command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 
 volumes:
-  alphabridge_mysql_data:
+  ogera_mysql_data:

@@ -1,0 +1,44 @@
+---
+description: Ogera must never affect AlphaBridge or BeyondTechWorld
+alwaysApply: true
+---
+
+# Ogera isolation (hard rule)
+
+This repo is Ogera. It was forked from the Beyond Enterprise codebase, so it may still
+contain names, docs, or history referring to **AlphaBridge** and **BeyondTechWorld**.
+Those are separate live systems. Nothing done here may ever affect them.
+
+## Never, under any circumstance
+
+- Connect to, migrate, seed, dump-into, or drop the `beyondtech_laravel` or `alphabridge` databases
+- Use the MySQL users `beyond` or `abt`
+- Point `laravel-app/.env` or `apps/api/.env` at anything other than Ogera's own databases
+- SSH to the VPS, or touch `/var/www/beyondtechworld`, `/var/www/alphabridge`, the
+  `beyondtechworld-api` / `alphabridge-api` PM2 processes, or their nginx sites
+- Push to `github.com/tefumbole/BeyondTechWorld` — `origin` here is `github.com/tefumbole/ogera`
+- Re-add deploy tooling for those sites (it was deliberately deleted)
+
+## Ogera's own resources
+
+| Resource | Value |
+|---|---|
+| Laravel database | `ogera_laravel` |
+| Node API database | `ogera` |
+| MySQL user | `ogera` (privileges on those two databases only) |
+| MySQL host | Homebrew MySQL, `127.0.0.1:3306` on the user's Mac |
+| Git remote | `github.com/tefumbole/ogera` |
+
+## Production
+
+Ogera has no server yet, and the user has no VPS access at this time. Treat production as
+off-limits by default: never deploy, rsync, scp, or run remote commands unless the user
+explicitly asks. If a deploy is needed, give local-only steps or written instructions instead.
+
+When Ogera does get a host, scope any new deploy script to that host alone and never
+reuse the AlphaBridge or BeyondTechWorld paths, process names, or credentials.
+
+## Local work that needs no permission
+
+`npm run dev`, `npm run dev:api`, `npm run dev:local`, `npm run db:migrate`,
+`npm run local:backup`, `bash tools/setup-ogera-db.sh`, local Docker MySQL on port 3307.
