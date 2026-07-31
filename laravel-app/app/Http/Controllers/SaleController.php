@@ -414,6 +414,13 @@ class SaleController extends Controller
         if($cash_register_data)
             $data['cash_register_id'] = $cash_register_data->id;
 
+        $data['pos'] = $data['pos'] ?? 0;
+        $data['draft'] = $data['draft'] ?? 0;
+        $data['coupon_active'] = $data['coupon_active'] ?? 0;
+        $data['payment_note'] = $data['payment_note'] ?? null;
+        $data['paid_amount'] = $data['paid_amount'] ?? 0;
+        $data['paying_amount'] = $data['paying_amount'] ?? $data['paid_amount'];
+
         if($data['pos']) {
             if(!isset($data['reference_no']))
                 $data['reference_no'] = 'posr-' . date("Ymd") . '-'. date("his");
@@ -803,19 +810,23 @@ class SaleController extends Controller
             if($cash_register_data) {
                 $lims_payment_data->cash_register_id = $cash_register_data->id;
             }
-            if(!array_key_exists('credit', $data)) {
-                $lims_account_data = Account::where('is_default', true)->first();
+            if(!array_key_exists('credit', $data) || empty($data['credit'])) {
+                $lims_account_data = Account::where('is_default', true)->first()
+                    ?: Account::where('is_active', true)->first();
             }else{
                 $lims_account_data = Account::where('id', $data['credit'])->first();
+            }
+            if (! $lims_account_data) {
+                return redirect()->back()->with('not_permitted', 'No payment account configured. Add an account in Accounting first.');
             }
             $lims_payment_data->account_id = $lims_account_data->id;
             $lims_payment_data->sale_id = $lims_sale_data->id;
             $data['payment_reference'] = 'spr-'.date("Ymd").'-'.date("his");
             $lims_payment_data->payment_reference = $data['payment_reference'];
             $lims_payment_data->amount = $data['paid_amount'];
-            $lims_payment_data->change = $data['paying_amount'] - $data['paid_amount'];
+            $lims_payment_data->change = ($data['paying_amount'] ?? $data['paid_amount']) - $data['paid_amount'];
             $lims_payment_data->paying_method = $paying_method;
-            $lims_payment_data->payment_note = $data['payment_note'];
+            $lims_payment_data->payment_note = $data['payment_note'] ?? null;
             $lims_payment_data->save();
 
             $lims_payment_data = Payment::latest()->first();
