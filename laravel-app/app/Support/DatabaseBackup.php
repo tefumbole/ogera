@@ -40,11 +40,18 @@ class DatabaseBackup
 
         try {
             $target = $directory . '/' . self::PREFIX . date('Ymd-His') . self::SUFFIX;
+            $plain = $target . '.sql.partial';
             $partial = $target . '.partial';
 
-            $this->dump($connection, $partial);
-            $this->assertUsable($partial);
+            try {
+                $this->dump($connection, $plain);
+                $this->assertComplete($plain);
+                $this->compress($plain, $partial);
+            } finally {
+                @unlink($plain);
+            }
 
+            $this->assertUsable($partial);
             rename($partial, $target);
             @chmod($target, 0600);
 
@@ -169,33 +176,34 @@ class DatabaseBackup
             $binary = 'mysqldump';
         }
 
-        // Stored routines need extra privileges that a shared-hosting user may
-        // not have, so fall back to a plain dump rather than losing the backup.
+        $host = (string) ($connection['host'] ?: 'localhost');
+
+        $base = [
+            $binary,
+            '--host=' . $host,
+            '--user=' . (string) $connection['username'],
+            '--single-transaction',
+            '--quick',
+            '--no-tablespaces',
+            '--default-character-set=utf8mb4',
+            '--result-file=' . $target,
+        ];
+
+        // Passing a port alongside "localhost" makes the client use TCP, where
+        // the grant does not apply; the socket is the only route that works.
+        if ($host !== 'localhost' && ! empty($connection['port'])) {
+            $base[] = '--port=' . (string) $connection['port'];
+        }
+
+        // Stored routines need privileges a shared-hosting user may not have,
+        // so fall back to a plain dump rather than losing the backup entirely.
+        $error = 'mysqldump did not run';
         foreach ([['--routines', '--triggers'], []] as $extra) {
-            $command = implode(' ', array_merge([
-                escapeshellarg($binary),
-                '--host=' . escapeshellarg((string) ($connection['host'] ?: '127.0.0.1')),
-                '--port=' . escapeshellarg((string) ($connection['port'] ?: 3306)),
-                '--user=' . escapeshellarg((string) $connection['username']),
-                '--single-transaction',
-                '--quick',
-                '--no-tablespaces',
-                '--default-character-set=utf8mb4',
-            ], $extra, [
-                escapeshellarg((string) $connection['database']),
-                '| gzip -9 >',
-                escapeshellarg($target),
-            ]));
+            $arguments = array_merge($base, $extra, [(string) $connection['database']]);
 
             // The password goes through the environment so it stays out of the
             // process list.
-            $process = Process::fromShellCommandline(
-                $command,
-                base_path(),
-                ['MYSQL_PWD' => (string) $connection['password']],
-                null,
-                600
-            );
+            $process = new Process($arguments, base_path(), ['MYSQL_PWD' => (string) $connection['password']], null, 600);
             $process->run();
 
             if ($process->isSuccessful()) {
@@ -207,6 +215,49 @@ class DatabaseBackup
         }
 
         throw new RuntimeException('mysqldump failed: ' . $error);
+    }
+
+    /**
+     * mysqldump writes its own file, so the dump is checked before it is
+     * compressed and before anything older is rotated away.
+     */
+    private function assertComplete($dump)
+    {
+        if (! is_file($dump) || filesize($dump) < 1024) {
+            throw new RuntimeException('Dump is empty.');
+        }
+
+        $handle = fopen($dump, 'rb');
+        fseek($handle, -200, SEEK_END);
+        $tail = (string) fread($handle, 200);
+        fclose($handle);
+
+        if (strpos($tail, 'Dump completed') === false) {
+            throw new RuntimeException('Dump is incomplete: mysqldump did not finish.');
+        }
+    }
+
+    private function compress($dump, $archive)
+    {
+        $in = fopen($dump, 'rb');
+        $out = gzopen($archive, 'wb9');
+
+        if (! $in || ! $out) {
+            throw new RuntimeException('Could not compress the dump.');
+        }
+
+        while (! feof($in)) {
+            $chunk = fread($in, 262144);
+            if ($chunk === false || gzwrite($out, $chunk) === false) {
+                fclose($in);
+                gzclose($out);
+                @unlink($archive);
+                throw new RuntimeException('Could not compress the dump.');
+            }
+        }
+
+        fclose($in);
+        gzclose($out);
     }
 
     /**
