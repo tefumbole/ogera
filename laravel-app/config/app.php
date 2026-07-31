@@ -20,6 +20,13 @@ return [
     'version_build' => env('APP_VERSION_BUILD'),
 
     /*
+    | Set false only for public demo installs to disable destructive/config
+    | actions. On a licensed production install this stays true. Routed through
+    | config (not env()) so it survives `config:cache`.
+    */
+    'user_verified' => env('USER_VERIFIED', true),
+
+    /*
     |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------

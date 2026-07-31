@@ -166,7 +166,7 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
-        if(!env('USER_VERIFIED'))
+        if(!config('app.user_verified'))
             return redirect()->back()->with('not_permitted', 'This feature is disable for demo!');
 
         $this->validate($request, [
@@ -256,7 +256,7 @@ class UserController extends Controller
 
     public function profileUpdate(Request $request, $id)
     {
-        if(!env('USER_VERIFIED'))
+        if(!config('app.user_verified'))
             return redirect()->back()->with('not_permitted', 'This feature is disable for demo!');
 
 
@@ -300,7 +300,7 @@ class UserController extends Controller
 
     public function frontendUserAccountUpdate(Request $request)
     {
-        if(!env('USER_VERIFIED'))
+        if(!config('app.user_verified'))
             return redirect()->back()->with('not_permitted', 'This feature is disable for demo!');
 
         $input = $request->all();
@@ -340,7 +340,7 @@ class UserController extends Controller
 
     public function changePassword(Request $request, $id)
     {
-        if(!env('USER_VERIFIED'))
+        if(!config('app.user_verified'))
             return redirect()->back()->with('not_permitted', 'This feature is disable for demo!');
 
         $input = $request->all();
@@ -373,7 +373,7 @@ class UserController extends Controller
 
     public function destroy($id)
     {
-        if(!env('USER_VERIFIED'))
+        if(!config('app.user_verified'))
             return redirect()->back()->with('not_permitted', 'This feature is disable for demo!');
 
         if(Auth::id() == $id){
