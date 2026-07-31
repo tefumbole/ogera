@@ -207,6 +207,11 @@
         </div>
         <div class="ogera-footer__bottom">
             <p>© {{ date('Y') }} OGERA Agency. All rights reserved.</p>
+            <p class="mt-1">
+                Developed By:
+                <a href="https://wa.me/250784006160" target="_blank" rel="noopener" style="display:inline;">Alpha Bridge Technologies</a>
+                | <a href="tel:+250784006160" style="display:inline;">+250 784 006 160</a>
+            </p>
             <p class="mt-1 opacity-70">{{ \App\Support\AppVersion::bcl() }}</p>
         </div>
     </div>

@@ -1,4 +1,12 @@
 /* OGERA public site only — linked from beyond/layout. Never load in admin. */
+
+/* Scale the whole public site up. This file loads only on public pages, so it
+   enlarges every rem-based size (Tailwind utilities + ogera-* components) without
+   affecting the admin panel. */
+html {
+  font-size: 112.5%;
+}
+
 .ogera-public {
   --og-forest: #033d2e;
   --og-green: #07513d;
