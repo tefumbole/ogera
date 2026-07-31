@@ -74,9 +74,9 @@
 
 <header class="ogera-header" :class="{ 'is-solid': scrolled || open || {{ $isHome ? 'false' : 'true' }} }">
     <div class="ogera-header__inner">
-        <a href="{{ url('/') }}" class="shrink-0">
+        <a href="{{ url('/') }}" class="ogera-header__brand shrink-0">
             <img src="{{ $siteLogoUrl }}" alt="{{ $siteTitle }}"
-                 class="h-10 md:h-12 w-auto object-contain">
+                 class="ogera-header__logo">
         </a>
 
         <nav class="ogera-header__nav" aria-label="Primary">

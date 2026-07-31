@@ -1,13 +1,13 @@
 @extends('beyond.layout')
 
 @section('title', 'Our Projects')
-@section('meta_description', 'Explore our recent projects in IT consultancy, networking, and audio-visual installations across Kigali, Rwanda.')
+@section('meta_description', 'Explore OGERA Agency projects — business development, events, and rentals delivered in Kigali, Rwanda.')
 
 @section('content')
 
 @include('beyond.partials.hero', [
-    'title' => \App\Support\SiteContent::html('projects.hero_title', 'Our <span class="text-brand-gold">Projects</span>'),
-    'subtitle' => \App\Support\SiteContent::text('projects.hero_subtitle', 'See our engineering precision in action'),
+    'title' => \App\Support\SiteContent::html('projects.hero_title', 'Our <em>Projects</em>'),
+    'subtitle' => \App\Support\SiteContent::text('projects.hero_subtitle', 'Strategy, events, and rentals delivered with clarity and precision'),
 ])
 
 <section class="py-16 bg-white">
@@ -46,7 +46,7 @@
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 class="text-3xl font-bold text-brand-blue mb-6">Inspired by our work?</h2>
         <p class="text-lg text-gray-700 mb-8">Let's discuss how we can bring the same level of quality to your next project.</p>
-        <a href="https://wa.me/237675321739?text={{ urlencode('Hello Beyond Enterprise, I would like to start a project.') }}"
+        <a href="https://wa.me/250786887936?text={{ urlencode('Hello OGERA Agency, I would like to start a project.') }}"
            target="_blank" rel="noopener"
            class="inline-flex items-center gap-2 bg-brand-gold text-brand-blue px-8 py-4 text-lg font-bold rounded-lg shadow-xl">
             <i data-lucide="message-circle" class="w-5 h-5"></i> Start Your Project

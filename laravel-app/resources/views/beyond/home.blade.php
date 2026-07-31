@@ -8,6 +8,13 @@
 @php
     $hero = \App\Support\OgeraLandingContent::hero();
 
+    $heroEyebrow = \App\Support\SiteContent::text('home.hero_eyebrow', $hero['eyebrow']);
+    $heroTitle = \App\Support\SiteContent::html('home.hero_title', $hero['title']);
+    $heroDesc = \App\Support\SiteContent::text('home.hero_subtitle', $hero['description']);
+    $ctaPrimary = \App\Support\SiteContent::text('home.cta_primary', $hero['ctas'][0]['label']);
+    $ctaSecondary = \App\Support\SiteContent::text('home.cta_secondary', $hero['ctas'][1]['label']);
+    $ctaLink = \App\Support\SiteContent::text('home.cta_link', $hero['link']['label']);
+
     $heroImageUrl = \App\Support\SiteContent::image('home.hero_image', $hero['image']);
     $heroImageUrl .= (strpos($heroImageUrl, '?') === false ? '?' : '&') . 'v=' . rawurlencode(\App\Support\AppVersion::label());
     $heroVideo = $hero['video'];
@@ -35,21 +42,20 @@
     </div>
 
     <div class="ogera-hero__inner">
-        <p class="ogera-hero__eyebrow ogera-reveal">{{ $hero['eyebrow'] }}</p>
-        <h1 class="ogera-hero__title ogera-reveal">{!! $hero['title'] !!}</h1>
-        <p class="ogera-hero__desc ogera-reveal">{{ $hero['description'] }}</p>
+        <p class="ogera-hero__eyebrow ogera-reveal">{{ $heroEyebrow }}</p>
+        <h1 class="ogera-hero__title ogera-reveal">{!! $heroTitle !!}</h1>
+        <p class="ogera-hero__desc ogera-reveal">{{ $heroDesc }}</p>
         <div class="ogera-hero__actions ogera-reveal">
-            @foreach ($hero['ctas'] as $btn)
-                <a href="{{ $btn['url'] }}" class="ogera-btn ogera-btn--{{ $btn['style'] }}">
-                    {{ $btn['label'] }} <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                </a>
-            @endforeach
-        </div>
-        @if (!empty($hero['link']))
-            <a href="{{ $hero['link']['url'] }}" class="ogera-hero__link ogera-reveal">
-                {{ $hero['link']['label'] }} <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            <a href="{{ $hero['ctas'][0]['url'] }}" class="ogera-btn ogera-btn--primary">
+                {{ $ctaPrimary }} <i data-lucide="arrow-right" class="w-4 h-4"></i>
             </a>
-        @endif
+            <a href="{{ $hero['ctas'][1]['url'] }}" class="ogera-btn ogera-btn--outline">
+                {{ $ctaSecondary }} <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+        </div>
+        <a href="{{ $hero['link']['url'] }}" class="ogera-hero__link ogera-reveal">
+            {{ $ctaLink }} <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </a>
     </div>
 </section>
 

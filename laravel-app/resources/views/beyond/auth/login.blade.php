@@ -4,7 +4,7 @@
 
 @php
     $title = 'Sign in';
-    $header = '<h1 class="text-2xl font-bold text-brand-blue">Beyond Enterprise</h1><p class="text-brand-blue text-sm mt-1">Sign in to continue</p>';
+    $header = '<h1 class="text-2xl font-bold text-brand-blue">'.e(\App\Support\SiteBrand::siteTitle()).'</h1><p class="text-brand-blue text-sm mt-1">Sign in to continue</p>';
     $activeTab = $tab ?? 'signin';
     $asCustomer = !empty($asCustomer);
     $signinQuery = [];

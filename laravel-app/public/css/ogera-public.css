@@ -52,6 +52,26 @@ html {
 .ogera-header:not(.is-solid) {
   background: linear-gradient(to bottom, rgba(7, 23, 17, 0.55), transparent);
 }
+.ogera-header__brand {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.45rem;
+  border-radius: 0.65rem;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+}
+.ogera-header__logo {
+  height: 2.6rem;
+  width: auto;
+  max-width: 9rem;
+  object-fit: contain;
+  display: block;
+}
+@media (min-width: 768px) {
+  .ogera-header__logo {
+    height: 3rem;
+  }
+}
 .ogera-header__inner {
   max-width: var(--og-max);
   margin: 0 auto;

@@ -149,11 +149,16 @@
                 text-align: left;
             }
 
-            .sidebar-brand-block img {
-                width: 52px;
-                height: 52px;
+            .sidebar-brand-block img,
+            .sidebar-brand-logo {
+                width: 64px;
+                height: 64px;
                 object-fit: contain;
-                margin-bottom: 8px;
+                margin: 0 auto 10px;
+                display: block;
+                background: rgba(255, 255, 255, 0.08);
+                border-radius: 12px;
+                padding: 6px;
             }
 
             .sidebar-brand-title,
@@ -1000,10 +1005,14 @@
             <div class="side-navbar-wrapper">
               @php
                   $brandTitle = $general_setting->site_title ?? config('app.name', 'Application');
+                  $brandLogoUrl = \App\Support\SiteBrand::logoUrl($general_setting ?? null);
                   $userInitial = strtoupper(substr(Auth::user()->name, 0, 1));
               @endphp
               <div class="sidebar-brand-block">
                   <div class="sidebar-brand-header">
+                      <a href="{{ url('/admin') }}" class="sidebar-brand-logo-link" style="text-decoration:none; display:block; text-align:center;">
+                          <img src="{{ $brandLogoUrl }}" alt="{{ $brandTitle }}" class="sidebar-brand-logo">
+                      </a>
                       <div class="sidebar-brand-text">
                           <a href="{{ url('/admin') }}" class="sidebar-brand-title" style="text-decoration:none; display:block;">{{ $brandTitle }}</a>
                       </div>
