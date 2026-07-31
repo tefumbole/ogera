@@ -1339,9 +1339,18 @@ class BookingController extends Controller
                     $lims_payment_data_debit->cash_register_id = $cash_register_data->id;
                 }
                 if($data['credit'] == null ) {
-                    $lims_account_data = Account::where('is_default_debit', true)->first();
+                    $lims_account_data = \Schema::hasColumn('accounts', 'is_default_debit')
+                        ? Account::where('is_default_debit', true)->first()
+                        : null;
+                    if (! $lims_account_data) {
+                        $lims_account_data = Account::where('is_default', true)->first()
+                            ?: Account::where('is_active', true)->first();
+                    }
                 }else{
                     $lims_account_data = Account::where('id', $data['debit'])->first();
+                }
+                if (! $lims_account_data) {
+                    return redirect()->back()->with('not_permitted', 'No payment account configured. Add an account in Accounting first.');
                 }
                 $lims_payment_data_debit->account_id = $lims_account_data->id;
                 $lims_payment_data_debit->debit_booking_id = $lims_sale_data->id;
@@ -1370,7 +1379,11 @@ class BookingController extends Controller
             if( isset($data['credit']) && $data['credit'] != null ) {
                 $lims_account_data = Account::where('id', $data['credit'])->first();
             }else{
-                $lims_account_data = Account::where('is_default', true)->first();
+                $lims_account_data = Account::where('is_default', true)->first()
+                    ?: Account::where('is_active', true)->first();
+            }
+            if (! $lims_account_data) {
+                return redirect()->back()->with('not_permitted', 'No payment account configured. Add an account in Accounting first.');
             }
             $lims_payment_data->account_id = $lims_account_data->id;
             $lims_payment_data->booking_id = $lims_sale_data->id;
@@ -2303,8 +2316,11 @@ class BookingController extends Controller
                 $recent_draft = Booking::where('booking_status', 3)->orderBy('id', 'desc')->take(10)->get();
             }
 
-            $lims_account_default = Account::where('is_default', true)->first();
-            $lims_account_default_debit = Account::where('is_default_debit', true)->first();
+            $lims_account_default = Account::where('is_default', true)->first()
+                ?: (isset($lims_account_list) ? $lims_account_list->first() : Account::where('is_active', true)->first());
+            $lims_account_default_debit = \Schema::hasColumn('accounts', 'is_default_debit')
+                ? (Account::where('is_default_debit', true)->first() ?: $lims_account_default)
+                : $lims_account_default;
             $lims_coupon_list = Coupon::where('is_active',true)->get();
             $flag = 0;
 

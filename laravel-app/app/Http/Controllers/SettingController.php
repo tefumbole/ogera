@@ -30,10 +30,14 @@ class SettingController extends Controller
         if(!config('app.user_verified'))
             return redirect()->back()->with('not_permitted', 'This feature is disable for demo!');
         $tables = DB::select('SHOW TABLES');
-        $str = 'Tables_in_' . env('DB_DATABASE');
+        $str = 'Tables_in_' . config('database.connections.mysql.database');
         foreach ($tables as $table) {
-            if($table->$str != 'accounts' && $table->$str != 'general_settings' && $table->$str != 'hrm_settings' && $table->$str != 'languages' && $table->$str != 'migrations' && $table->$str != 'password_resets' && $table->$str != 'permissions' && $table->$str != 'pos_setting' && $table->$str != 'roles' && $table->$str != 'role_has_permissions' && $table->$str != 'users' && $table->$str != 'currencies' && $table->$str != 'reward_point_settings') {
-                DB::table($table->$str)->truncate();
+            $name = $table->$str ?? null;
+            if (!$name) {
+                continue;
+            }
+            if($name != 'accounts' && $name != 'general_settings' && $name != 'hrm_settings' && $name != 'languages' && $name != 'migrations' && $name != 'password_resets' && $name != 'permissions' && $name != 'pos_setting' && $name != 'roles' && $name != 'role_has_permissions' && $name != 'users' && $name != 'currencies' && $name != 'reward_point_settings') {
+                DB::table($name)->truncate();
             }
         }
         return redirect()->back()->with('message', 'Database cleared successfully');
@@ -533,8 +537,10 @@ class SettingController extends Controller
         $lims_biller_list = Biller::where('is_active', true)->get();
         $lims_pos_setting_data = PosSetting::latest()->first();
         $lims_account_all = Account::where('is_active', true)->get();
-        $lims_account_default = Account::where('is_default', true)->first();
-        $lims_account_default_debit = Account::where('is_default_debit', true)->first();
+        $lims_account_default = Account::where('is_default', true)->first() ?: $lims_account_all->first();
+        $lims_account_default_debit = \Schema::hasColumn('accounts', 'is_default_debit')
+            ? (Account::where('is_default_debit', true)->first() ?: $lims_account_all->first())
+            : $lims_account_all->first();
 
     	return view('setting.pos_setting', compact('lims_customer_list', 'lims_warehouse_list', 'lims_biller_list', 'lims_pos_setting_data', 'lims_account_all', 'lims_account_default', 'lims_account_default_debit'));
     }
@@ -562,21 +568,17 @@ class SettingController extends Controller
     	$pos_setting->stripe_public_key = $data['stripe_public_key'];
     	$pos_setting->stripe_secret_key = $data['stripe_secret_key'];
 
-        $lims_account_data = Account::where('is_default', true)->first();
-        $lims_account_data->is_default = false;
-        $lims_account_data->save();
+        Account::where('is_default', true)->update(['is_default' => false]);
+        if (!empty($data['account_id'])) {
+            Account::where('id', $data['account_id'])->update(['is_default' => true]);
+        }
 
-        $lims_account_data = Account::find($data['account_id']);
-        $lims_account_data->is_default = true;
-        $lims_account_data->save();
-
-        $lims_account_data = Account::where('is_default_debit', true)->first();
-        $lims_account_data->is_default_debit = false;
-        $lims_account_data->save();
-
-        $lims_account_data = Account::find($data['debit_account_id']);
-        $lims_account_data->is_default_debit = true;
-        $lims_account_data->save();
+        if (\Schema::hasColumn('accounts', 'is_default_debit')) {
+            Account::where('is_default_debit', true)->update(['is_default_debit' => false]);
+            if (!empty($data['debit_account_id'])) {
+                Account::where('id', $data['debit_account_id'])->update(['is_default_debit' => true]);
+            }
+        }
 
         if(!isset($data['keybord_active']))
             $pos_setting->keybord_active = false;
