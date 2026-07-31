@@ -3476,6 +3476,9 @@ class SaleController extends Controller
     }
 
     public function stockDurationSave($id, $qty) {
+        if (! \Schema::hasTable('stock_durations')) {
+            return;
+        }
         $stockDuration = StockDuration::where([
             'product_id' => $id,
             'restock' => null
