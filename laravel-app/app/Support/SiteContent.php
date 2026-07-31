@@ -91,7 +91,7 @@ class SiteContent
                     'mission_text'       => ['textarea', 'Mission text', 'To provide innovative business solutions, premium rental services, and unforgettable events that empower our clients to succeed.'],
                     'vision_heading'     => ['text', 'Vision heading', 'Our Vision'],
                     'vision_text'        => ['textarea', 'Vision text', 'To redefine excellence through innovative business consulting, world-class event management, and dependable rental services that exceed expectations.'],
-                    'leadership_heading' => ['text', 'Leadership heading', 'Our Leadership'],
+                    'leadership_heading' => ['text', 'Leadership heading', 'Our Leaders'],
                     'leadership_subtext' => ['text', 'Leadership subtext', 'The visionaries driving OGERA Agency forward'],
                     'values_heading'     => ['text', 'Core values heading', 'Our Core Values'],
                     'registration_heading' => ['text', 'Registration heading', 'Company Registration'],

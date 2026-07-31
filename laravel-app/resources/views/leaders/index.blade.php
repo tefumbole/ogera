@@ -90,7 +90,7 @@
             </div>
             <div class="card-body">
                 @if($leaders->isEmpty())
-                    <p class="text-muted mb-0">No leaders yet. Add the first profile above — it will appear under “Our Leadership” on About Us.</p>
+                    <p class="text-muted mb-0">No leaders yet. Add the first profile above — it will appear under “Our Leaders” on About Us.</p>
                 @else
                     <form method="POST" action="{{ route('leaders.reorder') }}" id="leaders-reorder-form">
                         @csrf

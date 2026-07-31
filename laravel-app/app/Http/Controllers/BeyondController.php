@@ -32,9 +32,14 @@ class BeyondController extends Controller
 
     public function about()
     {
-        return view('beyond.about', [
-            'leaders' => \App\Leader::published()->ordered()->get(),
-        ]);
+        try {
+            $leaders = \App\Leader::published()->ordered()->get();
+        } catch (\Throwable $e) {
+            // The About page must render even if the leaders table is missing.
+            $leaders = collect();
+        }
+
+        return view('beyond.about', ['leaders' => $leaders]);
     }
 
     public function services()

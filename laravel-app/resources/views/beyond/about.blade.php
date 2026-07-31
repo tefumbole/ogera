@@ -48,44 +48,62 @@
     </div>
 </section>
 
-@if(isset($leaders) && $leaders->count())
+@php
+    $leaders = isset($leaders) ? $leaders : collect();
+    $canManageLeaders = Auth::check() && in_array((int) Auth::user()->role_id, [1, 2], true);
+@endphp
+
+@if($leaders->count() || $canManageLeaders)
 <section id="leadership" class="py-20 bg-brand-blue">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-16">
-            <h2 class="text-4xl font-bold text-white mb-4">{{ \App\Support\SiteContent::text('about.leadership_heading', 'Our Leadership') }}</h2>
+        <div class="text-center mb-14">
+            <h2 class="text-4xl font-bold text-white mb-4">{{ \App\Support\SiteContent::text('about.leadership_heading', 'Our Leaders') }}</h2>
             <div class="h-1 w-24 bg-brand-gold mx-auto"></div>
             <p class="mt-4 text-xl text-gray-300">{{ \App\Support\SiteContent::text('about.leadership_subtext', 'The visionaries driving OGERA Agency forward') }}</p>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            @foreach($leaders as $leader)
-                <div class="group flex flex-col items-center text-center">
-                    <div class="relative mb-6">
-                        <div class="absolute inset-0 bg-gradient-to-br from-brand-gold to-[#F7E7CE] rounded-full blur opacity-75 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        <div class="relative w-48 h-48 rounded-full p-1 bg-gradient-to-br from-brand-gold to-[#8a701f]">
-                            <div class="w-full h-full rounded-full overflow-hidden border-4 border-brand-blue bg-gray-200">
-                                @if($leader->photoPublicUrl())
-                                    <img src="{{ $leader->photoPublicUrl() }}" alt="{{ $leader->name }}" class="w-full h-full object-cover">
-                                @else
-                                    <div class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400">
-                                        <i data-lucide="user" class="w-16 h-16"></i>
-                                    </div>
-                                @endif
+
+        @if($leaders->count())
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                @foreach($leaders as $leader)
+                    <div class="group flex flex-col items-center text-center">
+                        <div class="relative mb-6">
+                            <div class="absolute inset-0 bg-gradient-to-br from-brand-gold to-[#F7E7CE] rounded-full blur opacity-75 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <div class="relative w-48 h-48 rounded-full p-1 bg-gradient-to-br from-brand-gold to-[#8a701f]">
+                                <div class="w-full h-full rounded-full overflow-hidden border-4 border-brand-blue bg-gray-200">
+                                    @if($leader->photoPublicUrl())
+                                        <img src="{{ $leader->photoPublicUrl() }}" alt="{{ $leader->name }}" class="w-full h-full object-cover">
+                                    @else
+                                        <div class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400">
+                                            <i data-lucide="user" class="w-16 h-16"></i>
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <h3 class="text-2xl font-bold text-white">
-                        {{ $leader->name }}
-                        @if($leader->country)
-                            <span class="ml-1" title="{{ $leader->country }}">{{ $leader->countryFlag() ?: '' }}</span>
+                        <h3 class="text-2xl font-bold text-white">
+                            {{ $leader->name }}
+                            @if($leader->country)
+                                <span class="ml-1" title="{{ $leader->country }}">{{ $leader->countryFlag() ?: '' }}</span>
+                            @endif
+                        </h3>
+                        <p class="mt-1 text-sm font-semibold uppercase tracking-wide text-brand-gold">{{ $leader->title }}</p>
+                        @if($leader->description)
+                            <p class="mt-3 text-gray-300 text-sm leading-relaxed max-w-sm">{{ $leader->description }}</p>
                         @endif
-                    </h3>
-                    <p class="mt-1 text-sm font-semibold uppercase tracking-wide text-brand-gold">{{ $leader->title }}</p>
-                    @if($leader->description)
-                        <p class="mt-3 text-gray-300 text-sm leading-relaxed max-w-sm">{{ $leader->description }}</p>
-                    @endif
-                </div>
-            @endforeach
-        </div>
+                    </div>
+                @endforeach
+            </div>
+        @else
+            {{-- Visible to admins only: the section stays hidden from the public until a leader is published. --}}
+            <div class="max-w-xl mx-auto text-center border-2 border-dashed border-white/25 rounded-2xl p-10">
+                <i data-lucide="user-plus" class="w-10 h-10 text-brand-gold mx-auto mb-4"></i>
+                <p class="text-gray-300">No leaders published yet. This section is only visible to you until you add one.</p>
+                <a href="{{ url('/admin/leaders') }}"
+                   class="mt-6 inline-flex items-center gap-2 bg-brand-gold text-brand-blue font-bold px-6 py-3 rounded-full hover:bg-white transition-colors">
+                    <i data-lucide="plus" class="w-5 h-5"></i> Add leaders in Admin Panel
+                </a>
+            </div>
+        @endif
     </div>
 </section>
 @endif

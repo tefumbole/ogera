@@ -141,6 +141,7 @@ class Leader extends Model
             'Spain' => '🇪🇸',
             'Portugal' => '🇵🇹',
             'Italy' => '🇮🇹',
+            'Malta' => '🇲🇹',
             'Netherlands' => '🇳🇱',
             'Belgium' => '🇧🇪',
             'Switzerland' => '🇨🇭',
