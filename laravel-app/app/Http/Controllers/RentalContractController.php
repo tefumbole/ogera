@@ -103,39 +103,53 @@ class RentalContractController extends Controller
             ])->withInput();
         }
 
-        $user = $this->ensureClientUser($customer, $phone);
-        $password = $contract->generated_password ?: Str::random(8);
-
-        if (!$contract->client_user_id) {
-            $user->password = bcrypt($password);
-            $user->save();
-        }
-
-        $contract->update([
-            'agreement_read_at' => now(),
-            'signed_at' => now(),
-            'review_status' => BookingContract::STATUS_PENDING_REVIEW,
-            'signature_image' => $request->signature_image,
-            'id_card_path' => $idPath,
-            'client_user_id' => $user->id,
-            'client_username' => $phone,
-            'generated_password' => $password,
-            'qr_token' => $contract->qr_token ?: Str::random(48),
-        ]);
-
-        Auth::login($user);
-
-        $this->notifyPendingReview($contract->fresh());
-
-        // Client receives a full booking/quotation copy (products, schedule, totals) — without the agreement.
         try {
-            app(BookingController::class)->deliverPostSignatureReceipt($booking->id);
-        } catch (\Throwable $e) {
-            Log::warning('Post-sign booking copy to client failed for booking ' . $booking->reference_no . ': ' . $e->getMessage());
-        }
+            $user = $this->ensureClientUser($customer, $phone);
+            $password = $contract->generated_password ?: Str::random(8);
 
-        return redirect()->route('rental.portal', $token)
-            ->with('message', 'Agreement signed successfully. A copy of your booking details has been sent to you on WhatsApp. Our team will review and countersign shortly; you will receive the final PDF and QR code once approved.');
+            if (!$contract->client_user_id) {
+                $user->password = bcrypt($password);
+                $user->save();
+            }
+
+            $contract->update([
+                'agreement_read_at' => now(),
+                'signed_at' => now(),
+                'review_status' => BookingContract::STATUS_PENDING_REVIEW,
+                'signature_image' => $request->signature_image,
+                'id_card_path' => $idPath,
+                'client_user_id' => $user->id,
+                'client_username' => $phone,
+                'generated_password' => $password,
+                'qr_token' => $contract->qr_token ?: Str::random(48),
+            ]);
+
+            Auth::login($user);
+
+            try {
+                $this->notifyPendingReview($contract->fresh());
+            } catch (\Throwable $e) {
+                Log::warning('Pending-review notify failed for contract '.$contract->id.': '.$e->getMessage());
+            }
+
+            // Client receives a full booking/quotation copy (products, schedule, totals) — without the agreement.
+            try {
+                app(BookingController::class)->deliverPostSignatureReceipt($booking->id);
+            } catch (\Throwable $e) {
+                Log::warning('Post-sign booking copy to client failed for booking ' . $booking->reference_no . ': ' . $e->getMessage());
+            }
+
+            return redirect()->route('rental.portal', $token)
+                ->with('message', 'Agreement signed successfully. A copy of your booking details has been sent to you on WhatsApp. Our team will review and countersign shortly; you will receive the final PDF and QR code once approved.');
+        } catch (\Throwable $e) {
+            Log::error('Rental agreement sign failed for token '.$token.': '.$e->getMessage(), [
+                'exception' => $e,
+            ]);
+
+            return back()->withErrors([
+                'agreement' => 'We saved your ID but could not finish signing. Please try Submit again, or contact us if this continues.',
+            ])->withInput();
+        }
     }
 
     public function portal($token)

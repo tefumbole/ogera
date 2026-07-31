@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Studio Rental Agreement - {{ $general_setting->site_title ?? 'Agreement' }}</title>
-    <link rel="icon" type="image/png" href="{{ url('public/logo', $general_setting->site_logo) }}" />
+    <title>Studio Rental Agreement - {{ \App\Support\SiteBrand::siteTitle($general_setting ?? null) }}</title>
+    <link rel="icon" type="image/png" href="{{ \App\Support\SiteBrand::logoUrl($general_setting ?? null) }}" />
     <style>
         :root {
             --primary: #033d2e;
@@ -105,9 +105,7 @@
 <body>
 <div class="wrap">
     <div class="hero">
-        @if(!empty($general_setting->site_logo))
-            <img src="{{ url('public/logo', $general_setting->site_logo) }}" alt="{{ $general_setting->site_title }}">
-        @endif
+        @include('booking.partials.agreement_brand')
         <h1>Studio Rental Agreement</h1>
         <p>Booking Ref: <strong>{{ $booking->reference_no }}</strong> | Client: <strong>{{ $booking->customer->name ?? '' }}</strong></p>
     </div>

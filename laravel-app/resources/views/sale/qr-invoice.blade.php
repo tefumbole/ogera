@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="icon" type="image/png" href="{{url('public/logo', $general_setting->site_logo)}}" />
+    <link rel="icon" type="image/png" href="{{ \App\Support\SiteBrand::logoUrl($general_setting ?? null) }}" />
     <title>{{$general_setting->site_title}}</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -141,7 +141,7 @@
 
                         @if($general_setting->invoice_format != 'beyond_a4')
                             @if($general_setting->site_logo)
-                                <img src="{{url('public/logo', $general_setting->site_logo)}}" height="42" width="50" style="margin:10px 0;filter: brightness(0);">
+                                <img src="{{ \App\Support\SiteBrand::logoUrl($general_setting ?? null) }}" height="42" width="50" style="margin:10px 0;">
                             @endif
                             <h2>{{@$lims_biller_data->company_name}}</h2>
                         @endif

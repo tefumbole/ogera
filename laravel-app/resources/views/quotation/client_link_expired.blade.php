@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Link expired - {{ $general_setting->site_title ?? 'Beyond' }}</title>
+    <title>Link expired - {{ \App\Support\SiteBrand::siteTitle($general_setting ?? null) }}</title>
     <style>
         body { margin:0; font-family: Nunito, system-ui, sans-serif; background: linear-gradient(180deg,#041f4a 0%,#033d2e 100%); color:#fff; min-height:100vh; }
         .wrap { max-width:640px; margin:0 auto; padding:48px 16px; text-align:center; }
@@ -18,7 +18,8 @@
     <div class="card">
         <div class="badge">Link expired</div>
         <h1>This quotation link is no longer valid</h1>
-        <p>The approval link has expired or has already been used. If you still need to review or sign this quotation, please contact Beyond Enterprise for a new link.</p>
+        <div style="margin-bottom:14px;">@include('booking.partials.agreement_brand', ['compact' => true])</div>
+        <p>This link has expired or has already been used. If you still need to review or sign, please contact {{ \App\Support\SiteBrand::siteTitle($general_setting ?? null) }} for a new link.</p>
     </div>
 </div>
 </body>
