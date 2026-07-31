@@ -127,21 +127,6 @@
     </div>
 </section>
 
-<section class="py-16 bg-gray-50">
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-3xl font-bold text-brand-blue mb-3">{{ \App\Support\SiteContent::text('about.registration_heading', 'Company Registration') }}</h2>
-        <p class="text-gray-600 mb-8">{{ \App\Support\SiteContent::text('about.registration_text', 'OGERA Agency is a duly registered company in Rwanda.') }}</p>
-        <div class="inline-flex flex-col items-center gap-4 bg-white rounded-2xl shadow-md p-6">
-            <img src="{{ asset('public/branding/ogera-registration-qr.png') }}" alt="OGERA Agency registration QR code" class="w-44 h-44 object-contain">
-            <div>
-                <div class="text-sm uppercase tracking-wide text-gray-500">TIN Number</div>
-                <div class="text-2xl font-bold text-brand-blue">{{ \App\Support\OgeraLandingContent::footer()['tin'] }}</div>
-            </div>
-            <p class="text-xs text-gray-500 max-w-xs">Scan the QR code to verify OGERA Agency's official company registration.</p>
-        </div>
-    </div>
-</section>
-
 <section class="py-16 bg-gradient-to-r from-brand-blue to-brand-dark text-white text-center">
     <div class="max-w-4xl mx-auto px-4">
         <h2 class="text-3xl font-bold mb-6">{{ \App\Support\SiteContent::text('about.cta_heading', 'Ready to work with us?') }}</h2>

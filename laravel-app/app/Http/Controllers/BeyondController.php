@@ -90,19 +90,19 @@ class BeyondController extends Controller
     {
         return [
             [
-                'emoji' => '📈',
+                'icon' => 'trending-up',
                 'title' => 'Business Development Consulting',
                 'description' => 'Strategy, brand positioning, partnerships, and growth programs that turn ambition into measurable traction.',
                 'url' => url('/contact') . '?service=business',
             ],
             [
-                'emoji' => '📦',
+                'icon' => 'package',
                 'title' => 'Rental Services',
                 'description' => 'Premium AV, staging, and event equipment — delivered, installed, and fully supported for your production.',
                 'url' => url('/rentals'),
             ],
             [
-                'emoji' => '🎉',
+                'icon' => 'sparkles',
                 'title' => 'Event Planning & Management',
                 'description' => 'Corporate, social, and cultural events designed and produced end-to-end — from concept to guest experience.',
                 'url' => url('/events'),
