@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\GalleryItem;
 use App\SiteSetting;
 use App\Support\GalleryEmbed;
+use App\Support\RoleAccess;
 use App\Support\SiteContent;
 use App\Support\SiteMenu;
 use Illuminate\Http\Request;
@@ -12,10 +13,10 @@ use Illuminate\Support\Facades\Auth;
 
 class SiteContentController extends Controller
 {
-    /** Restrict Site Content management to Admin / Owner roles. */
+    /** Site Content is gated by the "site_content" permission (Super Admin always allowed). */
     protected function authorizeAdmin()
     {
-        if (! Auth::check() || ! in_array((int) Auth::user()->role_id, [1, 2], true)) {
+        if (! Auth::check() || ! RoleAccess::allows('site_content')) {
             abort(403, 'You are not allowed to manage site content.');
         }
     }

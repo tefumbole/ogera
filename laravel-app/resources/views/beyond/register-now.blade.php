@@ -1,7 +1,8 @@
 @extends('beyond.layout')
 
 @section('title', 'Register Now')
-@section('meta_description', 'Register for Beyond Enterprise training programs and courses.')
+@php $siteName = \App\Support\SiteBrand::siteTitle($general_setting ?? null); @endphp
+@section('meta_description', 'Register for '.$siteName.' training programs and courses.')
 
 @section('content')
 
@@ -12,7 +13,7 @@
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-center text-white z-10">
             <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-2">Register Now</h1>
             <p class="text-lg md:text-xl text-blue-100 max-w-2xl">
-                Join Beyond Enterprise and elevate your skills with our premium courses. Select your courses below to get started.
+                Join {{ $siteName }} and elevate your skills with our premium courses. Select your courses below to get started.
             </p>
         </div>
     </div>

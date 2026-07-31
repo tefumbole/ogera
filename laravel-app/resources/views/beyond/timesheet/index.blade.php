@@ -1,7 +1,7 @@
 @extends('beyond.layout')
 
 @section('title', 'My Timesheet')
-@section('meta_description', 'Log and review your working hours at Beyond Enterprise.')
+@section('meta_description', 'Log and review your working hours at '.\App\Support\SiteBrand::siteTitle($general_setting ?? null).'.')
 
 @php
     $months = [];

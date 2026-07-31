@@ -174,7 +174,7 @@ class AnnouncementNotificationService extends Controller
             $msg .= ":\n\n";
             $msg .= "▪️ *" . ($announcement->subject ?: 'Announcement') . "*\n";
             $msg .= "▪️ Scheduled: {$when}\n\n";
-            $msg .= "_Beyond Enterprise_";
+            $msg .= "_" . \App\Support\SiteBrand::siteTitle() . "_";
             if ($this->sendPhone($phone, $msg)) {
                 $sent++;
             }

@@ -1,7 +1,7 @@
 @extends('beyond.layout')
 
 @section('title', 'Registration Confirmation')
-@section('meta_description', 'Your Beyond Enterprise training registration confirmation.')
+@section('meta_description', 'Your '.\App\Support\SiteBrand::siteTitle($general_setting ?? null).' training registration confirmation.')
 
 @section('content')
 <div class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">

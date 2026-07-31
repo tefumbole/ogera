@@ -9,6 +9,7 @@ use App\Biller;
 use App\Warehouse;
 use App\CustomerGroup;
 use App\Customer;
+use App\Support\RoleAccess;
 use Hash;
 use Illuminate\Support\Facades\Auth;
 use Keygen;
@@ -23,11 +24,13 @@ class UserController extends Controller
 
     public function index()
     {
-        $role = Role::find(Auth::user()->role_id);
-        if($role->hasPermissionTo('users-index')){
-            $permissions = Role::findByName($role->name)->permissions;
-            foreach ($permissions as $permission)
-                $all_permission[] = $permission->name;
+        if(RoleAccess::allows('users-index')){
+            $role = Role::find(Auth::user()->role_id);
+            $all_permission = [];
+            if($role) {
+                foreach ($role->permissions as $permission)
+                    $all_permission[] = $permission->name;
+            }
             $lims_user_list = User::where('is_deleted', false)->whereRaw('COALESCE(is_active, 0) = 1')->get();
             return view('user.index', compact('lims_user_list', 'all_permission'));
         }
@@ -37,8 +40,7 @@ class UserController extends Controller
 
     public function create()
     {
-        $role = Role::find(Auth::user()->role_id);
-        if($role->hasPermissionTo('users-add')){
+        if(RoleAccess::allows('users-add')){
             $lims_role_list = Roles::where('is_active', true)->get();
             $lims_biller_list = Biller::where('is_active', true)->get();
             $lims_warehouse_list = Warehouse::where('is_active', true)->get();
@@ -152,8 +154,7 @@ class UserController extends Controller
 
     public function edit($id)
     {
-        $role = Role::find(Auth::user()->role_id);
-        if($role->hasPermissionTo('users-edit')){
+        if(RoleAccess::allows('users-edit')){
             $lims_user_data = User::find($id);
             $lims_role_list = Roles::where('is_active', true)->get();
             $lims_biller_list = Biller::where('is_active', true)->get();
@@ -361,9 +362,16 @@ class UserController extends Controller
 
     public function deleteBySelection(Request $request)
     {
+        if(!RoleAccess::allows('users-delete'))
+            return 'Sorry! You are not allowed to delete users.';
+
         $user_id = $request['userIdArray'];
         foreach ($user_id as $id) {
+            if((int) Auth::id() === (int) $id)
+                continue;
             $lims_user_data = User::find($id);
+            if(!$lims_user_data)
+                continue;
             $lims_user_data->is_deleted = true;
             $lims_user_data->is_active = false;
             $lims_user_data->save();
@@ -376,11 +384,17 @@ class UserController extends Controller
         if(!config('app.user_verified'))
             return redirect()->back()->with('not_permitted', 'This feature is disable for demo!');
 
+        if(!RoleAccess::allows('users-delete'))
+            return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
+
         if(Auth::id() == $id){
             return redirect('user')->with('message3', 'User cannot delete itself');
         }
 
         $lims_user_data = User::find($id);
+        if(!$lims_user_data){
+            return redirect('user')->with('message3', 'User not found');
+        }
         $lims_user_data->is_deleted = true;
         $lims_user_data->name = 'deleted';
         $lims_user_data->password = 'deleted';

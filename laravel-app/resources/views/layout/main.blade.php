@@ -1020,13 +1020,6 @@
               </div>
                 <div class="main-menu">
                     <ul id="side-main-menu" class="side-menu list-unstyled">
-                        @if(Auth::user()->role_id != 7)
-                            <li><a href="{{ url('/admin') }}"> <i class="dripicons-meter"></i><span>{{ __('file.dashboard') }}</span></a></li>
-                        @endif
-                        @if(in_array((int) Auth::user()->role_id, [1, 2], true))
-                            <li><a href="{{ url('/admin/site-content') }}"> <i class="dripicons-web"></i><span>Site Content</span></a></li>
-                            <li><a href="{{ url('/admin/leaders') }}"> <i class="dripicons-user-group"></i><span>About Us Leaders</span></a></li>
-                        @endif
                         <?php
                         $role = \Spatie\Permission\Models\Role::find(Auth::user()->role_id);
                         if (!isset($all_permission) || !is_array($all_permission)) {
@@ -1038,6 +1031,37 @@
                             }
                         }
                         $roleId = $role ? $role->id : 0;
+                        $is_super_admin = \App\Support\RoleAccess::isSuperAdmin();
+                        // Super Admin always sees every menu; every other role is driven purely
+                        // by the permissions granted on Settings → Role Permission.
+                        $menu_has_permission = function ($name) use ($roleId, $is_super_admin) {
+                            static $cache = [];
+                            if ($is_super_admin) {
+                                return true;
+                            }
+                            if (!$roleId) {
+                                return false;
+                            }
+                            if (!array_key_exists($name, $cache)) {
+                                $permission = DB::table('permissions')->where('name', $name)->first();
+                                $cache[$name] = $permission ? (bool) DB::table('role_has_permissions')->where([
+                                    ['permission_id', $permission->id],
+                                    ['role_id', $roleId]
+                                ])->first() : false;
+                            }
+
+                            return $cache[$name];
+                        };
+                        $site_content_permission_active = $menu_has_permission('site_content');
+                        ?>
+                        @if(Auth::user()->role_id != 7)
+                            <li><a href="{{ url('/admin') }}"> <i class="dripicons-meter"></i><span>{{ __('file.dashboard') }}</span></a></li>
+                        @endif
+                        @if($site_content_permission_active)
+                            <li><a href="{{ url('/admin/site-content') }}"> <i class="dripicons-web"></i><span>Site Content</span></a></li>
+                            <li><a href="{{ url('/admin/leaders') }}"> <i class="dripicons-user-group"></i><span>About Us Leaders</span></a></li>
+                        @endif
+                        <?php
                         $category_permission_active = $roleId ? DB::table('permissions')
                             ->join('role_has_permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
                             ->where([
@@ -2353,87 +2377,23 @@
                         <li><a href="#setting" aria-expanded="false" data-toggle="collapse"> <i class="dripicons-gear"></i><span>{{trans('file.settings')}}</span></a>
                             <ul id="setting" class="collapse list-unstyled ">
                                 <?php
-                                $send_notification_permission = DB::table('permissions')->where('name', 'send_notification')->first();
-                                $send_notification_permission_active = DB::table('role_has_permissions')->where([
-                                    ['permission_id', $send_notification_permission->id],
-                                    ['role_id', $role->id]
-                                ])->first();
-
-                                $warehouse_permission = DB::table('permissions')->where('name', 'warehouse')->first();
-                                $warehouse_permission_active = DB::table('role_has_permissions')->where([
-                                    ['permission_id', $warehouse_permission->id],
-                                    ['role_id', $role->id]
-                                ])->first();
-
-                                $customer_group_permission = DB::table('permissions')->where('name', 'customer_group')->first();
-                                $customer_group_permission_active = DB::table('role_has_permissions')->where([
-                                    ['permission_id', $customer_group_permission->id],
-                                    ['role_id', $role->id]
-                                ])->first();
-
-                                $brand_permission = DB::table('permissions')->where('name', 'brand')->first();
-                                $brand_permission_active = DB::table('role_has_permissions')->where([
-                                    ['permission_id', $brand_permission->id],
-                                    ['role_id', $role->id]
-                                ])->first();
-
-                                $unit_permission = DB::table('permissions')->where('name', 'unit')->first();
-                                $unit_permission_active = DB::table('role_has_permissions')->where([
-                                    ['permission_id', $unit_permission->id],
-                                    ['role_id', $role->id]
-                                ])->first();
-
-                                $currency_permission = DB::table('permissions')->where('name', 'currency')->first();
-                                $currency_permission_active = DB::table('role_has_permissions')->where([
-                                    ['permission_id', $currency_permission->id],
-                                    ['role_id', $role->id]
-                                ])->first();
-
-                                $tax_permission = DB::table('permissions')->where('name', 'tax')->first();
-                                $tax_permission_active = DB::table('role_has_permissions')->where([
-                                    ['permission_id', $tax_permission->id],
-                                    ['role_id', $role->id]
-                                ])->first();
-
-                                $general_setting_permission = DB::table('permissions')->where('name', 'general_setting')->first();
-                                $general_setting_permission_active = DB::table('role_has_permissions')->where([
-                                    ['permission_id', $general_setting_permission->id],
-                                    ['role_id', $role->id]
-                                ])->first();
-
-                                $backup_database_permission = DB::table('permissions')->where('name', 'backup_database')->first();
-                                $backup_database_permission_active = DB::table('role_has_permissions')->where([
-                                    ['permission_id', $backup_database_permission->id],
-                                    ['role_id', $role->id]
-                                ])->first();
-
-                                $mail_setting_permission = DB::table('permissions')->where('name', 'mail_setting')->first();
-                                $mail_setting_permission_active = DB::table('role_has_permissions')->where([
-                                    ['permission_id', $mail_setting_permission->id],
-                                    ['role_id', $role->id]
-                                ])->first();
-
-                                $pos_setting_permission = DB::table('permissions')->where('name', 'pos_setting')->first();
-                                $pos_setting_permission_active = DB::table('role_has_permissions')->where([
-                                    ['permission_id', $pos_setting_permission->id],
-                                    ['role_id', $role->id]
-                                ])->first();
-
-                                $reward_point_setting_permission = DB::table('permissions')->where('name', 'reward_point_setting')->first();
-                                $reward_point_setting_permission_active = DB::table('role_has_permissions')->where([
-                                    ['permission_id', $reward_point_setting_permission->id],
-                                    ['role_id', $role->id]
-                                ])->first();
-
-                                $empty_database_permission = DB::table('permissions')->where('name', 'empty_database')->first();
-                                $empty_database_permission_active = $empty_database_permission
-                                    ? DB::table('role_has_permissions')->where([
-                                        ['permission_id', $empty_database_permission->id],
-                                        ['role_id', $role->id]
-                                    ])->first()
-                                    : null;
+                                $send_notification_permission_active = $menu_has_permission('send_notification');
+                                $warehouse_permission_active = $menu_has_permission('warehouse');
+                                $customer_group_permission_active = $menu_has_permission('customer_group');
+                                $brand_permission_active = $menu_has_permission('brand');
+                                $unit_permission_active = $menu_has_permission('unit');
+                                $currency_permission_active = $menu_has_permission('currency');
+                                $tax_permission_active = $menu_has_permission('tax');
+                                $general_setting_permission_active = $menu_has_permission('general_setting');
+                                $backup_database_permission_active = $menu_has_permission('backup_database');
+                                $mail_setting_permission_active = $menu_has_permission('mail_setting');
+                                $pos_setting_permission_active = $menu_has_permission('pos_setting');
+                                $reward_point_setting_permission_active = $menu_has_permission('reward_point_setting');
+                                $empty_database_permission_active = $menu_has_permission('empty_database');
+                                $role_permission_active = $menu_has_permission('role_permission');
+                                $activity_logs_permission_active = $menu_has_permission('activity_logs') || $general_setting_permission_active;
                                 ?>
-                                @if($role->name == 'Admin')
+                                @if($role_permission_active)
                                     <li id="role-menu"><a href="{{route('role.index')}}">{{trans('file.Role Permission')}}</a></li>
                                 @endif
                                 @if($send_notification_permission_active)
@@ -2476,10 +2436,9 @@
                                 @endif
                                 @if($general_setting_permission_active)
                                     <li id="general-setting-menu"><a href="{{route('setting.general')}}">{{trans('file.General Setting')}}</a></li>
-                                    <li id="activity-logs-menu"><a href="{{route('activity-logs.index')}}">Activity Logs</a></li>
                                     <li id="env-setting-menu"><a href="{{route('setting.env')}}">.env Settings</a></li>
                                 @endif
-                                @if(!$general_setting_permission_active && in_array((int) Auth::user()->role_id, [1, 2], true))
+                                @if($activity_logs_permission_active)
                                     <li id="activity-logs-menu"><a href="{{route('activity-logs.index')}}">Activity Logs</a></li>
                                 @endif
                                 @if($mail_setting_permission_active)
@@ -3394,28 +3353,41 @@
                   $('#beyond-module-tabs-label').text(parentLabel);
                   $nav.empty();
 
-                  $submenu.find('> li > a').each(function (index) {
-                      var $link = $(this);
-                      var href = $link.attr('href');
-                      if (!href || href === '#' || href.indexOf('javascript') === 0) {
+                  $submenu.find('> li').each(function (index) {
+                      var $item = $(this);
+                      // Settings holds two non-navigable entries: a modal trigger with an
+                      // empty href (Send Notification) and a POST form (Empty Database).
+                      // Both are proxied so the tab bar mirrors the submenu exactly.
+                      var $link = $item.children('a').first();
+                      var $trigger = $link.length ? $link : $item.find('form button').first();
+                      if (!$trigger.length) {
                           return;
                       }
 
-                      var $badge = $link.find('.beyond-attention-badge').first();
+                      var href = $link.length ? $link.attr('href') : '';
+                      var isNavigable = !!href && href !== '#' && href.indexOf('javascript') !== 0;
+
+                      var $badge = $trigger.find('.beyond-attention-badge').first();
                       var badgeHtml = $badge.length ? $badge.clone() : null;
-                      var label = $.trim($link.clone().children('.beyond-attention-badge, .badge').remove().end().text());
+                      var label = $.trim($trigger.clone().children('.beyond-attention-badge, .badge').remove().end().text());
                       if (!label) {
                           return;
                       }
 
                       var tones = ['tone-blue', 'tone-gold', 'tone-purple', 'tone-pink', 'tone-green', 'tone-orange', 'tone-teal', 'tone-red'];
                       var toneClass = tones[index % tones.length];
-                      var isActive = $link.closest('li').hasClass('active');
-                      var iconClass = resolveTabIcon($link, $parentLink);
+                      var isActive = $item.hasClass('active');
+                      var iconClass = resolveTabIcon($trigger, $parentLink);
                       var $tab = $('<a>', {
                           'class': 'beyond-module-tab ' + toneClass + (isActive ? ' is-active' : ''),
-                          'href': href
+                          'href': isNavigable ? href : '#'
                       });
+                      if (!isNavigable) {
+                          $tab.on('click', function (e) {
+                              e.preventDefault();
+                              $trigger.trigger('click');
+                          });
+                      }
                       $tab.append($('<i>', { 'class': iconClass }));
                       $tab.append($('<span>').text(label));
                       if (badgeHtml) {

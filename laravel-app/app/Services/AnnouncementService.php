@@ -27,8 +27,8 @@ class AnnouncementService
         $row = WaAnnouncementSetting::query()->first();
         if (! $row) {
             $row = WaAnnouncementSetting::create([
-                'company_name' => 'Beyond Enterprise',
-                'default_header' => 'Beyond Enterprise',
+                'company_name' => \App\Support\SiteBrand::siteTitle(),
+                'default_header' => \App\Support\SiteBrand::siteTitle(),
                 'serial_prefix' => 'BEY/ANN/',
                 'next_serial' => 1,
                 'serial_padding' => 4,

@@ -138,7 +138,7 @@
         <button class="btn btn-secondary date-btn active" data-start_date="{{date('Y').'-'.date('m').'-'.'01'}}" data-end_date="{{date('Y-m-d')}}">{{trans('file.This Month')}}</button>
         <button class="btn btn-secondary date-btn" data-start_date="{{date('Y').'-01'.'-01'}}" data-end_date="{{date('Y').'-12'.'-31'}}">{{trans('file.This Year')}}</button>
       </div>
-      @if($role->name == 'Admin' || Auth::user()->role_id <= 2)
+      @if(\App\Support\RoleAccess::allows('general_setting'))
       <a href="{{ route('setting.general') }}" class="btn btn-primary"><i class="dripicons-gear"></i> Settings</a>
       @endif
     </div>
@@ -221,7 +221,7 @@
           <p>Frequently used management tools</p>
         </div>
         <div class="beyond-quick-grid">
-          @if(Auth::user()->role_id <= 2)
+          @if(\App\Support\RoleAccess::allows('users-index'))
           <a href="{{ route('user.index') }}" class="beyond-quick-card">
             <div class="icon-wrap blue" style="background:rgba(3,61,46,.12);color:#033d2e;"><i class="dripicons-user-group"></i></div>
             <div>

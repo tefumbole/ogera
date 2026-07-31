@@ -1,7 +1,7 @@
 @extends('beyond.layout')
 
 @section('title', 'Invest in Shares')
-@section('meta_description', 'Secure your shares in Beyond Enterprise. Join our community of shareholders and be part of our growth story.')
+@section('meta_description', 'Secure your shares in '.\App\Support\SiteBrand::siteTitle($general_setting ?? null).'. Join our community of shareholders and be part of our growth story.')
 
 @section('content')
 <div class="min-h-screen bg-gray-50">

@@ -189,7 +189,7 @@ class ContractTemplateController extends Controller
             ],
             'party_a' => [
                 'role_label' => 'Party A',
-                'name' => 'Beyond Enterprise',
+                'name' => \App\Support\SiteBrand::siteTitle(),
                 'address' => 'Douala, Cameroon',
                 'email' => 'contracts@beyondtechworld.com',
                 'phone' => '+237600000000',

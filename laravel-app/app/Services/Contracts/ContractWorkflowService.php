@@ -346,7 +346,7 @@ class ContractWorkflowService
         ]);
 
         $url = url('/contracts/sign/'.$plain);
-        $msg = "Beyond Enterprise: Please review and sign contract {$contract->number} ({$contract->title}). Open: {$url}";
+        $msg = \App\Support\SiteBrand::siteTitle() . ": Please review and sign contract {$contract->number} ({$contract->title}). Open: {$url}";
 
         if ($sig->phone) {
             try {

@@ -1,7 +1,7 @@
 @extends('beyond.layout')
 
 @section('title', $job->title.' — Apply')
-@section('meta_description', 'Apply for '.$job->title.' at Beyond Enterprise.')
+@section('meta_description', 'Apply for '.$job->title.' at '.\App\Support\SiteBrand::siteTitle($general_setting ?? null).'.')
 
 @section('content')
 @php

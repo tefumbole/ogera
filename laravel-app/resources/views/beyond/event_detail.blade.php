@@ -1,7 +1,7 @@
 @extends('beyond.layout')
 
 @section('title', ($pub->public_title ?: $event->name) . ' | Events')
-@section('meta_description', $pub->public_summary ?: 'Event details from Beyond Enterprise.')
+@section('meta_description', $pub->public_summary ?: ('Event details from '.\App\Support\SiteBrand::siteTitle($general_setting ?? null).'.'))
 
 @section('content')
 

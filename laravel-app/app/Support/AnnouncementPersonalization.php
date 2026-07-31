@@ -17,7 +17,7 @@ class AnnouncementPersonalization
         return $result;
     }
 
-    public static function recipientVars(array $person, $reference = '', $institution = 'Beyond Enterprise')
+    public static function recipientVars(array $person, $reference = '', $institution = null)
     {
         return [
             'Name' => $person['name'] ?? '',
@@ -30,13 +30,13 @@ class AnnouncementPersonalization
             'address' => $person['address'] ?? '',
             'date' => date('d M Y'),
             'reference' => $reference,
-            'institution_name' => $institution,
+            'institution_name' => $institution ?: SiteBrand::siteTitle(),
         ];
     }
 
     public static function buildMessage($announcement, array $person, $isCc = false)
     {
-        $settingsInstitution = $announcement->header ?: 'Beyond Enterprise';
+        $settingsInstitution = $announcement->header ?: SiteBrand::siteTitle();
         $vars = self::recipientVars($person, $announcement->reference ?: '', $settingsInstitution);
         $body = self::personalize($announcement->body ?: '', $vars);
         $header = self::personalize($announcement->header ?: '', $vars);
@@ -81,7 +81,7 @@ class AnnouncementPersonalization
      */
     public static function buildTwilioBody($announcement, array $person, $isCc = false)
     {
-        $settingsInstitution = $announcement->header ?: 'Beyond Enterprise';
+        $settingsInstitution = $announcement->header ?: SiteBrand::siteTitle();
         $vars = self::recipientVars($person, $announcement->reference ?: '', $settingsInstitution);
         $body = trim(self::personalize($announcement->body ?: '', $vars));
         $footer = trim(self::personalize($announcement->footer ?: '', $vars));

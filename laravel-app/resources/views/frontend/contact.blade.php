@@ -62,7 +62,7 @@
                         </div>
                         <div class="col-lg-3">
                             <div class="mb-30">
-                                <h4>Beyond Enterprise</h4>
+                                <h4>{{ \App\Support\SiteBrand::siteTitle($general_setting ?? null) }}</h4>
                                 <p class="font-sm color-gray-700">Kigali, <br>Rwanda</p>
                             </div>
                         </div>

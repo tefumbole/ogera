@@ -29,7 +29,14 @@
                 @foreach($lims_role_all as $key=>$role)
                 <tr>
                     <td>{{$key}}</td>
-                    <td>{{ $role->name }}</td>
+                    <td>
+                        {{ $role->name }}
+                        @if(\App\Support\RoleAccess::isSuperAdminRole($role->id))
+                            <span class="badge badge-success">All permissions</span>
+                        @elseif(in_array((int) $role->id, $protected_role_ids ?? [1, 2, 5], true))
+                            <span class="badge badge-secondary">Built-in</span>
+                        @endif
+                    </td>
                     <td>{{ $role->description }}</td>
                     <td>
                         <div class="btn-group">
@@ -43,10 +50,12 @@
                                 </button>
                                 </li>
                                 <li class="divider"></li>
+                                @if(!\App\Support\RoleAccess::isSuperAdminRole($role->id))
                                 <li>
                                     <a href="{{ route('role.permission', ['id' => $role->id]) }}" class="btn btn-link"><i class="dripicons-lock-open"></i> {{trans('file.Change Permission')}}</a>
                                 </li>
-                                @if($role->id > 2 && $role->id != 5)
+                                @endif
+                                @if(!in_array((int) $role->id, $protected_role_ids ?? [1, 2, 5], true))
                                 {{ Form::open(['route' => ['role.destroy', $role->id], 'method' => 'DELETE'] ) }}
                                 <li>
                                     <button type="submit" class="btn btn-link" onclick="return confirmDelete()"><i class="dripicons-trash"></i> {{trans('file.delete')}}</button>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Roles;
+use App\Support\RoleAccess;
 use App\User;
 use Auth;
 use Illuminate\Validation\Rule;
@@ -12,6 +13,19 @@ use Spatie\Permission\Models\Permission;
 
 class RoleController extends Controller
 {
+    /** Roles that must never be deleted: Super Admin, Admin and the Customer portal role. */
+    const PROTECTED_ROLE_IDS = [1, 2, 5];
+
+    protected function canManageRoles()
+    {
+        return RoleAccess::allows('role_permission');
+    }
+
+    protected function denied()
+    {
+        return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
+    }
+
     public function index()
     {
         $role = Role::find(Auth::user()->role_id);
@@ -22,12 +36,14 @@ class RoleController extends Controller
         }
 
 
-        if(Auth::user()->role_id <= 2) {
-            $lims_role_all = Roles::where('is_active', true)->get();
-            return view('role.create', compact('lims_role_all'));
+        if (! $this->canManageRoles()) {
+            return $this->denied();
         }
-        else
-            return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
+
+        $lims_role_all = Roles::where('is_active', true)->get();
+        $protected_role_ids = self::PROTECTED_ROLE_IDS;
+
+        return view('role.create', compact('lims_role_all', 'protected_role_ids'));
     }
 
 
@@ -38,6 +54,10 @@ class RoleController extends Controller
 
     public function store(Request $request)
     {
+        if (! $this->canManageRoles()) {
+            return $this->denied();
+        }
+
         $this->validate($request, [
             'name' => [
                 'max:255',
@@ -54,16 +74,19 @@ class RoleController extends Controller
 
     public function edit($id)
     {
-        if(Auth::user()->role_id <= 2) {
-            $lims_role_data = Roles::find($id);
-            return $lims_role_data;
+        if (! $this->canManageRoles()) {
+            return $this->denied();
         }
-        else
-            return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
+
+        return Roles::find($id);
     }
 
     public function update(Request $request, $id)
     {
+        if (! $this->canManageRoles()) {
+            return $this->denied();
+        }
+
         $this->validate($request, [
             'name' => [
                 'max:255',
@@ -81,23 +104,45 @@ class RoleController extends Controller
 
     public function permission($id)
     {
-        if(Auth::user()->role_id <= 2) {
-            $lims_role_data = Roles::find($id);
-            $permissions = Role::findByName($lims_role_data->name)->permissions;
-            foreach ($permissions as $permission)
-                $all_permission[] = $permission->name;
-            if(empty($all_permission))
-                $all_permission[] = 'dummy text';
-            return view('role.permission', compact('lims_role_data', 'all_permission'));
+        if (! $this->canManageRoles()) {
+            return $this->denied();
         }
-        else
-            return redirect()->back()->with('not_permitted', 'Sorry! You are not allowed to access this module');
+
+        $lims_role_data = Roles::find($id);
+        if (! $lims_role_data) {
+            return redirect('role')->with('not_permitted', 'Role not found');
+        }
+
+        if (RoleAccess::isSuperAdminRole($lims_role_data->id)) {
+            return redirect('role')->with('not_permitted', 'Super Admin always holds every permission and cannot be restricted.');
+        }
+
+        $all_permission = [];
+        $spatieRole = Role::find($lims_role_data->id);
+        if ($spatieRole) {
+            foreach ($spatieRole->permissions as $permission) {
+                $all_permission[] = $permission->name;
+            }
+        }
+        if (empty($all_permission)) {
+            $all_permission[] = 'dummy text';
+        }
+
+        return view('role.permission', compact('lims_role_data', 'all_permission'));
     }
 
     public function setPermission(Request $request)
     {
         if(!config('app.user_verified'))
             return redirect()->back()->with('not_permitted', 'This feature is disable for demo!');
+
+        if (! $this->canManageRoles()) {
+            return $this->denied();
+        }
+
+        if (RoleAccess::isSuperAdminRole($request['role_id'])) {
+            return redirect('role')->with('not_permitted', 'Super Admin always holds every permission and cannot be restricted.');
+        }
 
         $role = Role::firstOrCreate(['id' => $request['role_id']]);
 
@@ -1951,21 +1996,23 @@ class RoleController extends Controller
             }
         }
 
-        foreach ([
+        $genericPermissions = array_unique(array_merge([
             'invitations_module',
             'invitations.view',
             'invitations.create',
             'invitations.edit',
             'invitations.delete',
             'invitations.check_in',
-        ] as $invPerm) {
+        ], \App\Support\PermissionMenuMap::genericallySavedPermissions()));
+
+        foreach ($genericPermissions as $invPerm) {
+            $permission = Permission::firstOrCreate(['name' => $invPerm]);
             if ($request->has($invPerm)) {
-                $permission = Permission::firstOrCreate(['name' => $invPerm]);
-                if (! $role->hasPermissionTo($invPerm)) {
+                if (! $role->hasPermissionTo($permission)) {
                     $role->givePermissionTo($permission);
                 }
             } else {
-                $role->revokePermissionTo($invPerm);
+                $role->revokePermissionTo($permission);
             }
         }
 
@@ -1976,7 +2023,24 @@ class RoleController extends Controller
     {
         if(!config('app.user_verified'))
             return redirect()->back()->with('not_permitted', 'This feature is disable for demo!');
+
+        if (! $this->canManageRoles()) {
+            return $this->denied();
+        }
+
+        if (in_array((int) $id, self::PROTECTED_ROLE_IDS, true)) {
+            return redirect('role')->with('not_permitted', 'This is a built-in role and cannot be deleted.');
+        }
+
         $lims_role_data = Roles::find($id);
+        if (! $lims_role_data) {
+            return redirect('role')->with('not_permitted', 'Role not found');
+        }
+
+        if (User::where('role_id', $id)->where('is_deleted', false)->exists()) {
+            return redirect('role')->with('not_permitted', 'Move the users on this role to another role before deleting it.');
+        }
+
         $lims_role_data->is_active = false;
         $lims_role_data->save();
         return redirect('role')->with('not_permitted', 'Data deleted successfully');

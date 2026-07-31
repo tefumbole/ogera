@@ -47,6 +47,54 @@
         font-weight: 600;
         color: #033d2e;
     }
+    .menu-access-panel {
+        border: 1px solid #e5eaf3;
+        border-radius: 10px;
+        padding: 14px 16px;
+        margin-bottom: 18px;
+        background: #f8fbff;
+    }
+    .menu-access-head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+    .menu-access-head strong {
+        color: #033d2e;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+    .menu-access-head span {
+        color: #6b7a90;
+        font-size: 12px;
+    }
+    .menu-access-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 6px 14px;
+    }
+    .menu-access-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0;
+        padding: 6px 8px;
+        border: 1px solid transparent;
+        border-radius: 6px;
+        font-weight: 600;
+        color: #033d2e;
+        cursor: pointer;
+    }
+    .menu-access-item:hover {
+        border-color: #d8ad4a;
+        background: #fff;
+    }
+    .menu-access-item input[type="checkbox"] {
+        accent-color: #033d2e;
+        margin: 0;
+    }
 </style>
 <section class="forms">
     <div class="container-fluid">
@@ -59,6 +107,24 @@
                     {!! Form::open(['route' => 'role.setPermission', 'method' => 'post']) !!}
                     <div class="card-body">
                     	<input type="hidden" name="role_id" value="{{$lims_role_data->id}}" />
+                        @php $menuGroups = \App\Support\PermissionMenuMap::groups(); @endphp
+                        <div class="menu-access-panel">
+                            <div class="menu-access-head">
+                                <strong>Menu access</strong>
+                                <span>Tick a menu to grant every permission behind it. Untick to remove them all.</span>
+                            </div>
+                            <div class="menu-access-grid">
+                                @foreach($menuGroups as $groupKey => $group)
+                                    <label class="menu-access-item" for="menu-group-{{ $groupKey }}">
+                                        <input type="checkbox"
+                                               class="menu-group-toggle"
+                                               id="menu-group-{{ $groupKey }}"
+                                               data-permissions='@json(array_keys($group["permissions"]))'>
+                                        <span>{{ $group['label'] }}</span>
+                                    </label>
+                                @endforeach
+                            </div>
+                        </div>
 						<div class="table-responsive">
 						    <table class="table table-bordered permission-table">
 						        <thead>
@@ -1767,6 +1833,39 @@
                                     <th colspan="5">Digital Invitations Module End</th>
                                 </tr>
 
+                                {{-- Modules driven entirely by App\Support\PermissionMenuMap --}}
+                                @foreach(\App\Support\PermissionMenuMap::modulePermissions() as $moduleKey => $module)
+                                <tr class="permission-section-header">
+                                    <th colspan="5">
+                                        <div class="checkbox">
+                                            <input type="checkbox" class="section-select-all" id="section-{{ $moduleKey }}-module">
+                                            <label for="section-{{ $moduleKey }}-module">{{ $module['label'] }}</label>
+                                        </div>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td>{{ $module['label'] }}</td>
+                                    <td class="report-permissions" colspan="5">
+                                        @foreach($module['permissions'] as $perm => $label)
+                                        @php $pid = str_replace('.', '_', $perm); @endphp
+                                        <span>
+                                            <div class="checkbox">
+                                                @if(in_array($perm, $all_permission))
+                                                    <input type="checkbox" value="1" id="{{ $pid }}" name="{{ $perm }}" checked>
+                                                @else
+                                                    <input type="checkbox" value="1" id="{{ $pid }}" name="{{ $perm }}">
+                                                @endif
+                                                <label for="{{ $pid }}" class="padding05">{{ $label }}</label>
+                                            </div>
+                                        </span>
+                                        @endforeach
+                                    </td>
+                                </tr>
+                                <tr class="permission-section-end">
+                                    <th colspan="5">{{ $module['label'] }} End</th>
+                                </tr>
+                                @endforeach
+
                                 {{--                                Booking Module--}}
                                 <tr class="permission-section-header">
                                     <th colspan="5">
@@ -2475,6 +2574,42 @@
 								                </div>
 								            </div>
 						                </span>
+                                        <span>
+						                    <div aria-checked="false" aria-disabled="false">
+								                <div class="checkbox">
+							                    	@if(in_array("role_permission", $all_permission))
+							                    	<input type="checkbox" value="1" id="role_permission" name="role_permission" checked>
+							                    	@else
+							                    	<input type="checkbox" value="1" id="role_permission" name="role_permission">
+							                    	@endif
+								                    <label for="role_permission" class="padding05">{{trans('file.Role Permission')}} &nbsp;&nbsp;</label>
+								                </div>
+								            </div>
+						                </span>
+                                        <span>
+						                    <div aria-checked="false" aria-disabled="false">
+								                <div class="checkbox">
+							                    	@if(in_array("site_content", $all_permission))
+							                    	<input type="checkbox" value="1" id="site_content" name="site_content" checked>
+							                    	@else
+							                    	<input type="checkbox" value="1" id="site_content" name="site_content">
+							                    	@endif
+								                    <label for="site_content" class="padding05">Site Menu &amp; Content &nbsp;&nbsp;</label>
+								                </div>
+								            </div>
+						                </span>
+                                        <span>
+						                    <div aria-checked="false" aria-disabled="false">
+								                <div class="checkbox">
+							                    	@if(in_array("activity_logs", $all_permission))
+							                    	<input type="checkbox" value="1" id="activity_logs" name="activity_logs" checked>
+							                    	@else
+							                    	<input type="checkbox" value="1" id="activity_logs" name="activity_logs">
+							                    	@endif
+								                    <label for="activity_logs" class="padding05">Activity Logs &nbsp;&nbsp;</label>
+								                </div>
+								            </div>
+						                </span>
 						                <span>
 						                    <div aria-checked="false" aria-disabled="false">
 								                <div class="checkbox">
@@ -2807,6 +2942,44 @@
 	        $row.find('input[type="checkbox"]').prop('checked', checked);
 	        $row = $row.next();
 	    }
+	    syncMenuGroups();
 	});
+
+	// Menu headers: one checkbox per sidebar menu, driving every permission behind it.
+	function permissionInputs(names) {
+	    var selector = names.map(function (name) {
+	        return 'input[type="checkbox"][name="' + name.replace(/"/g, '\\"') + '"]';
+	    }).join(',');
+
+	    return selector ? $('.permission-table').find(selector) : $();
+	}
+
+	function syncMenuGroups() {
+	    $('.menu-group-toggle').each(function () {
+	        var $toggle = $(this);
+	        var $inputs = permissionInputs($toggle.data('permissions') || []);
+	        if (!$inputs.length) {
+	            $toggle.prop({ checked: false, indeterminate: false, disabled: true });
+	            return;
+	        }
+	        var checked = $inputs.filter(':checked').length;
+	        $toggle.prop('checked', checked === $inputs.length);
+	        $toggle.prop('indeterminate', checked > 0 && checked < $inputs.length);
+	    });
+	}
+
+	$('.menu-group-toggle').on('change', function () {
+	    var checked = $(this).is(':checked');
+	    permissionInputs($(this).data('permissions') || []).prop('checked', checked);
+	    syncMenuGroups();
+	});
+
+	$('.permission-table').on('change', 'input[type="checkbox"]', function () {
+	    syncMenuGroups();
+	});
+
+	$('#select_all').on('change', syncMenuGroups);
+
+	$(syncMenuGroups);
 </script>
 @endsection

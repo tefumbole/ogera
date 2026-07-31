@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Beyond Enterprise'),
+    'name' => env('APP_NAME', 'Ogera'),
 
     'version' => env('APP_VERSION', 'BCL V.2.1.4'),
 

@@ -1,7 +1,7 @@
 @extends('beyond.layout')
 
 @section('title', 'Student Portal')
-@section('meta_description', 'Your Beyond Enterprise student dashboard.')
+@section('meta_description', 'Your '.\App\Support\SiteBrand::siteTitle($general_setting ?? null).' student dashboard.')
 
 @section('content')
 <div class="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">

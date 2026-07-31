@@ -4,7 +4,7 @@
 @php
     $anTab = 'announcements.compose';
     $clone = $clone ?? null;
-    $defaultHeader = old('header', $clone['header'] ?? ($settings->default_header ?? 'Beyond Enterprise'));
+    $defaultHeader = old('header', $clone['header'] ?? ($settings->default_header ?? \App\Support\SiteBrand::siteTitle($general_setting ?? null)));
 @endphp
 <section class="forms">
     <div class="container-fluid an-shell">
@@ -119,7 +119,7 @@
 
                     <div class="form-group">
                         <label class="an-label">Footer (optional)</label>
-                        <input type="text" name="footer" class="an-field" value="{{ old('footer', $clone['footer'] ?? '') }}" placeholder="Beyond Enterprise">
+                        <input type="text" name="footer" class="an-field" value="{{ old('footer', $clone['footer'] ?? '') }}" placeholder="{{ \App\Support\SiteBrand::siteTitle($general_setting ?? null) }}">
                     </div>
 
                     <div class="an-drop">

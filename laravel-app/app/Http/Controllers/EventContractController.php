@@ -119,7 +119,7 @@ class EventContractController extends Controller
         $phone = $profile->telephone ?? optional($profile->customer)->phone_number;
         if ($phone && $contract->signed_pdf_path) {
             try {
-                $this->sendWhatsAppToPhone($phone, 'Your event contract ' . $contract->reference_no . ' has been approved by Beyond Enterprise.');
+                $this->sendWhatsAppToPhone($phone, 'Your event contract ' . $contract->reference_no . ' has been approved by ' . \App\Support\SiteBrand::siteTitle() . '.');
                 $this->sendWhatsAppDocumentToPhone(
                     $phone,
                     public_path($contract->signed_pdf_path),

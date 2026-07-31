@@ -1,7 +1,8 @@
 @extends('beyond.layout')
 
+@php $siteName = \App\Support\SiteBrand::siteTitle($general_setting ?? null); @endphp
 @section('title', 'Invoice Verification')
-@section('meta_description', 'Verify a Beyond Enterprise sales invoice.')
+@section('meta_description', 'Verify a '.$siteName.' sales invoice.')
 
 @section('content')
 <div class="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center p-4 py-16">
@@ -56,7 +57,7 @@
                     <span class="font-semibold text-gray-900">{{ $data['payment_status'] }}</span>
                 </div>
             @endif
-            <p class="text-center text-xs text-gray-400 pt-4 mt-4 border-t">Beyond Enterprise · Sales Invoice Verification</p>
+            <p class="text-center text-xs text-gray-400 pt-4 mt-4 border-t">{{ $siteName }} · Sales Invoice Verification</p>
         </div>
     </div>
 </div>

@@ -85,7 +85,7 @@
                 <span class="text-sm text-gray-600">
                     I confirm that I have read and accept the
                     <a href="{{ route('shareholders.landing') }}" class="text-brand-light underline" target="_blank">Shareholder Agreement</a>
-                    and authorize Beyond Enterprise to process my registration.
+                    and authorize {{ \App\Support\SiteBrand::siteTitle($general_setting ?? null) }} to process my registration.
                 </span>
             </label>
         </div>

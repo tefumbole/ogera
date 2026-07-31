@@ -6,9 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="msapplication-TileColor" content="#0E0E0E">
     <meta name="template-color" content="#0E0E0E">
-    <meta name="description" content="Beyond Enterprise — IT consultancy, networking, CCTV security, and professional audio-visual solutions.">
-    <meta name="keywords" content="Beyond Enterprise, IT, networking, CCTV, security, audio visual, Kigali, Rwanda">
-    <meta name="author" content="Beyond Enterprise">
+    @php $siteName = \App\Support\SiteBrand::siteTitle($general_setting ?? null); @endphp
+    <meta name="description" content="{{ $siteName }} — IT consultancy, networking, CCTV security, and professional audio-visual solutions.">
+    <meta name="keywords" content="{{ $siteName }}, IT, networking, CCTV, security, audio visual, Kigali, Rwanda">
+    <meta name="author" content="{{ $siteName }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
@@ -299,7 +300,7 @@
             <div class="row">
                 <div class="col-lg-3 width-25 mb-30">
                     <h4 class="mb-30 color-gray-1000">Contact</h4>
-                    <div class="font-md mb-20 color-gray-900"><strong class="font-md-bold">Address:</strong> Beyond Enterprise, Kigali, Rwanda</div>
+                    <div class="font-md mb-20 color-gray-900"><strong class="font-md-bold">Address:</strong> {{ $siteName }}, Kigali, Rwanda</div>
                     <div class="font-md mb-20 color-gray-900"><strong class="font-md-bold">Phone:</strong> <a href="tel:+237675321739">+237675321739</a></div>
                     <div class="font-md mb-20 color-gray-900"><strong class="font-md-bold">E-mail:</strong> info@beyondtechworld.com</div>
                     <div class="font-md mb-20 color-gray-900"><strong class="font-md-bold">Hours:</strong> 8:00 - 17:00, Mon - Sat</div>
