@@ -1470,6 +1470,13 @@ class SaleController extends Controller
         $product_name = [];
         $product_qty = [];
         $product_price = [];
+        $product_type = [];
+        $product_id = [];
+        $product_list = [];
+        $qty_list = [];
+        $batch_no = [];
+        $product_batch_id = [];
+        $product_expired_date = [];
         $product_data = [];
         //product without variant
         foreach ($lims_product_warehouse_data as $product_warehouse)

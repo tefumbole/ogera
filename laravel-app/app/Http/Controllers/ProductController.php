@@ -565,16 +565,37 @@ class ProductController extends Controller
             $data['cost'] = $data['unit_id'] = $data['purchase_unit_id'] = $data['sale_unit_id'] = 0;
         }
         elseif($data['type'] == 'donation') {
-            $donation_unit = Unit::where('unit_code', 'donation')->first();
-            $donation_category = Category::where('name', 'donation')->first();
+            $donation_unit = Unit::firstOrCreate(
+                ['unit_code' => 'donation'],
+                [
+                    'unit_name' => 'Donation',
+                    'operator' => '*',
+                    'operation_value' => 1,
+                    'is_active' => true,
+                ]
+            );
+            $donation_category = Category::firstOrCreate(
+                ['name' => 'donation'],
+                ['is_active' => true]
+            );
             $data['unit_id'] = $donation_unit->id;
             $data['sale_unit_id'] = $donation_unit->id;
             $data['purchase_unit_id'] = $donation_unit->id;
             $data['category_id'] = $donation_category->id;
         }
         elseif($data['type'] == 'service') {
-            $service_unit = Unit::where('unit_code', 'service')->first();
-            $service_category = Category::where('name', 'SERVICES')->first();
+            $service_unit = Unit::firstOrCreate(
+                ['unit_code' => 'service'],
+                [
+                    'unit_name' => 'Service',
+                    'operator' => '*',
+                    'operation_value' => 1,
+                    'is_active' => true,
+                ]
+            );
+            $service_category = Category::where('name', 'SERVICES')->first()
+                ?: Category::where('name', 'like', '%SERVICE%')->orderBy('id')->first()
+                ?: Category::create(['name' => 'SERVICES', 'is_active' => true]);
             $data['unit_id'] = $service_unit->id;
             $data['sale_unit_id'] = $service_unit->id;
             $data['purchase_unit_id'] = $service_unit->id;
@@ -632,15 +653,17 @@ class ProductController extends Controller
 
 
         $warehouse = Warehouse::where('is_active', true)->first();
-        $check_warehouse = Product_Warehouse::where('product_id', $lims_product_data->id)->where('warehouse_id', $warehouse->id)->first();
-        if(!$check_warehouse) {
-            Product_Warehouse::create([
-                "product_id" => $lims_product_data->id,
-                "warehouse_id" => $warehouse->id,
-                "qty" => $data['qty'],
-            ]);
-        } else {
-            $check_warehouse->update(['qty' => $data['qty']]);
+        if ($warehouse) {
+            $check_warehouse = Product_Warehouse::where('product_id', $lims_product_data->id)->where('warehouse_id', $warehouse->id)->first();
+            if(!$check_warehouse) {
+                Product_Warehouse::create([
+                    "product_id" => $lims_product_data->id,
+                    "warehouse_id" => $warehouse->id,
+                    "qty" => $data['qty'] ?? 0,
+                ]);
+            } else {
+                $check_warehouse->update(['qty' => $data['qty'] ?? 0]);
+            }
         }
 
         if(isset($data['is_diffPrice'])) {
@@ -656,6 +679,7 @@ class ProductController extends Controller
             }
         }
         \Session::flash('create_message', 'Product created successfully');
+        return response()->json(['message' => 'Product created successfully']);
     }
 
     public function edit($id)
