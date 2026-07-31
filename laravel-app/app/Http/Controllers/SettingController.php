@@ -25,10 +25,12 @@ use App\Services\Messaging\NotificationRouter;
 
 class SettingController extends Controller
 {
-    public function emptyDatabase()
+    public function emptyDatabase(Request $request)
     {
         if(!config('app.user_verified'))
             return redirect()->back()->with('not_permitted', 'This feature is disable for demo!');
+        if($request->input('confirmation') !== 'ERASE')
+            return redirect()->back()->with('not_permitted', 'Database was not cleared: the confirmation was missing.');
         $tables = DB::select('SHOW TABLES');
         $str = 'Tables_in_' . config('database.connections.mysql.database');
         foreach ($tables as $table) {

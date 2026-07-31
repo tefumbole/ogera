@@ -879,8 +879,11 @@ class ProductController extends Controller
 
     public function search(Request $request)
     {
-        $product_code = explode(" ", $request['data']);
+        $product_code = explode(" ", (string) $request['data']);
         $lims_product_data = Product::where('code', $product_code[0])->first();
+        if (! $lims_product_data) {
+            return response()->json([], 404);
+        }
 
         $product[] = $lims_product_data->name;
         $product[] = $lims_product_data->code;
@@ -972,7 +975,7 @@ class ProductController extends Controller
 
     public function limsProductSearch(Request $request)
     {
-        $product_code = explode("(", $request['data']);
+        $product_code = explode("(", (string) $request['data']);
         $product_code[0] = rtrim($product_code[0], " ");
 
         $lims_product_data = Product::where('code', $product_code[0])->first();
@@ -981,6 +984,9 @@ class ProductController extends Controller
                 ->select('products.*', 'product_variants.item_code')
                 ->where('product_variants.item_code', $product_code[0])
                 ->first();
+        }
+        if (! $lims_product_data) {
+            return response()->json([], 404);
         }
         $product[] = $lims_product_data->name;
         if($lims_product_data->is_variant)

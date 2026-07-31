@@ -2466,7 +2466,12 @@
                                 @endif
                                 @if($empty_database_permission_active)
                                     <li id="empty-database-menu">
-                                        <a onclick="return confirm('Are you sure want to delete? If you do this all of your data will be lost.')" href="{{route('setting.emptyDatabase')}}">{{trans('file.Empty Database')}}</a>
+                                        <form method="POST" action="{{route('setting.emptyDatabase')}}" class="m-0"
+                                              onsubmit="return prompt('This permanently deletes all products, sales, bookings, quotations and people. Type ERASE to confirm.') === 'ERASE';">
+                                            @csrf
+                                            <input type="hidden" name="confirmation" value="ERASE">
+                                            <button type="submit" class="btn btn-link p-0">{{trans('file.Empty Database')}}</button>
+                                        </form>
                                     </li>
                                 @endif
                                 @if($general_setting_permission_active)

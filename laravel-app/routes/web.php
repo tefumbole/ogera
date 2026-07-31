@@ -758,7 +758,8 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::post('setting/sms_setting_store', 'SettingController@smsSettingStore')->name('setting.smsStore');
 	Route::get('setting/pos_setting', 'SettingController@posSetting')->name('setting.pos');
 	Route::post('setting/pos_setting_store', 'SettingController@posSettingStore')->name('setting.posStore');
-	Route::get('setting/empty-database', 'SettingController@emptyDatabase')->name('setting.emptyDatabase');
+	// POST only: a GET here can be triggered by a crawler, prefetch or stray link and wipes every table.
+	Route::post('setting/empty-database', 'SettingController@emptyDatabase')->name('setting.emptyDatabase');
 
 	Route::get('expense_categories/gencode', 'ExpenseCategoryController@generateCode');
 	Route::post('expense_categories/import', 'ExpenseCategoryController@import')->name('expense_category.import');
@@ -777,7 +778,6 @@ Route::group(['middleware' => ['auth', 'active']], function() {
     Route::get('activity/assets/edit/{id}', 'ExpenseController@editAsset')->name('activity_asset.edit');
 	Route::get('expense/assets/show/{id}', 'ExpenseController@showAsset')->name('expense_asset.show');
 	Route::get('activity/assets/show/{id}', 'ExpenseController@showAsset')->name('activity_asset.show');
-    Route::resource('activity', 'ActivityController');
 
 	Route::get('gift_cards/gencode', 'GiftCardController@generateCode');
 	Route::post('gift_cards/recharge/{id}', 'GiftCardController@recharge')->name('gift_cards.recharge');

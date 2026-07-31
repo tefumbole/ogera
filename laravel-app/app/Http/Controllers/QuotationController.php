@@ -912,8 +912,8 @@ class QuotationController extends Controller
 
         if($lims_product_data->tax_id) {
             $lims_tax_data = Tax::find($lims_product_data->tax_id);
-            $product[] = $lims_tax_data->rate;
-            $product[] = $lims_tax_data->name;
+            $product[] = $lims_tax_data ? $lims_tax_data->rate : 0;
+            $product[] = $lims_tax_data ? $lims_tax_data->name : 'No Tax';
         }
         else{
             $product[] = 0;

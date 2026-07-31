@@ -2454,6 +2454,9 @@ class BookingController extends Controller
                     ['product_variants.item_code', $product_code[0]],
                     ['products.is_active', true]
                 ])->first();
+            if (! $lims_product_data) {
+                return response()->json(['error' => 'Product not found'], 404);
+            }
             $product_variant_id = $lims_product_data->product_variant_id;
         }
 
@@ -2474,8 +2477,8 @@ class BookingController extends Controller
 
         if($lims_product_data->tax_id) {
             $lims_tax_data = Tax::find($lims_product_data->tax_id);
-            $product[] = $lims_tax_data->rate;
-            $product[] = $lims_tax_data->name;
+            $product[] = $lims_tax_data ? $lims_tax_data->rate : 0;
+            $product[] = $lims_tax_data ? $lims_tax_data->name : 'No Tax';
         }
         else{
             $product[] = 0;
@@ -2588,6 +2591,9 @@ class BookingController extends Controller
     {
         $method = $request->method;
         $product = Product::find($request->id);
+        if (! $product) {
+            return 0;
+        }
         $price = $product->price;
 
         if($method == 0) {
