@@ -131,6 +131,10 @@ class LeaderController extends Controller
             $file->move($dir, $name);
         }
 
+        if (is_file($full)) {
+            @chmod($full, 0644);
+        }
+
         $this->deleteLocalPhoto($oldPath);
 
         return 'images/leaders/'.$name;

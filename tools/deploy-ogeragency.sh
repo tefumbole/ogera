@@ -84,6 +84,7 @@ rsync -az --delete --human-readable ${RSYNC_EXTRA[@]+"${RSYNC_EXTRA[@]}"} \
     --exclude='/storage/app/backups/' \
     --exclude='/public/uploads/' \
     --exclude='/public/logo/' \
+    --exclude='/public/images/leaders/' \
     --exclude='/bootstrap/cache/*.php' \
     --exclude='/.phpunit.result.cache' \
     laravel-app/ "${SSH_USER}@${SSH_HOST}:${REMOTE_ROOT}/"
@@ -106,10 +107,10 @@ PHP=/opt/alt/php74/usr/bin/php
 [ -x \"\$PHP\" ] || PHP=php
 \$PHP /usr/local/bin/composer install --no-dev --optimize-autoloader --no-interaction --no-progress -q 2>/dev/null \
   || composer install --no-dev --optimize-autoloader --no-interaction --no-progress -q
-mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache
-find . -type d -not -path './storage/*' -exec chmod 755 {} +
-find . -type f -not -path './storage/*' -exec chmod 644 {} +
-chmod -R 775 storage bootstrap/cache
+mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache public/images/leaders
+find . -type d -not -path './storage/*' -not -path './public/images/leaders/*' -exec chmod 755 {} +
+find . -type f -not -path './storage/*' -not -path './public/images/leaders/*' -exec chmod 644 {} +
+chmod -R 775 storage bootstrap/cache public/images/leaders
 chmod 755 artisan
 \$PHP artisan migrate --force
 \$PHP artisan config:cache

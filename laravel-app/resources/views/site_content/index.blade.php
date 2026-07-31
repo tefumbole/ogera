@@ -34,6 +34,29 @@
         margin-right: 10px;
         user-select: none;
     }
+    /* Side / settings menus: two columns so long lists fit on screen */
+    .reorder-list.reorder-list--two-col {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        max-width: none !important;
+        width: 100%;
+    }
+    .reorder-list.reorder-list--two-col .list-group-item {
+        margin: 0;
+        border-radius: 6px !important;
+        border: 1px solid #e5e7eb;
+        border-left-width: 4px;
+        min-height: 48px;
+    }
+    .reorder-list.reorder-list--two-col .list-group-item + .list-group-item {
+        border-top-width: 1px;
+    }
+    @media (max-width: 900px) {
+        .reorder-list.reorder-list--two-col {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
 <section class="forms">
     <div class="container-fluid">
@@ -114,17 +137,20 @@
                     @endphp
                     <h5 class="mb-1">{{ $heading }}</h5>
                     <p class="text-muted" style="font-size:13px;">{{ $hint }}</p>
+                    @php $twoCol = in_array($tab, ['side-menu', 'settings-menu'], true); @endphp
                     <form method="POST" action="{{ $action }}">
                         @csrf
-                        <ul class="list-group reorder-list" id="reorder-list" style="max-width:720px;">
+                        <ul class="list-group reorder-list {{ $twoCol ? 'reorder-list--two-col' : '' }}"
+                            id="reorder-list"
+                            style="{{ $twoCol ? '' : 'max-width:720px;' }}">
                             @foreach($order as $key)
                                 @if(isset($items[$key]))
                                     <li class="list-group-item d-flex justify-content-between align-items-center" data-key="{{ $key }}">
-                                        <span class="d-flex align-items-center">
+                                        <span class="d-flex align-items-center" style="min-width:0;">
                                             <span class="reorder-drag-handle" title="Drag to reorder">⋮⋮</span>
-                                            <span>{{ $items[$key] }}</span>
+                                            <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ $items[$key] }}</span>
                                         </span>
-                                        <span class="reorder-actions">
+                                        <span class="reorder-actions flex-shrink-0">
                                             <input type="hidden" name="order[]" value="{{ $key }}" class="reorder-order-input">
                                             <button type="button" class="btn btn-sm btn-outline-success move-top" title="Send to top">&#8679;</button>
                                             <button type="button" class="btn btn-sm btn-light move-up" title="Move up one">&#9650;</button>
