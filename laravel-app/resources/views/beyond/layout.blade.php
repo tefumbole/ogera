@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     @php
         $siteLogoUrl = \App\Support\SiteBrand::logoUrl($general_setting ?? null);
         $siteTitle = \App\Support\SiteBrand::siteTitle($general_setting ?? null);
@@ -143,22 +143,19 @@
         </button>
     </div>
 
-    <div class="ogera-drawer" x-show="open" x-cloak @click.self="open = false">
+    <div class="ogera-drawer" x-show="open" x-cloak @click.self="open = false" role="dialog" aria-modal="true" aria-label="Site menu">
         <div class="ogera-drawer__panel" @click.stop>
             <div class="flex items-center justify-between mb-4">
                 <span class="text-[var(--og-gold)] text-sm tracking-[0.2em] uppercase">Menu</span>
-                <button type="button" class="text-[var(--og-warm)]" @click="open = false" aria-label="Close">
+                <button type="button" class="ogera-drawer__close" @click="open = false" aria-label="Close menu">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
             @foreach ($navLinks as $link)
                 <a href="{{ $link['url'] }}" @click="open = false">{{ $link['label'] }}</a>
             @endforeach
-            @unless ($headerUser)
-                <a href="{{ url('/login') }}" @click="open = false">Login</a>
-            @endunless
             <a href="https://mail.hostinger.com" target="_blank" rel="noopener" @click="open = false">Webmail</a>
-            <a href="{{ url('/contact') }}" @click="open = false" class="mt-3 !border-0 !text-[var(--og-forest)] !bg-[var(--og-gold)] text-center rounded-full py-3 font-medium">Start a Project</a>
+            <a href="{{ url('/contact') }}" @click="open = false" class="mt-3 !border-0 !text-[var(--og-forest)] !bg-[var(--og-gold)] text-center rounded-full py-3 font-medium justify-center">Start a Project</a>
             @if ($headerUser)
                 <div class="mt-4 pt-4 border-t border-white/10 space-y-2">
                     <div class="text-[var(--og-warm)] text-sm font-medium">{{ $headerName }}</div>
@@ -169,11 +166,11 @@
                     @endif
                     <form method="POST" action="{{ $isAdminSession ? route('logout') : route('beyond.logout') }}">
                         @csrf
-                        <button type="submit" class="text-red-300 text-left w-full py-2">Logout</button>
+                        <button type="submit" class="text-red-300 text-left w-full py-3 min-h-[2.75rem]">Logout</button>
                     </form>
                 </div>
             @else
-                <a href="{{ url('/login') }}" @click="open = false" class="mt-2 opacity-80">Login</a>
+                <a href="{{ url('/login') }}" @click="open = false" class="mt-2 justify-center text-center !border-0 rounded-full border border-white/25 py-3">Login</a>
             @endif
         </div>
     </div>

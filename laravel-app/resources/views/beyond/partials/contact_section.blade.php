@@ -9,8 +9,8 @@
 <section id="contact" class="py-16 scroll-mt-24" style="background: var(--og-warm, #f8f6ef);">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        <div class="text-center mb-16">
-            <h2 class="text-4xl md:text-5xl font-extrabold text-brand-blue mb-4 ogera-serif" style="font-weight:400;">
+        <div class="text-center mb-10 sm:mb-16">
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-brand-blue mb-4 ogera-serif" style="font-weight:400;">
                 {{ \App\Support\SiteContent::text('contact.heading', $defaults['heading']) }}
             </h2>
             <p class="text-lg text-gray-600 max-w-2xl mx-auto">
@@ -91,7 +91,7 @@
                         </h3>
                         <p class="text-blue-100 mt-1">Fill out the form below and we'll instantly receive it via WhatsApp.</p>
                     </div>
-                    <div class="p-8 md:p-10">
+                    <div class="p-5 sm:p-8 md:p-10">
                         <form id="contact-form" class="space-y-6" onsubmit="return submitContact(event)">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div class="space-y-2">
