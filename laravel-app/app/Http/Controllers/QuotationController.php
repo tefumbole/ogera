@@ -66,9 +66,9 @@ class QuotationController extends Controller
             if(empty($all_permission))
                 $all_permission[] = 'dummy text';
 
-            $tab = $request->get('tab', 'awaiting');
-            if (! in_array($tab, ['awaiting', 'approved', 'rejected', 'draft'], true)) {
-                $tab = 'awaiting';
+            $tab = $request->get('tab', 'all');
+            if (! in_array($tab, ['all', 'awaiting', 'approved', 'rejected', 'draft'], true)) {
+                $tab = 'all';
             }
 
             $statusMap = [
@@ -79,8 +79,12 @@ class QuotationController extends Controller
             ];
 
             $query = Quotation::with('biller', 'customer', 'supplier', 'user')
-                ->where('quotation_status', $statusMap[$tab])
                 ->orderBy('id', 'desc');
+
+            // "all" is the landing tab: every quotation regardless of status.
+            if (isset($statusMap[$tab])) {
+                $query->where('quotation_status', $statusMap[$tab]);
+            }
 
             if(Auth::user()->role_id > 2 && config('staff_access') == 'own') {
                 $query->where('user_id', Auth::id());
@@ -93,6 +97,7 @@ class QuotationController extends Controller
                 $baseCounts->where('user_id', Auth::id());
             }
             $tabCounts = [
+                'all' => (clone $baseCounts)->count(),
                 'awaiting' => (clone $baseCounts)->where('quotation_status', Quotation::STATUS_AWAITING)->count(),
                 'approved' => (clone $baseCounts)->where('quotation_status', Quotation::STATUS_APPROVED)->count(),
                 'rejected' => (clone $baseCounts)->where('quotation_status', Quotation::STATUS_REJECTED)->count(),
@@ -395,10 +400,7 @@ class QuotationController extends Controller
         $message = 'Quotation created successfully';
         if($lims_quotation_data->quotation_status == Quotation::STATUS_AWAITING && !empty($mail_data['email'])){
             try{
-                Mail::send( 'mail.quotation_details', $mail_data, function( $message ) use ($mail_data)
-                {
-                    $message->to( $mail_data['email'] )->subject( 'Quotation Details' );
-                });
+                $this->mailApprovalLink($lims_quotation_data, $mail_data['email'], optional($lims_customer_data)->name, $mail_data);
             }
             catch(\Exception $e){
                 $message = 'Quotation created successfully. Please setup your <a href="setting/mail_setting">mail setting</a> to send mail.';
@@ -430,55 +432,21 @@ class QuotationController extends Controller
         if (!$lims_quotation_data) {
             return redirect()->back()->with('not_permitted', 'Quotation not found.');
         }
-        $lims_product_quotation_data = ProductQuotation::where('quotation_id', $data['quotation_id'])->get();
         $lims_customer_data = Customer::find($lims_quotation_data->customer_id);
         if($lims_customer_data && $lims_customer_data->email) {
-            //collecting male data
-            $mail_data['email'] = $lims_customer_data->email;
-            $mail_data['reference_no'] = $lims_quotation_data->reference_no;
-            $mail_data['total_qty'] = $lims_quotation_data->total_qty;
-            $mail_data['total_price'] = $lims_quotation_data->total_price;
-            $mail_data['order_tax'] = $lims_quotation_data->order_tax;
-            $mail_data['order_tax_rate'] = $lims_quotation_data->order_tax_rate;
-            $mail_data['order_discount'] = $lims_quotation_data->order_discount;
-            $mail_data['shipping_cost'] = $lims_quotation_data->shipping_cost;
-            $mail_data['grand_total'] = $lims_quotation_data->grand_total;
-
-            $mail_data['header'] = $setting->email_header;
-            $mail_data['footer'] = $setting->email_footer;
-            $mail_data['water_mark'] = $setting->email_water_mark;
-
-            foreach ($lims_product_quotation_data as $key => $product_quotation_data) {
-                $lims_product_data = Product::find($product_quotation_data->product_id);
-                if($product_quotation_data->variant_id) {
-                    $variant_data = Variant::find($product_quotation_data->variant_id);
-                    $mail_data['products'][$key] = $lims_product_data->name . ' [' . $variant_data->name . ']';
-                }
-                else
-                    $mail_data['products'][$key] = $lims_product_data->name;
-                if($product_quotation_data->sale_unit_id){
-                    $lims_unit_data = Unit::find($product_quotation_data->sale_unit_id);
-                    $mail_data['unit'][$key] = $lims_unit_data->unit_code;
-                }
-                else
-                    $mail_data['unit'][$key] = '';
-
-                $mail_data['qty'][$key] = $product_quotation_data->qty;
-                $mail_data['total'][$key] = $product_quotation_data->total;
+            // Never downgrade a quotation the client already approved or rejected;
+            // only (re)open the approval window for pending/awaiting quotations.
+            if (!in_array($lims_quotation_data->quotation_status, [Quotation::STATUS_APPROVED, Quotation::STATUS_REJECTED], true)) {
+                $lims_quotation_data->quotation_status = Quotation::STATUS_AWAITING;
+                $lims_quotation_data->rotateApprovalToken();
+                $lims_quotation_data->save();
             }
             try{
-                Mail::send( 'mail.quotation_details', $mail_data, function( $message ) use ($mail_data)
-                {
-                    $message->to( $mail_data['email'] )->subject( 'Quotation Details' );
-                });
-                $message = 'Mail sent successfully';
-                // Never downgrade a quotation the client already approved or rejected;
-                // only (re)open the approval window for pending/awaiting quotations.
-                if (!in_array($lims_quotation_data->quotation_status, [Quotation::STATUS_APPROVED, Quotation::STATUS_REJECTED], true)) {
-                    $lims_quotation_data->quotation_status = Quotation::STATUS_AWAITING;
-                    $lims_quotation_data->rotateApprovalToken();
-                    $lims_quotation_data->save();
-                }
+                $this->mailApprovalLink($lims_quotation_data, $lims_customer_data->email, $lims_customer_data->name, [
+                    'header' => $setting->email_header,
+                    'footer' => $setting->email_footer,
+                ]);
+                $message = 'Approval link emailed to the client.';
             }
             catch(\Exception $e){
                 $message = 'Please setup your <a href="setting/mail_setting">mail setting</a> to send mail.';
@@ -488,6 +456,25 @@ class QuotationController extends Controller
             $message = 'Customer doesnt have email!';
 
         return redirect()->back()->with('message', $message);
+    }
+
+    /**
+     * Email the client the secure approval link — and only the link. The
+     * document itself is issued once they have signed.
+     */
+    protected function mailApprovalLink(Quotation $quotation, $email, $customerName, array $branding = [])
+    {
+        $payload = [
+            'customer_name' => $customerName ?: 'Customer',
+            'reference_no' => $quotation->reference_no,
+            'approval_url' => $quotation->approvalUrl(),
+            'header' => $branding['header'] ?? null,
+            'footer' => $branding['footer'] ?? null,
+        ];
+
+        Mail::send('mail.quotation_approval_link', $payload, function ($mail) use ($email, $quotation) {
+            $mail->to($email)->subject('Quotation '.$quotation->reference_no.' — your approval is needed');
+        });
     }
 
 
@@ -531,6 +518,7 @@ class QuotationController extends Controller
             'lims_warehouse_data' => $lims_warehouse_data,
             'lims_customer_data' => $lims_customer_data,
             'numberInWords' => $numberInWords,
+            'client_signature_data_uri' => $this->clientSignatureDataUri($lims_sale_data),
         ];
 
         $pdf = PDF::loadView('pdf.quotation_pdf', $data)->setPaper('A4', 'portrait');
@@ -541,10 +529,44 @@ class QuotationController extends Controller
         return storage_path('app/public/quotation/quotation_invoice.pdf');
     }
 
+    /**
+     * Inline the stored client signature so dompdf never has to resolve a path.
+     */
+    protected function clientSignatureDataUri(Quotation $quotation)
+    {
+        if (empty($quotation->client_signature_path)) {
+            return null;
+        }
+
+        $path = public_path(ltrim(str_replace('\\', '/', $quotation->client_signature_path), '/'));
+        if (! is_file($path) || ! is_readable($path)) {
+            return null;
+        }
+
+        $bytes = @file_get_contents($path);
+
+        return $bytes === false ? null : 'data:image/png;base64,'.base64_encode($bytes);
+    }
+
     public function genPDFInvoice($id)
     {
         $lims_sale_data = Quotation::findOrFail($id);
         $lims_customer_data = Customer::find($lims_sale_data->customer_id);
+
+        // Before the client has signed they only ever get the link; sending the
+        // document early would defeat the signature step.
+        if ((int) $lims_sale_data->quotation_status !== Quotation::STATUS_APPROVED) {
+            if ((int) $lims_sale_data->quotation_status !== Quotation::STATUS_AWAITING) {
+                return back()->with('not_permitted', 'Send this quotation for approval first — the document is only shared once the client signs.');
+            }
+            if (! $lims_customer_data || empty($lims_customer_data->phone_number)) {
+                return back()->with('not_permitted', 'Customer phone number is required to send the approval link.');
+            }
+            $message = $this->sendWhatsappMsg($lims_customer_data, $lims_sale_data, [], null, null)
+                .' The full document is issued once the client signs.';
+
+            return back()->with('message', $message);
+        }
 
         $message = 'Quotation PDF sent via WhatsApp with system header and footer.';
         try {
@@ -559,20 +581,21 @@ class QuotationController extends Controller
         return back()->with('message', $message);
     }
 
+    /**
+     * Ask the client to sign. Only the secure link goes out at this stage — the
+     * document and its QR code are delivered by sendApprovedQuotationToClient()
+     * once the client has actually signed.
+     */
     public function sendWhatsappMsg($lims_customer_data, $lims_quotation_data, $mail_data, $biller, $net_unit_price){
         $approvalUrl = $lims_quotation_data->approvalUrl();
-        $products = $this->quotationWhatsAppProducts($lims_quotation_data, $mail_data);
-        $pricing = $this->quotationWhatsAppPricing($lims_quotation_data, $mail_data);
 
         $msg = WhatsAppMessage::quotationApprovalRequest(
             $lims_customer_data->name,
             $lims_quotation_data->reference_no,
-            number_format((float) $lims_quotation_data->grand_total, 2),
-            $approvalUrl,
-            array_merge($pricing, ['products' => $products])
+            $approvalUrl
         );
 
-        $message = 'Quotation sent for client approval via WhatsApp.';
+        $message = 'Approval link sent to the client via WhatsApp.';
         try{
             $this->wpMessage($lims_customer_data->phone_number, $msg);
         }
@@ -580,40 +603,88 @@ class QuotationController extends Controller
             $message = 'Quotation saved, but WhatsApp approval link could not be sent: '.$e->getMessage();
         }
 
-        // Branded quotation PDF (header / footer / watermark) — same as preview WhatsApp button
-        try {
-            $pdfPath = $this->buildQuotationPdf($lims_quotation_data->id);
-            $pdfName = 'quotation_'.preg_replace('/[^A-Za-z0-9_\-]/', '_', $lims_quotation_data->reference_no).'.pdf';
-            $this->wpPDFMessage($pdfPath, $lims_customer_data, $pdfName);
-        } catch (\Throwable $e) {
-            \Log::warning('Quotation branded PDF WhatsApp attach skipped: '.$e->getMessage());
-        }
-
-        // Optional QR attachment — must never fail the quotation save
-        try {
-            $path = public_path('images/quotations/qr');
-            if (! File::isDirectory($path)) {
-                File::makeDirectory($path, 0775, true);
-            }
-            $filename = 'qr_code_'.preg_replace('/[^A-Za-z0-9_\-]/', '_', $lims_quotation_data->reference_no).'.png';
-            $full = $path.DIRECTORY_SEPARATOR.$filename;
-            QrCode::format('png')->size(300)->generate($approvalUrl, $full);
-            try {
-                $this->wpAttachMessage($full, $lims_customer_data->phone_number, $filename);
-            } catch (\Exception $e) {
-                // text link already sent
-            }
-            if (File::exists($full)) {
-                File::delete($full);
-            }
-        } catch (\Throwable $e) {
-            \Log::warning('Quotation QR WhatsApp attach skipped: '.$e->getMessage());
-        }
-
         // Creator + CC notifications (copy of status / items)
         $this->notifyQuotationStakeholders($lims_quotation_data, 'sent', $mail_data);
 
         return $message;
+    }
+
+    /**
+     * Deliver the signed quotation to the client: branded PDF carrying their
+     * signature, plus a QR code that opens the verified online copy.
+     */
+    public function sendApprovedQuotationToClient(Quotation $quotation)
+    {
+        $customer = Customer::find($quotation->customer_id);
+        if (! $customer) {
+            return;
+        }
+
+        $scanUrl = route('quotation.scan', $quotation->reference_no);
+        $slug = preg_replace('/[^A-Za-z0-9_\-]/', '_', $quotation->reference_no);
+        $pdfPath = null;
+
+        try {
+            $pdfPath = $this->buildQuotationPdf($quotation->id);
+        } catch (\Throwable $e) {
+            \Log::error('Approved quotation PDF build failed: '.$e->getMessage());
+        }
+
+        if (! empty($customer->phone_number)) {
+            try {
+                $this->wpMessage($customer->phone_number, WhatsAppMessage::quotationApprovedCopy(
+                    $customer->name,
+                    $quotation->reference_no,
+                    number_format((float) $quotation->grand_total, 2),
+                    $scanUrl
+                ));
+            } catch (\Throwable $e) {
+                \Log::warning('Approved quotation WhatsApp text skipped: '.$e->getMessage());
+            }
+
+            if ($pdfPath) {
+                try {
+                    $this->wpPDFMessage($pdfPath, $customer, 'quotation_'.$slug.'.pdf');
+                } catch (\Throwable $e) {
+                    \Log::warning('Approved quotation PDF attach skipped: '.$e->getMessage());
+                }
+            }
+
+            try {
+                $dir = public_path('images/quotations/qr');
+                if (! File::isDirectory($dir)) {
+                    File::makeDirectory($dir, 0775, true);
+                }
+                $qrFile = $dir.DIRECTORY_SEPARATOR.'qr_code_'.$slug.'.png';
+                QrCode::format('png')->size(300)->generate($scanUrl, $qrFile);
+                try {
+                    $this->wpAttachMessage($qrFile, $customer->phone_number, 'qr_code_'.$slug.'.png');
+                } finally {
+                    if (File::exists($qrFile)) {
+                        File::delete($qrFile);
+                    }
+                }
+            } catch (\Throwable $e) {
+                \Log::warning('Approved quotation QR attach skipped: '.$e->getMessage());
+            }
+        }
+
+        if (! empty($customer->email) && $pdfPath) {
+            try {
+                Mail::send('mail.quotation_approved', [
+                    'customer_name' => $customer->name,
+                    'reference_no' => $quotation->reference_no,
+                    'grand_total' => number_format((float) $quotation->grand_total, 2),
+                    'scan_url' => $scanUrl,
+                ], function ($mail) use ($customer, $pdfPath, $slug, $quotation) {
+                    $mail->to($customer->email)
+                        ->subject('Approved Quotation '.$quotation->reference_no)
+                        ->attach($pdfPath, ['as' => 'quotation_'.$slug.'.pdf', 'mime' => 'application/pdf']);
+                });
+            } catch (\Throwable $e) {
+                \Log::warning('Approved quotation email skipped: '.$e->getMessage());
+            }
+        }
     }
 
     /**
@@ -1186,10 +1257,7 @@ class QuotationController extends Controller
 
         if($lims_quotation_data->quotation_status == Quotation::STATUS_AWAITING && !empty($mail_data['email'])){
             try{
-                Mail::send( 'mail.quotation_details', $mail_data, function( $message ) use ($mail_data)
-                {
-                    $message->to( $mail_data['email'] )->subject( 'Quotation Details' );
-                });
+                $this->mailApprovalLink($lims_quotation_data, $mail_data['email'], optional($lims_customer_data)->name, $mail_data);
             }
             catch(\Exception $e){
                 $message = 'Quotation updated successfully. Please setup your <a href="setting/mail_setting">mail setting</a> to send mail.';

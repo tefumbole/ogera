@@ -189,6 +189,23 @@
     </tr>
 </table>
 
+@php
+    $clientSignature = $client_signature_data_uri ?? null;
+    $isApproved = (int) ($lims_sale_data->quotation_status ?? 0) === \App\Quotation::STATUS_APPROVED;
+@endphp
+@if($isApproved && $clientSignature)
+    <div class="inv-signature">
+        <span class="inv-label">Approved &amp; signed by client</span>
+        <img class="inv-signature-img" src="{{ $clientSignature }}" alt="Client signature">
+        <div class="inv-signature-name">{{ @$lims_customer_data->name }}</div>
+        <div class="inv-signature-meta">
+            @if($lims_sale_data->client_signed_at)
+                Signed {{ $lims_sale_data->client_signed_at->format('d-m-Y H:i') }}
+            @endif
+        </div>
+    </div>
+@endif
+
 <div class="inv-codes-block">
     @if(@$lims_sale_data->user)
         <div class="inv-created">
@@ -197,7 +214,8 @@
         </div>
     @endif
     <div class="inv-qr" style="margin:0 0 6px;">
-        <?php echo '<img src="data:image/png;base64,'.DNS2D::getBarcodePNG($lims_sale_data->reference_no, 'QRCODE').'" height="52" width="52" alt="qrcode">'; ?>
+        {{-- Encodes the public copy of this quotation so a scan verifies it. --}}
+        <?php echo '<img src="data:image/png;base64,'.DNS2D::getBarcodePNG(route('quotation.scan', $lims_sale_data->reference_no), 'QRCODE').'" height="90" width="90" alt="qrcode">'; ?>
     </div>
     <div class="inv-barcode">
         <?php echo '<img src="data:image/png;base64,'.DNS1D::getBarcodePNG($lims_sale_data->reference_no, 'C128').'" height="24" width="160" alt="barcode">'; ?>

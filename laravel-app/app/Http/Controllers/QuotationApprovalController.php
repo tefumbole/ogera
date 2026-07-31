@@ -6,6 +6,7 @@ use App\GeneralSetting;
 use App\Product;
 use App\ProductQuotation;
 use App\Quotation;
+use App\Support\SignatureImage;
 use App\Unit;
 use App\Variant;
 use Illuminate\Http\Request;
@@ -55,6 +56,7 @@ class QuotationApprovalController extends Controller
         $quotation->save();
 
         $this->notifyStakeholders($quotation->fresh(), 'approved');
+        $this->sendSignedCopy($quotation->fresh());
 
         return view('quotation.client_responded', [
             'quotation' => $quotation->fresh(['customer', 'biller']),
@@ -85,6 +87,24 @@ class QuotationApprovalController extends Controller
             'quotation' => $quotation->fresh(['customer', 'biller']),
             'general_setting' => GeneralSetting::first(),
         ]);
+    }
+
+    /**
+     * The client only received a link before signing; now that they have
+     * signed, hand over the full document and its verification QR code.
+     *
+     * Rendering the PDF and calling out to WhatsApp/SMTP takes seconds, so it
+     * runs once the thank-you page has already been flushed to the client.
+     */
+    protected function sendSignedCopy(Quotation $quotation)
+    {
+        app()->terminating(function () use ($quotation) {
+            try {
+                app(QuotationController::class)->sendApprovedQuotationToClient($quotation);
+            } catch (\Throwable $e) {
+                Log::warning('Signed quotation delivery failed: '.$e->getMessage());
+            }
+        });
     }
 
     protected function notifyStakeholders(Quotation $quotation, $event)
@@ -170,6 +190,14 @@ class QuotationApprovalController extends Controller
         $binary = base64_decode($raw, true);
         if ($binary === false || strlen($binary) < 80) {
             return null;
+        }
+
+        // Drop the empty pad around the strokes and dissolve any white sheet,
+        // so the stamp on the approved quotation is the signature and nothing
+        // else. Falls back to the raw capture if GD cannot process it.
+        $trimmed = SignatureImage::trimToTransparentPng($binary);
+        if ($trimmed !== null) {
+            $binary = $trimmed;
         }
 
         // Writable path under public/uploads (deploy ensures www-data ownership)

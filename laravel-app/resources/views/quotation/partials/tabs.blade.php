@@ -23,6 +23,8 @@
     }
     .qt-nav a:hover { transform: translateY(-1px); text-decoration: none !important; }
     .qt-nav a.is-active { color: #fff !important; }
+    .qt-nav a.tone-slate { border-color: #475569; color: #334155; }
+    .qt-nav a.tone-slate.is-active, .qt-nav a.tone-slate:hover { background: #334155; border-color: #334155; color: #fff !important; }
     .qt-nav a.tone-orange { border-color: #f59e0b; color: #c77708; }
     .qt-nav a.tone-orange.is-active, .qt-nav a.tone-orange:hover { background: #f59e0b; border-color: #f59e0b; color: #071711 !important; }
     .qt-nav a.tone-green { border-color: #10b981; color: #10b981; }
@@ -39,9 +41,10 @@
     .qt-nav a.is-active .qt-count { background: rgba(255,255,255,.25); }
 </style>
 @php
-    $qtTab = $tab ?? 'awaiting';
-    $counts = $tabCounts ?? ['awaiting' => 0, 'approved' => 0, 'rejected' => 0, 'draft' => 0];
+    $qtTab = $tab ?? 'all';
+    $counts = $tabCounts ?? ['all' => 0, 'awaiting' => 0, 'approved' => 0, 'rejected' => 0, 'draft' => 0];
     $qtTabs = [
+        ['all', 'All Quotations', 'dripicons-list', 'tone-slate'],
         ['awaiting', 'Awaiting Client Approval', 'dripicons-clock', 'tone-orange'],
         ['approved', 'Approved', 'dripicons-checkmark', 'tone-green'],
         ['rejected', 'Rejected', 'dripicons-wrong', 'tone-red'],

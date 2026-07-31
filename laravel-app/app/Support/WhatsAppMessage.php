@@ -130,24 +130,36 @@ class WhatsAppMessage
     }
 
     /**
-     * Client-facing quotation WhatsApp.
+     * Invitation to read and sign a quotation.
      *
-     * Never lists undiscounted line prices when a discount applies — clients see
-     * subtotal / discount / final total (or final total only).
-     *
-     * @param  array  $options  products [['name','qty']], subtotal, order_discount,
-     *                          order_tax, shipping_cost, show_discount (bool)
+     * Deliberately carries the link and nothing else: items, pricing and the
+     * document itself live behind the link, and the full signed copy is only
+     * issued once the client has approved.
      */
-    public static function quotationApprovalRequest($customerName, $referenceNo, $grandTotal, $approvalUrl, array $options = [])
+    public static function quotationApprovalRequest($customerName, $referenceNo, $approvalUrl)
     {
         $msg = self::statusBlock('📋', 'Quotation for Approval');
         $msg .= self::greeting($customerName);
-        $msg .= "Please review your quotation from *".self::companyName()."*.\n\n";
+        $msg .= "*".self::companyName()."* has prepared quotation *{$referenceNo}* for you.\n\n";
+        $msg .= "Open the secure link below to read the full quotation and approve or reject it. Your signed copy is issued as soon as you approve.\n";
+        $msg .= self::actionLink('Open quotation', $approvalUrl);
+        $msg .= self::footer();
+
+        return $msg;
+    }
+
+    /**
+     * Delivery of the signed quotation after the client approves.
+     */
+    public static function quotationApprovedCopy($customerName, $referenceNo, $grandTotal, $scanUrl)
+    {
+        $msg = self::statusBlock('✅', 'Approved Quotation');
+        $msg .= self::greeting($customerName);
+        $msg .= "Thank you for approving your quotation from *".self::companyName()."*.\n\n";
         $msg .= self::bullet('Reference', $referenceNo);
-        $msg .= self::quotationProductsBlock($options['products'] ?? []);
-        $msg .= self::quotationPricingBlock($grandTotal, $options);
-        $msg .= "\nThis is a *quotation* (not a receipt). Review the agreement, then approve or reject with a comment.\n";
-        $msg .= self::actionLink('Review & respond', $approvalUrl);
+        $msg .= self::bullet('Grand Total', $grandTotal);
+        $msg .= "\nYour signed quotation is attached, along with a QR code that opens the verified copy online.\n";
+        $msg .= self::actionLink('View online copy', $scanUrl);
         $msg .= self::footer();
 
         return $msg;

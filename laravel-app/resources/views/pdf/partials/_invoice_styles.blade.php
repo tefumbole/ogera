@@ -221,6 +221,32 @@
     .inv-note p:last-child { margin-bottom: 0; }
     .inv-note ul, .inv-note ol { margin: 3px 0 3px 14px; padding: 0; }
 
+    /* Client signature stamp on an approved document. The PNG is already
+       trimmed to the strokes and transparent, so no frame is drawn around it. */
+    .inv-signature {
+        width: 46%;
+        margin-top: 12px;
+        page-break-inside: avoid;
+    }
+    .inv-signature .inv-label {
+        display: block;
+        font-size: 9px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        color: #1f2a44;
+        margin-bottom: 3px;
+    }
+    .inv-signature-img { max-height: 62px; max-width: 100%; }
+    .inv-signature-name {
+        font-weight: bold;
+        font-size: 10.5px;
+        border-top: 1px solid #c9cfdf;
+        padding-top: 3px;
+        margin-top: 2px;
+    }
+    .inv-signature-meta { font-size: 9px; color: #6b7386; }
+
     .inv-status {
         display: inline-block;
         padding: 1px 6px;
