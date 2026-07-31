@@ -185,9 +185,17 @@
 
 <footer class="ogera-footer">
     <div class="ogera-footer__wave" aria-hidden="true">
-        <svg viewBox="0 0 1440 90" preserveAspectRatio="none">
-            <path class="ogera-wave__gold" d="M0,44 C260,4 560,0 820,22 C1060,42 1260,58 1440,26 L1440,90 L0,90 Z"></path>
-            <path class="ogera-wave__body" d="M0,60 C260,20 560,16 820,38 C1060,58 1260,74 1440,42 L1440,90 L0,90 Z"></path>
+        <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+            <defs>
+                <linearGradient id="ogeraWaveGold" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#e6c877"></stop>
+                    <stop offset="30%" stop-color="#c1912b"></stop>
+                    <stop offset="62%" stop-color="#dcb45a"></stop>
+                    <stop offset="100%" stop-color="#f4dfa2"></stop>
+                </linearGradient>
+            </defs>
+            <path fill="url(#ogeraWaveGold)" d="M0,74 C280,104 600,96 880,56 C1110,23 1290,10 1440,2 L1440,120 L0,120 Z"></path>
+            <path class="ogera-wave__body" d="M0,90 C280,120 600,112 880,72 C1110,39 1290,26 1440,18 L1440,120 L0,120 Z"></path>
         </svg>
     </div>
 
@@ -196,7 +204,7 @@
             <div class="ogera-footer__main">
 
                 <div class="ogera-footer__qr">
-                    <img src="{{ asset('public/branding/ogera-registration-qr.png') }}"
+                    <img src="{{ asset('public/branding/ogera-registration-qr-green.png') }}"
                          alt="OGERA Agency registration QR code">
                 </div>
 
