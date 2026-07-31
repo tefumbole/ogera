@@ -13,6 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
+        Commands\BackupDatabase::class,
         Commands\ReminderCron::class,
         Commands\SendScheduledAnnouncements::class,
         Commands\RentalReturnReminderCron::class,
@@ -41,6 +42,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('announcements:process')->everyMinute();
         $schedule->command('contracts:process-reminders')->everyMinute();
         $schedule->command('contracts:expiry-alerts')->dailyAt('08:00');
+        $schedule->command('ogera:db-backup')->dailyAt('02:17')->withoutOverlapping();
     }
 
     /**

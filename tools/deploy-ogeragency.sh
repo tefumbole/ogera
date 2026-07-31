@@ -81,6 +81,7 @@ rsync -az --delete --human-readable ${RSYNC_EXTRA[@]+"${RSYNC_EXTRA[@]}"} \
     --exclude='/storage/framework/cache/data/*' \
     --exclude='/storage/framework/sessions/*' \
     --exclude='/storage/framework/views/*' \
+    --exclude='/storage/app/backups/' \
     --exclude='/public/uploads/' \
     --exclude='/public/logo/' \
     --exclude='/bootstrap/cache/*.php' \

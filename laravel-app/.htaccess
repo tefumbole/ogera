@@ -10,7 +10,7 @@ DirectoryIndex index.php
 RedirectMatch 404 ^/(app|bootstrap|config|database|resources|routes|storage|tests|tools|scripts|deploy|db-import|vendor)(/|$)
 RedirectMatch 404 ^/\.(env|git)
 
-<FilesMatch "(?i)^(\.env.*|\.git.*|composer\.(json|lock)|package(-lock)?\.json|artisan|server\.php|phpunit\.xml|webpack\.mix\.js|VERSION|manifest\.json|.*\.md|.*\.sql|.*\.log|.*\.bak|.*\.txt)$">
+<FilesMatch "(?i)^(\.env.*|\.git.*|composer\.(json|lock)|package(-lock)?\.json|artisan|server\.php|phpunit\.xml|webpack\.mix\.js|VERSION|manifest\.json|.*\.md|.*\.sql|.*\.sql\.gz|.*\.log|.*\.bak|.*\.txt)$">
     Require all denied
 </FilesMatch>
 
