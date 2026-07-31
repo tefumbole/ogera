@@ -239,9 +239,6 @@
                         <span class="ogera-footer__contact-item">
                             <i data-lucide="map-pin"></i><span>{{ $footer['address'] }}</span>
                         </span>
-                        <span class="ogera-footer__contact-item">
-                            <i data-lucide="file-text"></i><span>TIN: {{ $footer['tin'] }}</span>
-                        </span>
                     </div>
                 </div>
 
@@ -249,12 +246,12 @@
 
             <div class="ogera-footer__bottom">
                 <p>© {{ date('Y') }} OGERA Agency. All rights reserved.</p>
-                <p class="mt-1">
+                <p>
                     Developed By:
                     <a href="https://wa.me/250784006160" target="_blank" rel="noopener" style="display:inline;">Alpha Bridge Technologies</a>
                     | <a href="tel:+250784006160" style="display:inline;">+250 784 006 160</a>
                 </p>
-                <p class="mt-1 opacity-70">{{ \App\Support\AppVersion::bcl() }}</p>
+                <p>{{ \App\Support\AppVersion::bcl() }}</p>
             </div>
         </div>
     </div>
