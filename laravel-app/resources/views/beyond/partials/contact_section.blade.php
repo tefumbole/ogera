@@ -27,8 +27,16 @@
                     </h3>
                     <div class="space-y-3 text-gray-600">
                         <p class="font-semibold text-gray-800">{{ \App\Support\SiteContent::text('contact.office_name', $defaults['office_name']) }}</p>
-                        <p>{{ \App\Support\SiteContent::text('contact.office_line1', $defaults['office_line1']) }}</p>
-                        <p>{{ \App\Support\SiteContent::text('contact.office_line2', $defaults['office_line2']) }}</p>
+                        @php
+                            $officeLine1 = \App\Support\SiteContent::text('contact.office_line1', $defaults['office_line1']);
+                            $officeLine2 = \App\Support\SiteContent::text('contact.office_line2', $defaults['office_line2']);
+                            $mapsQuery = trim($officeLine1 . ', ' . $officeLine2);
+                            $mapsUrl = 'https://www.google.com/maps/search/?api=1&query=' . rawurlencode($mapsQuery);
+                        @endphp
+                        <a href="{{ $mapsUrl }}" target="_blank" rel="noopener" class="block hover:text-brand-blue transition-colors" title="Open in Google Maps">
+                            <p>{{ $officeLine1 }}</p>
+                            <p>{{ $officeLine2 }}</p>
+                        </a>
                     </div>
                 </div>
 

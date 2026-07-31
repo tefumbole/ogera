@@ -150,6 +150,7 @@ class OgeraLandingContent
         return [
             'blurb' => 'Business development, events, and equipment rental — crafted in Kigali for brands and hosts who expect more.',
             'address' => 'Mövenpick Hotel, KN 4 Avenue, Kigali',
+            'maps_url' => 'https://www.google.com/maps/search/?api=1&query=' . rawurlencode('Mövenpick Hotel, KN 4 Avenue, Kigali'),
             'email' => 'info@ogeragency.com',
             'phone' => '+250 786 887 936',
             'phone_tel' => '+250786887936',

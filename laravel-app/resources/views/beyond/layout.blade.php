@@ -72,7 +72,7 @@
     $homeUrl = rtrim(url('/'), '/');
 @endphp
 
-<header class="ogera-header" :class="{ 'is-solid': scrolled || open || {{ $isHome ? 'false' : 'true' }} }">
+<header class="ogera-header {{ $isHome ? 'ogera-header--home' : '' }}" :class="{ 'is-solid': scrolled || open || {{ $isHome ? 'false' : 'true' }} }">
     <div class="ogera-header__inner">
         <a href="{{ url('/') }}" class="ogera-header__brand shrink-0">
             <img src="{{ $siteLogoUrl }}" alt="{{ $siteTitle }}"
@@ -236,9 +236,9 @@
                         <a href="{{ $footer['website_url'] }}" target="_blank" rel="noopener">
                             <i data-lucide="globe"></i><span>{{ $footer['website'] }}</span>
                         </a>
-                        <span class="ogera-footer__contact-item">
+                        <a href="{{ $footer['maps_url'] }}" target="_blank" rel="noopener" class="ogera-footer__contact-item" title="Open in Google Maps">
                             <i data-lucide="map-pin"></i><span>{{ $footer['address'] }}</span>
-                        </span>
+                        </a>
                     </div>
                 </div>
 
