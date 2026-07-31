@@ -7,7 +7,7 @@
         * { font-family: DejaVu Sans, sans-serif; font-size: 12px; }
         table { width: 100%; border-collapse: collapse; margin-top: 12px; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background: #0b3f90; color: #fff; }
+        th { background: #033d2e; color: #fff; }
         h2, h3 { margin: 0 0 8px; }
         .meta { margin-bottom: 16px; }
     </style>

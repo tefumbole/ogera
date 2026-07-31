@@ -248,7 +248,7 @@
         ctx.scale(ratio, ratio);
         ctx.lineWidth = 2;
         ctx.lineCap = 'round';
-        ctx.strokeStyle = '#10213d';
+        ctx.strokeStyle = '#071711';
     }
 
     function getPos(e) {

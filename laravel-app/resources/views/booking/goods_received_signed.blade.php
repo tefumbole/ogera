@@ -6,8 +6,8 @@
     <title>Goods Received Signed</title>
     <style>
         body { font-family: Nunito, sans-serif; background: #f4f7fb; margin: 0; padding: 40px 16px; }
-        .card { max-width: 640px; margin: 0 auto; background: #fff; border-radius: 14px; padding: 28px; text-align: center; box-shadow: 0 8px 24px rgba(11,63,144,.08); }
-        h1 { color: #0b3f90; }
+        .card { max-width: 640px; margin: 0 auto; background: #fff; border-radius: 14px; padding: 28px; text-align: center; box-shadow: 0 8px 24px rgba(3,61,46,.08); }
+        h1 { color: #033d2e; }
     </style>
 </head>
 <body>

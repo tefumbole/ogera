@@ -24,13 +24,13 @@
         body.beyond-pos-active .main-footer { display: none; }
         body.beyond-pos-active #beyond-module-tabs { display: none !important; }
         body.beyond-pos-active .pos-section .container-fluid { max-width: 100%; padding-left: 8px; padding-right: 8px; }
-        body.beyond-pos-active .pos-section .card { border-radius: 12px; border-color: #e3e9f4; box-shadow: 0 8px 24px rgba(15,35,80,.05); }
+        body.beyond-pos-active .pos-section .card { border-radius: 12px; border-color: #e6efe9; box-shadow: 0 8px 24px rgba(15,35,80,.05); }
         body.beyond-pos-active .pos-section .btn-primary,
         body.beyond-pos-active .pos-section .btn-info,
         body.beyond-pos-active .pos-section .btn-success { border-radius: 8px; }
-        body.beyond-pos-active .pos-section .menu-btn { border-color: #0b3f90; color: #0b3f90; border-radius: 8px; }
+        body.beyond-pos-active .pos-section .menu-btn { border-color: #033d2e; color: #033d2e; border-radius: 8px; }
         body.beyond-pos-active .pos-section .grand-total,
-        body.beyond-pos-active .pos-section .total-section { background: linear-gradient(135deg, #0b3f90, #072f6b) !important; color: #fff !important; border-radius: 10px; }
+        body.beyond-pos-active .pos-section .total-section { background: linear-gradient(135deg, #033d2e, #02261c) !important; color: #fff !important; border-radius: 10px; }
         body.beyond-pos-active .pos-section .payment-buttons .btn { border-radius: 10px; font-weight: 700; }
         body.beyond-pos-active .pos-section .product-img img {
             width: 100%;
@@ -1292,7 +1292,7 @@
                                                         </select>
                                                     @endif
                                                 </div>
-                                                <div id="customer-balance-panel" class="mt-1" style="display:none;font-size:12px;color:#0b3f90;">
+                                                <div id="customer-balance-panel" class="mt-1" style="display:none;font-size:12px;color:#033d2e;">
                                                     <span>Deposit balance: <strong id="customer-deposit-balance">0.00</strong></span>
                                                     <span class="mx-2">|</span>
                                                     <span>Amount owing: <strong id="customer-amount-owing">0.00</strong></span>

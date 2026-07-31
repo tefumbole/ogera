@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Quotation response - {{ $general_setting->site_title ?? 'Beyond' }}</title>
     <style>
-        body { margin:0; font-family: Nunito, system-ui, sans-serif; background: linear-gradient(180deg,#041f4a 0%,#0b3f90 100%); color:#fff; min-height:100vh; }
+        body { margin:0; font-family: Nunito, system-ui, sans-serif; background: linear-gradient(180deg,#041f4a 0%,#033d2e 100%); color:#fff; min-height:100vh; }
         .wrap { max-width:640px; margin:0 auto; padding:48px 16px; text-align:center; }
         .card { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14); border-radius:16px; padding:28px 22px; }
         h1 { margin:0 0 10px; }

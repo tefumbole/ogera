@@ -26,7 +26,7 @@
         <div class="row">
             <div class="col-lg-4 mb-4">
                 <div class="ts-card ts-card-accent h-100">
-                    <h5 class="mb-1" style="color:#0b3f90;font-weight:700;">Create New Activity</h5>
+                    <h5 class="mb-1" style="color:#033d2e;font-weight:700;">Create New Activity</h5>
                     <p class="text-muted small mb-3">Define a new task type.</p>
                     <form method="POST" action="{{ route('timesheet.activities.store') }}">
                         @csrf
@@ -63,7 +63,7 @@
                 <div class="ts-card">
                     <div class="d-flex justify-content-between align-items-start flex-wrap mb-3" style="gap:10px;">
                         <div>
-                            <h5 class="mb-1" style="color:#0b3f90;font-weight:700;">Your Activities</h5>
+                            <h5 class="mb-1" style="color:#033d2e;font-weight:700;">Your Activities</h5>
                             <p class="text-muted small mb-0">Manage your existing activity definitions.</p>
                         </div>
                         <form method="GET" class="mb-0">

@@ -7,16 +7,16 @@
     <style>
         body { margin: 0; font-family: Nunito, sans-serif; background: #f4f7fb; color: #1f2a44; }
         .wrap { max-width: 900px; margin: 0 auto; padding: 24px 16px 100px; }
-        .card { background: #fff; border-radius: 14px; padding: 20px; margin-bottom: 16px; box-shadow: 0 8px 24px rgba(11,63,144,.08); }
-        h1 { margin: 0 0 8px; color: #0b3f90; }
+        .card { background: #fff; border-radius: 14px; padding: 20px; margin-bottom: 16px; box-shadow: 0 8px 24px rgba(3,61,46,.08); }
+        h1 { margin: 0 0 8px; color: #033d2e; }
         table { width: 100%; border-collapse: collapse; }
-        th, td { border-bottom: 1px solid #e3e9f4; padding: 10px 8px; text-align: left; font-size: 14px; }
-        th { color: #0b3f90; }
+        th, td { border-bottom: 1px solid #e6efe9; padding: 10px 8px; text-align: left; font-size: 14px; }
+        th { color: #033d2e; }
         .btn { border: 0; border-radius: 10px; padding: 12px 18px; font-weight: 700; cursor: pointer; }
-        .btn-primary { background: #0b3f90; color: #fff; }
-        .btn-accent { background: #c6ab47; color: #10213d; }
-        .btn-outline { background: #fff; border: 2px solid #0b3f90; color: #0b3f90; }
-        .footer-bar { position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-top: 1px solid #e3e9f4; padding: 14px 16px; }
+        .btn-primary { background: #033d2e; color: #fff; }
+        .btn-accent { background: #c6ab47; color: #071711; }
+        .btn-outline { background: #fff; border: 2px solid #033d2e; color: #033d2e; }
+        .footer-bar { position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-top: 1px solid #e6efe9; padding: 14px 16px; }
         .footer-inner { max-width: 900px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
         .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 1000; align-items: center; justify-content: center; padding: 16px; }
         .modal { background: #fff; border-radius: 14px; width: 100%; max-width: 640px; padding: 18px; }
@@ -36,12 +36,12 @@
         <p>Booking: <strong>{{ $booking->reference_no }}</strong> &nbsp;|&nbsp; Delivery Note: <strong>{{ $receipt->reference_no }}</strong></p>
         <p>Customer: <strong>{{ optional($booking->customer)->name }}</strong></p>
         @if($isDelivered)
-            <p style="color:#0b3f90;"><strong>You are confirming that you delivered the equipment listed below.</strong></p>
+            <p style="color:#033d2e;"><strong>You are confirming that you delivered the equipment listed below.</strong></p>
         @endif
     </div>
 
     <div class="card">
-        <h3 style="margin-top:0;color:#0b3f90;">Equipment Delivered</h3>
+        <h3 style="margin-top:0;color:#033d2e;">Equipment Delivered</h3>
         <table>
             <thead>
                 <tr>
@@ -141,7 +141,7 @@
         ctx.scale(ratio, ratio);
         ctx.lineWidth = 2;
         ctx.lineCap = 'round';
-        ctx.strokeStyle = '#10213d';
+        ctx.strokeStyle = '#071711';
     }
 
     function getPos(e) {

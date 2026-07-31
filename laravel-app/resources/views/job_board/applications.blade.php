@@ -165,10 +165,10 @@
         width: 100%;
         min-height: 38px;
         padding: 8px 10px;
-        border: 1px solid #0b3f90;
+        border: 1px solid #033d2e;
         border-radius: 8px;
         background: #fff;
-        color: #0b3f90;
+        color: #033d2e;
         font-weight: 600;
         font-size: 13px;
         appearance: auto;

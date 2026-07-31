@@ -73,7 +73,7 @@ class BeyondController extends Controller
 
     public function contact()
     {
-        return redirect(url('/about') . '#contact', 301);
+        return view('beyond.contact');
     }
 
     public function events()

@@ -20,13 +20,13 @@
             @if(!empty($general_setting->site_logo))
                 <img src="{{ url('public/logo', $general_setting->site_logo) }}" alt="Logo" style="height:56px;margin-bottom:8px;">
             @endif
-            <h2 style="color:#0b3f90;margin:0;">{{ optional($booking->biller)->company_name ?? ($general_setting->site_title ?? 'Beyond Enterprise') }}</h2>
+            <h2 style="color:#033d2e;margin:0;">{{ optional($booking->biller)->company_name ?? ($general_setting->site_title ?? 'Beyond Enterprise') }}</h2>
             <p class="text-muted mb-0">{{ optional($booking->biller)->address }} · {{ optional($booking->biller)->phone_number }}</p>
         </div>
     @endif
 
     <div class="contract-meta mb-4">
-        <h4 style="color:#0b3f90;">{{ $agreementTitle }}</h4>
+        <h4 style="color:#033d2e;">{{ $agreementTitle }}</h4>
         <p><strong>Booking Ref:</strong> {{ $booking->reference_no }}</p>
         <p><strong>Client:</strong> {{ optional($booking->customer)->name }}</p>
         @if($contract->signed_at)
@@ -39,23 +39,23 @@
 
     @if($type === 'studio_rental')
         <div class="contract-section mb-3">
-            <h5 style="color:#0b3f90;">1. Studio Session Summary</h5>
+            <h5 style="color:#033d2e;">1. Studio Session Summary</h5>
             <p>Studio rentals may be booked Hourly, Daily, or Monthly. Sessions below show method, duration, and schedule.</p>
         </div>
         <div class="contract-section mb-3">
-            <h5 style="color:#0b3f90;">2. Settling-In Time &amp; Extensions</h5>
+            <h5 style="color:#033d2e;">2. Settling-In Time &amp; Extensions</h5>
             <p>Allow enough time for settling in and wrap-up. When booked time ends, adding another hour is subject to approval and availability.</p>
         </div>
         <div class="contract-section mb-3">
-            <h5 style="color:#0b3f90;">3. Overtime Charges</h5>
+            <h5 style="color:#033d2e;">3. Overtime Charges</h5>
             <p>Overtime is billed at <strong>12,000 XAF for 0–60 minutes</strong> (or any part thereof), unless a longer extension is separately approved and priced.</p>
         </div>
         <div class="contract-section mb-3">
-            <h5 style="color:#0b3f90;">4. Non-Refundable &amp; Generator Fuel</h5>
+            <h5 style="color:#033d2e;">4. Non-Refundable &amp; Generator Fuel</h5>
             <p>Studio rentals are <strong>not refundable</strong>. Generator fuel is <strong>3,200 XAF per hour</strong> and must be requested by the client. If fuel is not requested and there is an outage, the session is lost with no refund.</p>
         </div>
         <div class="contract-section mb-4">
-            <h5 style="color:#0b3f90;">5. Session List &amp; Pricing</h5>
+            <h5 style="color:#033d2e;">5. Session List &amp; Pricing</h5>
             <div class="table-responsive">
                 <table class="table table-bordered table-sm">
                     <thead class="thead-light">
@@ -90,19 +90,19 @@
         </div>
     @elseif($type === 'software_license')
         <div class="contract-section mb-3">
-            <h5 style="color:#0b3f90;">1. Subscription Summary</h5>
+            <h5 style="color:#033d2e;">1. Subscription Summary</h5>
             <p>The client has subscribed for the product(s) / service(s) below. The subscription runs from the start date through the expiry date shown for each item.</p>
         </div>
         <div class="contract-section mb-3">
-            <h5 style="color:#0b3f90;">2. Access &amp; Credentials</h5>
+            <h5 style="color:#033d2e;">2. Access &amp; Credentials</h5>
             <p>After approval, the client receives portal access to view this subscription and related documents. Credentials must remain confidential.</p>
         </div>
         <div class="contract-section mb-3">
-            <h5 style="color:#0b3f90;">3. Fair Use &amp; License Scope</h5>
+            <h5 style="color:#033d2e;">3. Fair Use &amp; License Scope</h5>
             <p>Use is limited to the registered client and agreed quantity. Unauthorized sharing or resale may result in suspension without refund.</p>
         </div>
         <div class="contract-section mb-4">
-            <h5 style="color:#0b3f90;">4. Product List &amp; Subscription Period</h5>
+            <h5 style="color:#033d2e;">4. Product List &amp; Subscription Period</h5>
             <div class="table-responsive">
                 <table class="table table-bordered table-sm">
                     <thead class="thead-light">
@@ -135,11 +135,11 @@
         </div>
     @elseif($type === 'accommodation')
         <div class="contract-section mb-3">
-            <h5 style="color:#0b3f90;">1. Room Assignment &amp; Term</h5>
+            <h5 style="color:#033d2e;">1. Room Assignment &amp; Term</h5>
             <p>Student accommodation at our facility for the period shown below.</p>
         </div>
         <div class="contract-section mb-4">
-            <h5 style="color:#0b3f90;">2. Room List &amp; Pricing</h5>
+            <h5 style="color:#033d2e;">2. Room List &amp; Pricing</h5>
             <div class="table-responsive">
                 <table class="table table-bordered table-sm">
                     <thead class="thead-light">
@@ -170,19 +170,19 @@
         </div>
     @else
         <div class="contract-section mb-3">
-            <h5 style="color:#0b3f90;">1. Rental Term &amp; Return Time</h5>
+            <h5 style="color:#033d2e;">1. Rental Term &amp; Return Time</h5>
             <p>All rented equipment must be returned by the agreed return date and time shown for each item. Failure to return on time will incur penalties.</p>
         </div>
         <div class="contract-section mb-3">
-            <h5 style="color:#0b3f90;">2. Late Return Penalties</h5>
+            <h5 style="color:#033d2e;">2. Late Return Penalties</h5>
             <p>Late return of any equipment will incur penalties including an additional full-day rental charge per day (or part thereof) for each item kept beyond the agreed return time, plus any applicable administrative fees.</p>
         </div>
         <div class="contract-section mb-3">
-            <h5 style="color:#0b3f90;">3. Client Responsibility for Damage</h5>
+            <h5 style="color:#033d2e;">3. Client Responsibility for Damage</h5>
             <p>Broken, lost, stolen, or damaged equipment is the full responsibility of the client. The client agrees to pay repair or replacement costs at the current market value of the affected equipment.</p>
         </div>
         <div class="contract-section mb-4">
-            <h5 style="color:#0b3f90;">4. Equipment List &amp; Pricing</h5>
+            <h5 style="color:#033d2e;">4. Equipment List &amp; Pricing</h5>
             <div class="table-responsive">
                 <table class="table table-bordered table-sm">
                     <thead class="thead-light">
@@ -215,13 +215,13 @@
 
     @if(!empty($booking->booking_note))
         <div class="contract-section mb-3">
-            <h5 style="color:#0b3f90;">Additional Notes</h5>
+            <h5 style="color:#033d2e;">Additional Notes</h5>
             <p>{!! \App\Support\BookingNoteFormatter::forDisplay($booking->booking_note) !!}</p>
         </div>
     @endif
 
     <div class="contract-section mb-4">
-        <h5 style="color:#0b3f90;">Acceptance</h5>
+        <h5 style="color:#033d2e;">Acceptance</h5>
         <p>By signing below, the client confirms they have read this agreement, accept all terms, and authorize identity verification via ID card upload.</p>
         <div class="row">
             <div class="col-md-6">
@@ -233,7 +233,7 @@
             @if(!empty($adminSignatureSrc))
                 <div class="col-md-6">
                     <p><strong>Authorized Signatory</strong></p>
-                    <img src="{{ $adminSignatureSrc }}" alt="Admin signature" style="max-width:280px;max-height:120px;border:1px solid #0b3f90;padding:4px;">
+                    <img src="{{ $adminSignatureSrc }}" alt="Admin signature" style="max-width:280px;max-height:120px;border:1px solid #033d2e;padding:4px;">
                 </div>
             @endif
         </div>

@@ -229,7 +229,7 @@
             @else
                 <div class="table-responsive">
                     <table class="table table-sm table-bordered mb-0" id="staff-assign-table">
-                        <thead style="background:#0b3f90;color:#fff;">
+                        <thead style="background:#033d2e;color:#fff;">
                             <tr>
                                 <th style="width:40px;"></th>
                                 <th>Staff</th>

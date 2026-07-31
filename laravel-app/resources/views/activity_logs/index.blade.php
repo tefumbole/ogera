@@ -5,7 +5,7 @@
     <div class="container-fluid">
         <div class="d-flex justify-content-between align-items-start flex-wrap mb-3" style="gap:12px;">
             <div>
-                <h3 class="mb-1" style="color:#0b3f90;font-weight:800;"><i class="dripicons-document"></i> Activity Logs</h3>
+                <h3 class="mb-1" style="color:#033d2e;font-weight:800;"><i class="dripicons-document"></i> Activity Logs</h3>
                 <p class="text-muted mb-0">Page views, clicks, form actions, and login events across the system.</p>
             </div>
             <div class="d-flex" style="gap:8px;">

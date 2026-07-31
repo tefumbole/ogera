@@ -48,11 +48,11 @@
     .booking-create-page .card {
         border: 0;
         border-radius: 12px;
-        box-shadow: 0 8px 20px rgba(11, 63, 144, 0.07);
+        box-shadow: 0 8px 20px rgba(3, 61, 46, 0.07);
         overflow: hidden;
     }
     .booking-create-page .card-header {
-        background: linear-gradient(135deg, #0b3f90 0%, #1456b8 100%);
+        background: linear-gradient(135deg, #033d2e 0%, #07513d 100%);
         color: #fff;
         border: 0;
         padding: 10px 16px;
@@ -76,7 +76,7 @@
     .booking-create-page .card-body > p.italic { display: none; }
     .booking-section {
         background: #fff;
-        border: 1px solid #e3e9f4;
+        border: 1px solid #e6efe9;
         border-radius: 10px;
         padding: 10px 12px 6px;
         margin-bottom: 8px;
@@ -86,7 +86,7 @@
         font-weight: 800;
         letter-spacing: 0.06em;
         text-transform: uppercase;
-        color: #0b3f90;
+        color: #033d2e;
         margin-bottom: 6px;
     }
     .booking-create-page label {
@@ -122,8 +122,8 @@
         min-height: 56px;
     }
     .booking-create-page .search-box .btn-secondary {
-        background: #0b3f90;
-        border-color: #0b3f90;
+        background: #033d2e;
+        border-color: #033d2e;
         border-radius: 8px 0 0 8px;
         padding: 4px 10px;
     }
@@ -137,7 +137,7 @@
     .booking-create-page .input-with-action .btn-default {
         border-radius: 8px;
         border-color: #c6ab47;
-        color: #0b3f90;
+        color: #033d2e;
         min-width: 34px;
         padding: 4px 8px;
     }
@@ -157,7 +157,7 @@
         font-size: 12px;
     }
     #myTable thead th {
-        background: #0b3f90;
+        background: #033d2e;
         color: #fff;
         border: 0;
         white-space: nowrap;
@@ -234,7 +234,7 @@
     .contract-panel .custom-control { margin-bottom: 0.25rem !important; }
     .booking-summary-bar {
         background: #fff;
-        border: 1px solid #e3e9f4;
+        border: 1px solid #e6efe9;
         border-radius: 10px;
         padding: 10px 14px;
         margin-top: 8px;
@@ -245,12 +245,12 @@
     }
     .booking-summary-bar .summary-item strong {
         display: block;
-        color: #0b3f90;
+        color: #033d2e;
         font-size: 15px;
     }
     .btn-booking-primary {
-        background: #0b3f90;
-        border-color: #0b3f90;
+        background: #033d2e;
+        border-color: #033d2e;
         color: #fff;
         border-radius: 8px;
         padding: 8px 16px;
@@ -260,7 +260,7 @@
     .btn-booking-accent {
         background: #c6ab47;
         border-color: #c6ab47;
-        color: #10213d;
+        color: #071711;
         border-radius: 8px;
         padding: 8px 16px;
         font-weight: 700;
@@ -268,7 +268,7 @@
     }
     .flatpickr-calendar {
         border-radius: 12px;
-        box-shadow: 0 16px 40px rgba(11, 63, 144, 0.18);
+        box-shadow: 0 16px 40px rgba(3, 61, 46, 0.18);
         z-index: 10050 !important;
     }
     .booking-create-page select.selectpicker {
@@ -296,7 +296,7 @@
         border: 1px solid #d7e0ef;
         background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%230b3f90' d='M1.41 0L6 4.58 10.59 0 12 1.41l-6 6-6-6z'/%3E%3C/svg%3E") no-repeat right 8px center;
         background-size: 10px;
-        color: #0b3f90;
+        color: #033d2e;
         font-weight: 600;
         font-size: 12px;
         cursor: pointer;
@@ -353,7 +353,7 @@
         margin-bottom: 6px;
         max-height: min(38vh, 360px);
         overflow: auto;
-        border: 1px solid #e3e9f4;
+        border: 1px solid #e6efe9;
         border-radius: 10px;
         background: #fff;
     }

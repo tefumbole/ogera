@@ -31,7 +31,7 @@
         <div class="row">
             <div class="col-lg-7">
                 <div class="jb-card">
-                    <h5 style="color:#0b3f90;font-weight:800;">Candidate</h5>
+                    <h5 style="color:#033d2e;font-weight:800;">Candidate</h5>
                     <table class="table table-sm mb-0 jb-detail-table">
                         <tr><th>Student Name</th><td><strong>{{ $app->full_name ?: '—' }}</strong></td></tr>
                         <tr><th>Email</th><td>{{ $app->email ?: '—' }}</td></tr>
@@ -51,7 +51,7 @@
                 </div>
 
                 <div class="jb-card">
-                    <h5 style="color:#0b3f90;font-weight:800;">Education</h5>
+                    <h5 style="color:#033d2e;font-weight:800;">Education</h5>
                     @if($isInternship || $app->school || $app->level_of_study || $app->education_status || $app->is_academic_required !== null)
                         <table class="table table-sm mb-0 jb-detail-table">
                             <tr><th>School / Institution</th><td>{{ $app->school ?: '—' }}</td></tr>
@@ -65,7 +65,7 @@
                 </div>
 
                 <div class="jb-card">
-                    <h5 style="color:#0b3f90;font-weight:800;">Role applied for</h5>
+                    <h5 style="color:#033d2e;font-weight:800;">Role applied for</h5>
                     <table class="table table-sm mb-0 jb-detail-table">
                         <tr><th>Title</th>
                             <td>
@@ -81,7 +81,7 @@
                 </div>
 
                 <div class="jb-card">
-                    <h5 style="color:#0b3f90;font-weight:800;">Cover letter / motivation</h5>
+                    <h5 style="color:#033d2e;font-weight:800;">Cover letter / motivation</h5>
                     @if($app->cover_letter)
                         <div style="white-space:pre-wrap;">{{ $app->cover_letter }}</div>
                     @else
@@ -90,7 +90,7 @@
                 </div>
 
                 <div class="jb-card">
-                    <h5 style="color:#0b3f90;font-weight:800;">Agreement &amp; signatures</h5>
+                    <h5 style="color:#033d2e;font-weight:800;">Agreement &amp; signatures</h5>
                     <table class="table table-sm mb-0 jb-detail-table">
                         <tr><th>Agreement sent</th><td>{{ $app->agreement_sent_at ? \Carbon\Carbon::parse($app->agreement_sent_at)->format('M j, Y H:i') : '—' }}</td></tr>
                         <tr><th>Agreement signed</th><td>{{ $app->agreement_signed_at ? \Carbon\Carbon::parse($app->agreement_signed_at)->format('M j, Y H:i') : '—' }}</td></tr>
@@ -120,7 +120,7 @@
 
             <div class="col-lg-5">
                 <div class="jb-card">
-                    <h5 style="color:#0b3f90;font-weight:800;">Documents</h5>
+                    <h5 style="color:#033d2e;font-weight:800;">Documents</h5>
                     <div class="d-flex flex-column" style="gap:14px;">
                         <div>
                             <div class="jb-label">Resume / CV</div>
@@ -178,7 +178,7 @@
                 </div>
 
                 <div class="jb-card">
-                    <h5 style="color:#0b3f90;font-weight:800;">Update status</h5>
+                    <h5 style="color:#033d2e;font-weight:800;">Update status</h5>
                     <form method="POST" action="{{ route('jobs.applications.update', $app->id) }}" class="jb-status-form" style="display:flex;flex-direction:column;gap:10px;">
                         @csrf
                         <div>
@@ -210,7 +210,7 @@
     .jb-detail-table td { word-break: break-word; }
     .jb-native-select {
         display:block;width:100%;min-height:38px;padding:8px 10px;
-        border:1px solid #0b3f90;border-radius:8px;background:#fff;color:#0b3f90;
+        border:1px solid #033d2e;border-radius:8px;background:#fff;color:#033d2e;
         font-weight:600;appearance:auto;-webkit-appearance:menulist;
     }
 </style>

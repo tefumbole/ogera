@@ -8,7 +8,7 @@
         margin: 0;
     }
     .gallery-admin-card {
-        border: 1px solid #e3e9f4;
+        border: 1px solid #e6efe9;
         border-radius: 12px;
         overflow: hidden;
         background: #fff;
@@ -17,11 +17,11 @@
     }
     .gallery-admin-card.sortable-ghost {
         opacity: 0.4;
-        border: 2px dashed #0b3f90;
+        border: 2px dashed #033d2e;
     }
     .gallery-admin-card.sortable-drag {
         cursor: grabbing;
-        box-shadow: 0 12px 28px rgba(11, 63, 144, 0.25);
+        box-shadow: 0 12px 28px rgba(3, 61, 46, 0.25);
     }
     .gallery-admin-card .thumb {
         height: 160px;
@@ -55,7 +55,7 @@
         padding: 4px 8px;
         font-size: 11px;
         font-weight: 700;
-        color: #0b3f90;
+        color: #033d2e;
         cursor: grab;
     }
     .gallery-upload-zone {
@@ -70,7 +70,7 @@
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.06em;
-        color: #0b3f90;
+        color: #033d2e;
         background: #e8f0fb;
         padding: 2px 8px;
         border-radius: 999px;
@@ -174,7 +174,7 @@
                             <video src="{{ $item->fileUrl() }}" muted></video>
                         @elseif(in_array($item->type, ['youtube','youtube_short','tiktok','instagram','facebook']))
                             <div class="text-center p-3">
-                                <i class="dripicons-media-play" style="font-size:42px;color:#0b3f90;"></i>
+                                <i class="dripicons-media-play" style="font-size:42px;color:#033d2e;"></i>
                                 <div class="small text-muted mt-2 text-truncate px-2">{{ $item->media_url }}</div>
                             </div>
                         @elseif($item->type === 'audio')

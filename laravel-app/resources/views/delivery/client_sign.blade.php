@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Confirm Delivery - {{ $general_setting->site_title ?? 'Beyond' }}</title>
     <style>
-        :root { --primary:#0b3f90; --accent:#c6ab47; --text:#fff; --muted:#b8c7e6; }
+        :root { --primary:#033d2e; --accent:#c6ab47; --text:#fff; --muted:#b8c7e6; }
         * { box-sizing: border-box; }
-        body { margin:0; font-family: Nunito, system-ui, sans-serif; background: linear-gradient(180deg,#041f4a 0%,#0b3f90 100%); color:var(--text); min-height:100vh; }
+        body { margin:0; font-family: Nunito, system-ui, sans-serif; background: linear-gradient(180deg,#041f4a 0%,#033d2e 100%); color:var(--text); min-height:100vh; }
         .wrap { max-width: 920px; margin: 0 auto; padding: 24px 16px 140px; }
         .hero { text-align:center; margin-bottom:20px; }
         .hero h1 { margin:0 0 8px; font-size:28px; }
@@ -21,8 +21,8 @@
         .checkbox-row { display:flex; gap:10px; align-items:flex-start; margin:12px 0; }
         input[type=text] { width:100%; border-radius:10px; border:1px solid #d7deea; padding:12px; font-size:15px; }
         .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; border-radius:10px; padding:12px 18px; font-weight:700; cursor:pointer; border:0; }
-        .btn-accent { background:var(--accent); color:#10213d; }
-        .btn-outline { background:#fff; color:#0b3f90; }
+        .btn-accent { background:var(--accent); color:#071711; }
+        .btn-outline { background:#fff; color:#033d2e; }
         .footer-bar { position:fixed; left:0; right:0; bottom:0; background:rgba(4,31,74,.96); border-top:1px solid rgba(255,255,255,.12); padding:14px 16px; }
         .footer-inner { max-width:920px; margin:0 auto; display:flex; gap:12px; justify-content:flex-end; }
         .modal-backdrop { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:1000; align-items:center; justify-content:center; padding:16px; }

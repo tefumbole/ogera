@@ -34,7 +34,7 @@
         margin: 0 auto 16px;
         max-width: min(220px, 70%);
         border-radius: 14px;
-        background: #0b3f90;
+        background: #033d2e;
         padding: 14px;
     }
     .otp-left-preview img {
@@ -99,7 +99,7 @@
         border: 0;
         height: 72px;
         border-radius: 10px;
-        background: #0b3f90;
+        background: #033d2e;
         color: #fff;
         font-size: clamp(28px, 3.7vw, 34px);
         font-weight: 700;

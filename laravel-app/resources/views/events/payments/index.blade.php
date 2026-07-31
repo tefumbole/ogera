@@ -4,7 +4,7 @@
     <h4>Event Labour Payments</h4>
     @if(session('message'))<div class="alert alert-success">{{ session('message') }}</div>@endif
     <div class="table-responsive card"><table class="table mb-0">
-        <thead style="background:#0b3f90;color:#fff"><tr><th>Ref</th><th>Event</th><th>Worker</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead>
+        <thead style="background:#033d2e;color:#fff"><tr><th>Ref</th><th>Event</th><th>Worker</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead>
         <tbody>
             @foreach($payments as $p)
                 <tr>

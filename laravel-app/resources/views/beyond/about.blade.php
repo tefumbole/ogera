@@ -11,32 +11,25 @@
 ])
 
 <section class="py-16 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-                <h2 class="text-3xl font-bold text-brand-blue mb-6">{{ \App\Support\SiteContent::text('about.mission_heading', 'Our Mission') }}</h2>
-                <p class="text-lg text-gray-600 mb-8 leading-relaxed">
-                    {{ \App\Support\SiteContent::text('about.mission_text', 'To empower organizations in Africa and beyond with robust, scalable, and secure technology infrastructure. We strive to be the bridge that connects complex technological challenges with simple, effective, and sustainable solutions.') }}
-                </p>
-                <div class="grid grid-cols-2 gap-6">
-                    <div class="flex items-start gap-3">
-                        <div class="bg-blue-100 p-2 rounded-lg"><i data-lucide="target" class="w-6 h-6 text-brand-blue"></i></div>
-                        <div>
-                            <h3 class="font-semibold text-gray-900">Excellence</h3>
-                            <p class="text-sm text-gray-500">World-class standards</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start gap-3">
-                        <div class="bg-blue-100 p-2 rounded-lg"><i data-lucide="globe-2" class="w-6 h-6 text-brand-blue"></i></div>
-                        <div>
-                            <h3 class="font-semibold text-gray-900">Global Reach</h3>
-                            <p class="text-sm text-gray-500">International partnerships</p>
-                        </div>
-                    </div>
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl font-bold text-brand-blue mb-6">{{ \App\Support\SiteContent::text('about.mission_heading', 'Our Mission') }}</h2>
+        <p class="text-lg text-gray-600 leading-relaxed">
+            {{ \App\Support\SiteContent::text('about.mission_text', 'To help ambitious brands and hosts across Rwanda and beyond succeed — combining strategic business development, standout event management, and reliable equipment rental under one roof, delivered with clarity, creativity, and precision.') }}
+        </p>
+        <div class="grid sm:grid-cols-2 gap-6 mt-10 max-w-xl mx-auto text-left">
+            <div class="flex items-start gap-3">
+                <div class="bg-blue-100 p-2 rounded-lg"><i data-lucide="target" class="w-6 h-6 text-brand-blue"></i></div>
+                <div>
+                    <h3 class="font-semibold text-gray-900">Excellence</h3>
+                    <p class="text-sm text-gray-500">World-class standards</p>
                 </div>
             </div>
-            <div class="relative rounded-2xl overflow-hidden shadow-2xl">
-                <img src="{{ \App\Support\SiteContent::image('about.about_image', 'https://horizons-cdn.hostinger.com/81ef3422-3855-479e-bfe8-28a4ceb0df39/513a28b3-47b7-490b-b30a-f9398973361b-a4hCG.png') }}" alt="Team Collaboration" class="w-full h-full object-cover">
+            <div class="flex items-start gap-3">
+                <div class="bg-blue-100 p-2 rounded-lg"><i data-lucide="globe-2" class="w-6 h-6 text-brand-blue"></i></div>
+                <div>
+                    <h3 class="font-semibold text-gray-900">Global Reach</h3>
+                    <p class="text-sm text-gray-500">International partnerships</p>
+                </div>
             </div>
         </div>
     </div>
@@ -45,7 +38,7 @@
 <section class="py-16 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-            @foreach ([['15+','Years Experience'],['500+','Projects Completed'],['50+','Team Members'],['20+','Global Partners']] as [$value, $label])
+            @foreach ([['2','Years Experience'],['50+','Projects Completed'],['7','Team Members'],['20+','Global Partners']] as [$value, $label])
                 <div class="text-center">
                     <div class="text-4xl font-bold text-brand-blue mb-2">{{ $value }}</div>
                     <div class="text-gray-600 font-medium">{{ $label }}</div>
@@ -120,13 +113,17 @@
     <div class="max-w-4xl mx-auto px-4">
         <h2 class="text-3xl font-bold mb-6">{{ \App\Support\SiteContent::text('about.cta_heading', 'Ready to work with us?') }}</h2>
         <p class="text-xl mb-8 opacity-90">{{ \App\Support\SiteContent::text('about.cta_text', "Let's build something extraordinary together.") }}</p>
-        <a href="https://wa.me/250786887936" target="_blank" rel="noopener"
-           class="inline-flex items-center gap-2 bg-brand-gold text-brand-blue font-bold text-lg px-8 py-4 rounded-full hover:bg-white hover:scale-105 transition-all">
-            <i data-lucide="message-circle" class="w-5 h-5"></i> Chat on WhatsApp
-        </a>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{{ url('/contact') }}"
+               class="inline-flex items-center justify-center gap-2 bg-brand-gold text-brand-blue font-bold text-lg px-8 py-4 rounded-full hover:bg-white hover:scale-105 transition-all">
+                <i data-lucide="mail" class="w-5 h-5"></i> Contact Us
+            </a>
+            <a href="https://wa.me/250786887936" target="_blank" rel="noopener"
+               class="inline-flex items-center justify-center gap-2 border-2 border-white/70 text-white font-bold text-lg px-8 py-4 rounded-full hover:bg-white hover:text-brand-blue transition-all">
+                <i data-lucide="message-circle" class="w-5 h-5"></i> Chat on WhatsApp
+            </a>
+        </div>
     </div>
 </section>
-
-@include('beyond.partials.contact_section')
 
 @endsection

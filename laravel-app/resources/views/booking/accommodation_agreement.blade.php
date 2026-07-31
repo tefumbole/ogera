@@ -7,8 +7,8 @@
     <link rel="icon" type="image/png" href="{{ url('public/logo', $general_setting->site_logo) }}" />
     <style>
         :root {
-            --primary: #0b3f90;
-            --primary-dark: #072f6b;
+            --primary: #033d2e;
+            --primary-dark: #02261c;
             --accent: #c6ab47;
             --text: #ffffff;
             --muted: #b8c7e6;
@@ -17,7 +17,7 @@
         body {
             margin: 0;
             font-family: "Nunito", sans-serif;
-            background: linear-gradient(180deg, #041f4a 0%, #0b3f90 100%);
+            background: linear-gradient(180deg, #041f4a 0%, #033d2e 100%);
             color: var(--text);
             min-height: 100vh;
         }
@@ -62,7 +62,7 @@
         }
         .btn-outline { background: #fff; border: 2px solid #9a7b1f; color: #6b5612; }
         .btn-primary { background: var(--primary); color: #fff; }
-        .btn-accent { background: var(--accent); color: #10213d; }
+        .btn-accent { background: var(--accent); color: #071711; }
         .btn-danger-outline { background: #fff; border: 2px solid #dc3545; color: #dc3545; }
         .checkbox-row { display: flex; gap: 10px; align-items: flex-start; margin-top: 14px; color: #e8efff; }
         .checkbox-row input { margin-top: 4px; }

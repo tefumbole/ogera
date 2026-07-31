@@ -5,7 +5,7 @@
 @endif
 <style>
     .permission-table thead th {
-        background: #0b3f90;
+        background: #033d2e;
         color: #fff;
         border-color: #0a3578;
         vertical-align: middle;
@@ -15,7 +15,7 @@
         border-color: #e5eaf3;
     }
     tr.permission-section-header th {
-        background: linear-gradient(90deg, #0b3f90 0%, #1456b8 100%);
+        background: linear-gradient(90deg, #033d2e 0%, #07513d 100%);
         color: #fff;
         text-transform: uppercase;
         letter-spacing: 0.08em;
@@ -30,13 +30,13 @@
     }
     tr.permission-section-end th {
         background: #f4b41a;
-        color: #0b3f90;
+        color: #033d2e;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.06em;
     }
     .permission-table .checkbox input[type="checkbox"] {
-        accent-color: #0b3f90;
+        accent-color: #033d2e;
     }
     .permission-subgroup {
         background: #f8fbff;
@@ -45,7 +45,7 @@
     .permission-subgroup td:first-child {
         padding-left: 18px;
         font-weight: 600;
-        color: #0b3f90;
+        color: #033d2e;
     }
 </style>
 <section class="forms">

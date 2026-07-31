@@ -33,7 +33,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Color</label>
-                                    <input type="color" name="color" value="#3B82F6" class="form-control" style="max-width:80px;padding:2px;">
+                                    <input type="color" name="color" value="#0a6b4f" class="form-control" style="max-width:80px;padding:2px;">
                                 </div>
                                 <button class="tm-btn-primary">+ Add Category</button>
                             </form>

@@ -5,7 +5,7 @@
         background: #fff;
         padding: 16px;
         margin-bottom: 18px;
-        box-shadow: 0 2px 10px rgba(11, 63, 144, 0.05);
+        box-shadow: 0 2px 10px rgba(3, 61, 46, 0.05);
     }
     .letter-compose-section .section-label {
         display: inline-block;
@@ -13,7 +13,7 @@
         font-weight: 700;
         letter-spacing: 0.08em;
         text-transform: uppercase;
-        color: #0b3f90;
+        color: #033d2e;
         background: #f4f8ff;
         border: 1px solid #d7e4fb;
         border-radius: 999px;
@@ -36,7 +36,7 @@
     }
     .letter-recipient-panel {
         background: #f8fbff;
-        border: 1px dashed #0b3f90;
+        border: 1px dashed #033d2e;
         border-radius: 12px;
         padding: 14px;
     }

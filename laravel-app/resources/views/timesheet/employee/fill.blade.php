@@ -28,7 +28,7 @@
                 <div class="ts-card ts-card-accent">
                     <div class="d-flex align-items-center mb-1" style="gap:8px;">
                         <i class="dripicons-clock" style="color:#e8b923;"></i>
-                        <h5 class="mb-0" style="color:#0b3f90;font-weight:700;">Log Time</h5>
+                        <h5 class="mb-0" style="color:#033d2e;font-weight:700;">Log Time</h5>
                     </div>
                     <p class="text-muted small mb-3">Record hours for a specific activity.</p>
                     <form method="POST" action="{{ route('timesheet.entries.store') }}">
@@ -61,7 +61,7 @@
 
             <div class="col-lg-8 mb-4">
                 <div class="ts-card">
-                    <h5 class="mb-1" style="color:#0b3f90;font-weight:700;">Time Sheet History</h5>
+                    <h5 class="mb-1" style="color:#033d2e;font-weight:700;">Time Sheet History</h5>
                     <p class="text-muted small mb-3">Recent log entries (Sorted by date).</p>
                     <div class="table-responsive">
                         <table class="table mb-0">

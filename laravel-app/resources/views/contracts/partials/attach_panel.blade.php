@@ -12,7 +12,7 @@
 <div class="card mb-3" style="border:1px solid #d7e6f7;">
     <div class="card-body">
         <div class="d-flex justify-content-between align-items-center flex-wrap mb-2" style="gap:8px;">
-            <h6 class="mb-0" style="font-weight:700;color:#0b3f90;">
+            <h6 class="mb-0" style="font-weight:700;color:#033d2e;">
                 {{ $linkType === 'booking' ? 'Rental Contracts' : 'Enterprise Contracts' }}
             </h6>
             <div class="d-flex" style="gap:6px;">

@@ -92,8 +92,8 @@
                                            class="w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-2 focus:bg-white focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none">
                                 </div>
                                 <div class="space-y-2">
-                                    <label class="text-sm font-semibold text-gray-700">Email Address <span class="text-red-500">*</span></label>
-                                    <input required name="email" type="email" placeholder="e.g. john@example.com"
+                                    <label class="text-sm font-semibold text-gray-700">Email Address <span class="text-gray-400 font-normal">(optional)</span></label>
+                                    <input name="email" type="email" placeholder="e.g. john@example.com"
                                            class="w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-2 focus:bg-white focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none">
                                 </div>
                             </div>
@@ -186,7 +186,8 @@ function submitContact(e) {
     var message = f.message.value.trim();
     var service = f.service ? f.service.value : '';
     var serviceLine = service ? ('\n*Service:* ' + (f.service.options[f.service.selectedIndex].text || service)) : '';
-    var text = '*New Contact Form Submission*\n\n*Name:* ' + name + '\n*Email:* ' + email + '\n*Subject:* ' + subject + serviceLine + '\n\n*Message:*\n' + message;
+    var emailLine = email ? ('\n*Email:* ' + email) : '';
+    var text = '*New Contact Form Submission*\n\n*Name:* ' + name + emailLine + '\n*Subject:* ' + subject + serviceLine + '\n\n*Message:*\n' + message;
     window.open('https://wa.me/{{ $waPhone }}?text=' + encodeURIComponent(text), '_blank');
     var el = document.getElementById('contact-success');
     el.textContent = 'Thank you! Your message was opened in WhatsApp. We will get back to you shortly.';

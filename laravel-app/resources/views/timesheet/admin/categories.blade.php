@@ -87,7 +87,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="ts-label">Color</label>
-                        <input type="color" name="color" class="ts-field" value="#3b82f6" style="height:42px;padding:4px;">
+                        <input type="color" name="color" class="ts-field" value="#0a6b4f" style="height:42px;padding:4px;">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -120,7 +120,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="ts-label">Color</label>
-                        <input type="color" name="color" class="ts-field" value="{{ $cat->color ?: '#3b82f6' }}" style="height:42px;padding:4px;">
+                        <input type="color" name="color" class="ts-field" value="{{ $cat->color ?: '#0a6b4f' }}" style="height:42px;padding:4px;">
                     </div>
                 </div>
                 <div class="modal-footer">

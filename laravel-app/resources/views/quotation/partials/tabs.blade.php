@@ -24,13 +24,13 @@
     .qt-nav a:hover { transform: translateY(-1px); text-decoration: none !important; }
     .qt-nav a.is-active { color: #fff !important; }
     .qt-nav a.tone-orange { border-color: #f59e0b; color: #c77708; }
-    .qt-nav a.tone-orange.is-active, .qt-nav a.tone-orange:hover { background: #f59e0b; border-color: #f59e0b; color: #10213d !important; }
+    .qt-nav a.tone-orange.is-active, .qt-nav a.tone-orange:hover { background: #f59e0b; border-color: #f59e0b; color: #071711 !important; }
     .qt-nav a.tone-green { border-color: #10b981; color: #10b981; }
     .qt-nav a.tone-green.is-active, .qt-nav a.tone-green:hover { background: #10b981; border-color: #10b981; color: #fff !important; }
     .qt-nav a.tone-red { border-color: #ef4444; color: #ef4444; }
     .qt-nav a.tone-red.is-active, .qt-nav a.tone-red:hover { background: #ef4444; border-color: #ef4444; color: #fff !important; }
-    .qt-nav a.tone-blue { border-color: #0b3f90; color: #0b3f90; }
-    .qt-nav a.tone-blue.is-active, .qt-nav a.tone-blue:hover { background: #0b3f90; border-color: #0b3f90; color: #fff !important; }
+    .qt-nav a.tone-blue { border-color: #033d2e; color: #033d2e; }
+    .qt-nav a.tone-blue.is-active, .qt-nav a.tone-blue:hover { background: #033d2e; border-color: #033d2e; color: #fff !important; }
     .qt-count {
         display: inline-flex; min-width: 22px; height: 22px; padding: 0 6px;
         align-items: center; justify-content: center; border-radius: 999px;

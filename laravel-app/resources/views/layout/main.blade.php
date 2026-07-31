@@ -95,8 +95,8 @@
         <link rel="stylesheet" href="<?php echo asset('public/css/custom-'.$general_setting->theme) ?>" type="text/css" id="custom-style">
         <style>
             :root {
-                --beyond-primary: #0b3f90;
-                --beyond-primary-dark: #072f6b;
+                --beyond-primary: #033d2e;
+                --beyond-primary-dark: #02261c;
                 --beyond-accent: #c6ab47;
                 --beyond-bg: #f3f6fb;
                 --beyond-card: #ffffff;
@@ -185,7 +185,7 @@
 
             .sidebar-user-panel {
                 flex-shrink: 0;
-                background: #072f6b;
+                background: #02261c;
                 border-top: 1px solid rgba(255, 255, 255, 0.12);
                 padding: 16px 14px;
             }
@@ -346,7 +346,7 @@
                 display: none;
                 background: #fff;
                 border: 0;
-                border-bottom: 1px solid #e3e9f4;
+                border-bottom: 1px solid #e6efe9;
                 border-radius: 0;
                 padding: 0;
                 margin-bottom: 18px;
@@ -402,7 +402,7 @@
                 padding: 0 5px;
                 margin-left: 6px;
                 border-radius: 999px;
-                background: #0b3f90;
+                background: #033d2e;
                 border: 2px solid #e67e22;
                 color: #e67e22;
                 font-size: 11px;
@@ -427,27 +427,27 @@
 
             .beyond-module-tab:hover {
                 transform: translateY(-1px);
-                box-shadow: 0 4px 12px rgba(11, 63, 144, 0.12);
+                box-shadow: 0 4px 12px rgba(3, 61, 46, 0.12);
                 text-decoration: none !important;
             }
 
             .beyond-module-tab.is-active {
                 color: #fff !important;
-                box-shadow: 0 6px 16px rgba(11, 63, 144, 0.18);
+                box-shadow: 0 6px 16px rgba(3, 61, 46, 0.18);
             }
 
             .beyond-module-tab.is-active i {
                 color: #fff !important;
             }
 
-            .beyond-module-tab.tone-blue { border-color: #0b3f90; color: #0b3f90; }
-            .beyond-module-tab.tone-blue.is-active { background: #0b3f90 !important; border-color: #0b3f90 !important; }
-            .beyond-module-tab.tone-blue i { color: #0b3f90 !important; }
+            .beyond-module-tab.tone-blue { border-color: #033d2e; color: #033d2e; }
+            .beyond-module-tab.tone-blue.is-active { background: #033d2e !important; border-color: #033d2e !important; }
+            .beyond-module-tab.tone-blue i { color: #033d2e !important; }
 
             .beyond-module-tab.tone-gold { border-color: #c6ab47; color: #8a7424; }
-            .beyond-module-tab.tone-gold.is-active { background: #c6ab47 !important; border-color: #c6ab47 !important; color: #10213d !important; }
+            .beyond-module-tab.tone-gold.is-active { background: #c6ab47 !important; border-color: #c6ab47 !important; color: #071711 !important; }
             .beyond-module-tab.tone-gold i { color: #8a7424 !important; }
-            .beyond-module-tab.tone-gold.is-active i { color: #10213d !important; }
+            .beyond-module-tab.tone-gold.is-active i { color: #071711 !important; }
 
             .beyond-module-tab.tone-purple { border-color: #7b61ff; color: #7b61ff; }
             .beyond-module-tab.tone-purple.is-active { background: #7b61ff !important; border-color: #7b61ff !important; }
@@ -462,9 +462,9 @@
             .beyond-module-tab.tone-green i { color: #10b981 !important; }
 
             .beyond-module-tab.tone-orange { border-color: #f59e0b; color: #c77708; }
-            .beyond-module-tab.tone-orange.is-active { background: #f59e0b !important; border-color: #f59e0b !important; color: #10213d !important; }
+            .beyond-module-tab.tone-orange.is-active { background: #f59e0b !important; border-color: #f59e0b !important; color: #071711 !important; }
             .beyond-module-tab.tone-orange i { color: #c77708 !important; }
-            .beyond-module-tab.tone-orange.is-active i { color: #10213d !important; }
+            .beyond-module-tab.tone-orange.is-active i { color: #071711 !important; }
 
             .beyond-module-tab.tone-teal { border-color: #06b6d4; color: #0891b2; }
             .beyond-module-tab.tone-teal.is-active { background: #06b6d4 !important; border-color: #06b6d4 !important; }
@@ -524,7 +524,7 @@
             .header .btn-pos {
                 background: var(--beyond-accent) !important;
                 border-color: var(--beyond-accent) !important;
-                color: #10213d !important;
+                color: #071711 !important;
                 border-radius: 8px;
             }
 
@@ -541,7 +541,7 @@
 
             .header .btn-pos i,
             .header .btn-pos i:before {
-                color: #10213d !important;
+                color: #071711 !important;
             }
 
             .header .badge-danger {
@@ -577,7 +577,7 @@
             .badge-warning {
                 background: var(--beyond-accent) !important;
                 border-color: var(--beyond-accent) !important;
-                color: #10213d !important;
+                color: #071711 !important;
             }
 
             .badge-primary {
@@ -592,7 +592,7 @@
             .card,
             .table,
             .modal-content {
-                border-color: #e3e9f4;
+                border-color: #e6efe9;
             }
 
             .page-content,
@@ -617,7 +617,7 @@
                 margin-top: auto;
                 padding: 14px 0;
                 background: #fff;
-                border-top: 1px solid #e3e9f4;
+                border-top: 1px solid #e6efe9;
             }
 
             .main-footer p {
@@ -699,7 +699,7 @@
                 margin-left: 8px;
                 padding: 3px 10px;
                 border-radius: 999px;
-                background: rgba(11, 63, 144, 0.1);
+                background: rgba(3, 61, 46, 0.1);
                 color: var(--beyond-primary);
                 font-size: 12px;
                 font-weight: 700;
@@ -733,7 +733,7 @@
 
             .beyond-stat-card {
                 background: #fff;
-                border: 1px solid #e3e9f4;
+                border: 1px solid #e6efe9;
                 border-radius: 14px;
                 padding: 20px 18px;
                 box-shadow: 0 8px 24px rgba(15, 35, 80, 0.05);
@@ -780,7 +780,7 @@
             }
             .beyond-chart-panel {
                 background: #fff;
-                border: 1px solid #e3e9f4;
+                border: 1px solid #e6efe9;
                 border-radius: 14px;
                 box-shadow: 0 8px 24px rgba(15, 35, 80, 0.05);
                 padding: 18px 20px 16px;
@@ -831,14 +831,14 @@
                 flex-shrink: 0;
             }
 
-            .beyond-stat-icon.blue { background: rgba(11, 63, 144, 0.12); color: var(--beyond-primary); }
+            .beyond-stat-icon.blue { background: rgba(3, 61, 46, 0.12); color: var(--beyond-primary); }
             .beyond-stat-icon.green { background: rgba(0, 198, 137, 0.12); color: #00a86b; }
             .beyond-stat-icon.gold { background: rgba(198, 171, 71, 0.18); color: #9a7b1a; }
             .beyond-stat-icon.purple { background: rgba(115, 54, 134, 0.12); color: #733686; }
 
             .beyond-panel {
                 background: #fff;
-                border: 1px solid #e3e9f4;
+                border: 1px solid #e6efe9;
                 border-radius: 14px;
                 box-shadow: 0 8px 24px rgba(15, 35, 80, 0.05);
                 margin-bottom: 24px;
@@ -882,7 +882,7 @@
 
             .beyond-quick-card:hover {
                 border-color: var(--beyond-primary);
-                box-shadow: 0 8px 20px rgba(11, 63, 144, 0.08);
+                box-shadow: 0 8px 20px rgba(3, 61, 46, 0.08);
                 transform: translateY(-1px);
             }
 
@@ -953,7 +953,7 @@
             }
 
             .beyond-status-badge.info {
-                background: rgba(11, 63, 144, 0.12);
+                background: rgba(3, 61, 46, 0.12);
                 color: var(--beyond-primary);
             }
 
@@ -962,7 +962,7 @@
                 padding: 16px;
                 border-radius: 12px;
                 background: linear-gradient(135deg, #f7f9fd, #eef3fb);
-                border: 1px solid #e3e9f4;
+                border: 1px solid #e6efe9;
             }
 
             .beyond-profile-cta p {

@@ -32,7 +32,7 @@
             </form>
 
             <table class="table table-sm">
-                <thead style="background:#0b3f90;color:#fff;">
+                <thead style="background:#033d2e;color:#fff;">
                     <tr><th>Ref</th><th>Worker</th><th>Amount</th><th>Status</th><th>Actions</th></tr>
                 </thead>
                 <tbody>

@@ -66,7 +66,7 @@
         ['label' => 'Events', 'url' => url('/events'), 'match' => 'path'],
         ['label' => 'Rentals', 'url' => url('/rentals'), 'match' => 'path'],
         ['label' => 'Gallery', 'url' => url('/gallery'), 'match' => 'path'],
-        ['label' => 'Contact', 'url' => url('/about') . '#contact', 'match' => 'contact'],
+        ['label' => 'Contact', 'url' => url('/contact'), 'match' => 'path'],
     ];
     $currentUrl = rtrim(url()->current(), '/');
     $homeUrl = rtrim(url('/'), '/');
@@ -94,6 +94,9 @@
                 @endphp
                 <a href="{{ $link['url'] }}" class="ogera-header__link {{ $active ? 'is-active' : '' }}">{{ $link['label'] }}</a>
             @endforeach
+            @unless ($headerUser)
+                <a href="{{ url('/login') }}" class="ogera-header__link ogera-header__link--login {{ request()->is('login') ? 'is-active' : '' }}">Login</a>
+            @endunless
         </nav>
 
         <div class="hidden lg:flex items-center gap-3 shrink-0">
@@ -126,7 +129,7 @@
                     </div>
                 </div>
             @endif
-            <a href="{{ url('/about') }}#contact" class="ogera-header__cta">Start a Project</a>
+            <a href="{{ url('/contact') }}" class="ogera-header__cta">Start a Project</a>
         </div>
 
         <button type="button" class="ogera-header__menu-btn" @click="open = !open" :aria-expanded="open.toString()" aria-label="Menu">
@@ -146,7 +149,10 @@
             @foreach ($navLinks as $link)
                 <a href="{{ $link['url'] }}" @click="open = false">{{ $link['label'] }}</a>
             @endforeach
-            <a href="{{ url('/about') }}#contact" @click="open = false" class="mt-3 !border-0 !text-[var(--og-forest)] !bg-[var(--og-gold)] text-center rounded-full py-3 font-medium">Start a Project</a>
+            @unless ($headerUser)
+                <a href="{{ url('/login') }}" @click="open = false">Login</a>
+            @endunless
+            <a href="{{ url('/contact') }}" @click="open = false" class="mt-3 !border-0 !text-[var(--og-forest)] !bg-[var(--og-gold)] text-center rounded-full py-3 font-medium">Start a Project</a>
             @if ($headerUser)
                 <div class="mt-4 pt-4 border-t border-white/10 space-y-2">
                     <div class="text-[var(--og-warm)] text-sm font-medium">{{ $headerName }}</div>
@@ -173,35 +179,24 @@
 
 <footer class="ogera-footer">
     <div class="ogera-container">
-        <div class="ogera-footer__grid">
+        <div class="ogera-footer__top">
             <div class="ogera-footer__brand">
-                <a href="{{ url('/') }}" class="inline-block mb-2">
-                    <img src="{{ $siteLogoUrl }}" alt="{{ $siteTitle }}" class="h-12 w-auto object-contain">
-                </a>
                 <div class="text-xl text-[var(--og-gold)] ogera-serif">{{ $siteTitle }}</div>
                 <p>{{ $footer['blurb'] }}</p>
             </div>
-            <div>
-                <h3>Quick Links</h3>
+            <nav class="ogera-footer__links" aria-label="Footer">
                 <a href="{{ url('/') }}">Home</a>
                 <a href="{{ url('/about') }}">About</a>
                 <a href="{{ url('/services') }}">Services</a>
-                <a href="{{ url('/gallery') }}">Gallery</a>
                 <a href="{{ url('/events') }}">Events</a>
                 <a href="{{ url('/rentals') }}">Rentals</a>
-            </div>
-            <div>
-                <h3>Work With Us</h3>
-                <a href="{{ url('/about') }}?service=partner#contact">Partner With Us</a>
-                <a href="{{ url('/about') }}?service=vendor#contact">Become a Vendor</a>
-                <a href="{{ url('/about') }}?service=quotation#contact">Request a Quotation</a>
-                <a href="{{ url('/about') }}#contact">Contact</a>
-            </div>
-            <div>
-                <h3>Contact</h3>
-                <p class="text-sm mb-3 leading-relaxed">{{ $footer['address'] }}</p>
-                <a href="mailto:{{ $footer['email'] }}">{{ $footer['email'] }}</a>
+                <a href="{{ url('/gallery') }}">Gallery</a>
+                <a href="{{ url('/contact') }}">Contact</a>
+            </nav>
+            <div class="ogera-footer__contact">
+                <span>{{ $footer['address'] }}</span>
                 <a href="tel:{{ $footer['phone_tel'] }}">{{ $footer['phone'] }}</a>
+                <a href="mailto:{{ $footer['email'] }}">{{ $footer['email'] }}</a>
                 <a href="{{ $footer['website_url'] }}" target="_blank" rel="noopener">{{ $footer['website'] }}</a>
             </div>
         </div>

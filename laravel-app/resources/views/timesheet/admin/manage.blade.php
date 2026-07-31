@@ -40,7 +40,7 @@
 
         <div class="ts-card">
             <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap" style="gap:8px;">
-                <h5 class="mb-0" style="color:#0b3f90;font-weight:700;">Logged Entries</h5>
+                <h5 class="mb-0" style="color:#033d2e;font-weight:700;">Logged Entries</h5>
                 <span class="ts-badge" style="background:#dbeafe;color:#1e40af;">Total Hours: {{ number_format($totalHours, 1) }}</span>
             </div>
             <div class="table-responsive">

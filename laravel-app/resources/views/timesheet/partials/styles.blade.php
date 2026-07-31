@@ -42,18 +42,18 @@
     }
     .ts-nav a.is-active i { color: #fff !important; }
 
-    .ts-nav a.tone-blue { border-color: #0b3f90; color: #0b3f90; }
-    .ts-nav a.tone-blue i { color: #0b3f90; }
+    .ts-nav a.tone-blue { border-color: #033d2e; color: #033d2e; }
+    .ts-nav a.tone-blue i { color: #033d2e; }
     .ts-nav a.tone-blue.is-active,
-    .ts-nav a.tone-blue:hover { background: #0b3f90; border-color: #0b3f90; color: #fff !important; }
+    .ts-nav a.tone-blue:hover { background: #033d2e; border-color: #033d2e; color: #fff !important; }
     .ts-nav a.tone-blue:hover i { color: #fff !important; }
 
     .ts-nav a.tone-gold { border-color: #c6ab47; color: #8a7424; }
     .ts-nav a.tone-gold i { color: #8a7424; }
     .ts-nav a.tone-gold.is-active,
-    .ts-nav a.tone-gold:hover { background: #c6ab47; border-color: #c6ab47; color: #10213d !important; }
+    .ts-nav a.tone-gold:hover { background: #c6ab47; border-color: #c6ab47; color: #071711 !important; }
     .ts-nav a.tone-gold:hover i,
-    .ts-nav a.tone-gold.is-active i { color: #10213d !important; }
+    .ts-nav a.tone-gold.is-active i { color: #071711 !important; }
 
     .ts-nav a.tone-purple { border-color: #7b61ff; color: #7b61ff; }
     .ts-nav a.tone-purple i { color: #7b61ff; }
@@ -76,9 +76,9 @@
     .ts-nav a.tone-orange { border-color: #f59e0b; color: #c77708; }
     .ts-nav a.tone-orange i { color: #c77708; }
     .ts-nav a.tone-orange.is-active,
-    .ts-nav a.tone-orange:hover { background: #f59e0b; border-color: #f59e0b; color: #10213d !important; }
+    .ts-nav a.tone-orange:hover { background: #f59e0b; border-color: #f59e0b; color: #071711 !important; }
     .ts-nav a.tone-orange:hover i,
-    .ts-nav a.tone-orange.is-active i { color: #10213d !important; }
+    .ts-nav a.tone-orange.is-active i { color: #071711 !important; }
 
     .ts-nav a.tone-pink { border-color: #e91e8c; color: #e91e8c; }
     .ts-nav a.tone-pink i { color: #e91e8c; }
@@ -86,15 +86,15 @@
     .ts-nav a.tone-pink:hover { background: #e91e8c; border-color: #e91e8c; color: #fff !important; }
     .ts-nav a.tone-pink:hover i { color: #fff !important; }
 
-    .ts-title { color: #0b3f90; font-weight: 800; font-size: 1.75rem; margin: 0 0 4px; }
+    .ts-title { color: #033d2e; font-weight: 800; font-size: 1.75rem; margin: 0 0 4px; }
     .ts-subtitle { color: #6b7280; margin: 0; }
     .ts-card {
         background: #fff; border: 1px solid #eef2f7; border-radius: 14px;
         box-shadow: 0 1px 3px rgba(15,23,42,.06); padding: 1.25rem; margin-bottom: 1rem;
     }
-    .ts-card-accent { border-top: 3px solid #0b3f90; }
+    .ts-card-accent { border-top: 3px solid #033d2e; }
     .ts-btn {
-        background: #0b3f90; border: 1px solid #0b3f90; color: #fff;
+        background: #033d2e; border: 1px solid #033d2e; color: #fff;
         border-radius: 8px; padding: 10px 16px; font-weight: 600; font-size: 14px;
         display: inline-flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; width: 100%;
     }
@@ -127,7 +127,7 @@
     .ts-cat-select-wrap.has-color .ts-cat-dot { display: block; }
     .ts-cat-select-wrap.has-color select.ts-field { padding-left: 28px; }
     .ts-summary {
-        background: #0b3f90; color: #fff; border-radius: 14px; padding: 1.35rem 1.4rem;
+        background: #033d2e; color: #fff; border-radius: 14px; padding: 1.35rem 1.4rem;
         position: sticky; top: 1rem;
     }
     .ts-summary .gold { color: #e8b923; font-size: 2.1rem; font-weight: 800; line-height: 1.1; }
@@ -139,14 +139,14 @@
     .ts-day-row .day-label { color: #0f172a; min-width: 96px; }
     .ts-day-row.is-off .day-label { color: #94a3b8; }
     .ts-day-row input[type="checkbox"] {
-        width: 16px; height: 16px; accent-color: #0b3f90; cursor: pointer;
+        width: 16px; height: 16px; accent-color: #033d2e; cursor: pointer;
     }
     .ts-day-times {
         display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
     }
     .ts-day-times .ts-field { width: auto; min-width: 120px; }
     .ts-day-hours {
-        background: #eff6ff; color: #1d4ed8; border-radius: 8px; padding: 5px 11px;
+        background: #eff6ff; color: #07513d; border-radius: 8px; padding: 5px 11px;
         font-weight: 700; font-size: 13px; margin-left: auto; white-space: nowrap;
     }
     .ts-lunch-box {

@@ -37,18 +37,18 @@
     .jb-nav a.is-active { color: #fff !important; box-shadow: 0 6px 16px rgba(15, 35, 80, 0.14); }
     .jb-nav a.is-active i { color: #fff !important; }
 
-    .jb-nav a.tone-blue { border-color: #0b3f90; color: #0b3f90; }
-    .jb-nav a.tone-blue i { color: #0b3f90; }
+    .jb-nav a.tone-blue { border-color: #033d2e; color: #033d2e; }
+    .jb-nav a.tone-blue i { color: #033d2e; }
     .jb-nav a.tone-blue.is-active,
-    .jb-nav a.tone-blue:hover { background: #0b3f90; border-color: #0b3f90; color: #fff !important; }
+    .jb-nav a.tone-blue:hover { background: #033d2e; border-color: #033d2e; color: #fff !important; }
     .jb-nav a.tone-blue:hover i { color: #fff !important; }
 
     .jb-nav a.tone-gold { border-color: #c6ab47; color: #8a7424; }
     .jb-nav a.tone-gold i { color: #8a7424; }
     .jb-nav a.tone-gold.is-active,
-    .jb-nav a.tone-gold:hover { background: #c6ab47; border-color: #c6ab47; color: #10213d !important; }
+    .jb-nav a.tone-gold:hover { background: #c6ab47; border-color: #c6ab47; color: #071711 !important; }
     .jb-nav a.tone-gold.is-active i,
-    .jb-nav a.tone-gold:hover i { color: #10213d !important; }
+    .jb-nav a.tone-gold:hover i { color: #071711 !important; }
 
     .jb-nav a.tone-purple { border-color: #7b61ff; color: #7b61ff; }
     .jb-nav a.tone-purple i { color: #7b61ff; }
@@ -71,9 +71,9 @@
     .jb-nav a.tone-orange { border-color: #f59e0b; color: #c77708; }
     .jb-nav a.tone-orange i { color: #c77708; }
     .jb-nav a.tone-orange.is-active,
-    .jb-nav a.tone-orange:hover { background: #f59e0b; border-color: #f59e0b; color: #10213d !important; }
+    .jb-nav a.tone-orange:hover { background: #f59e0b; border-color: #f59e0b; color: #071711 !important; }
     .jb-nav a.tone-orange.is-active i,
-    .jb-nav a.tone-orange:hover i { color: #10213d !important; }
+    .jb-nav a.tone-orange:hover i { color: #071711 !important; }
 
     .jb-nav a.tone-teal { border-color: #0ea5a4; color: #0ea5a4; }
     .jb-nav a.tone-teal i { color: #0ea5a4; }
@@ -87,20 +87,20 @@
     .jb-nav a.tone-red:hover { background: #ef4444; border-color: #ef4444; color: #fff !important; }
     .jb-nav a.tone-red:hover i { color: #fff !important; }
 
-    .jb-title { color: #0b3f90; font-weight: 800; font-size: 1.75rem; margin: 0 0 4px; }
+    .jb-title { color: #033d2e; font-weight: 800; font-size: 1.75rem; margin: 0 0 4px; }
     .jb-subtitle { color: #6b7280; margin: 0; }
     .jb-card {
         background: #fff; border: 1px solid #eef2f7; border-radius: 14px;
         box-shadow: 0 1px 3px rgba(15,23,42,.06); padding: 1.25rem; margin-bottom: 1rem;
     }
     .jb-btn {
-        background: #0b3f90; border: 1px solid #0b3f90; color: #fff;
+        background: #033d2e; border: 1px solid #033d2e; color: #fff;
         border-radius: 8px; padding: 8px 14px; font-weight: 600; font-size: 14px;
         display: inline-flex; align-items: center; gap: 6px; cursor: pointer; text-decoration: none;
     }
     .jb-btn:hover { background: #0a3578; color: #fff; text-decoration: none; }
     .jb-btn-secondary {
-        background: #fff; border: 1px solid #0b3f90; color: #0b3f90;
+        background: #fff; border: 1px solid #033d2e; color: #033d2e;
         border-radius: 8px; padding: 8px 14px; font-weight: 600; font-size: 14px;
         display: inline-flex; align-items: center; gap: 6px; cursor: pointer; text-decoration: none;
     }

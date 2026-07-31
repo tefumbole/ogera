@@ -30,9 +30,9 @@
                 <hr>
                 <form method="POST" action="{{ route('booking.contract.approve', $contract->id) }}" id="admin-sign-form">
                     @csrf
-                    <h5 class="mb-3" style="color:#0b3f90;">Admin Countersignature</h5>
+                    <h5 class="mb-3" style="color:#033d2e;">Admin Countersignature</h5>
                     <p class="text-muted">Sign below to approve this contract. The client and booking creator will receive the final PDF and QR code via WhatsApp.</p>
-                    <div class="signature-pad-wrap mb-3" style="border:2px dashed #0b3f90;border-radius:12px;background:#f8fbff;padding:12px;">
+                    <div class="signature-pad-wrap mb-3" style="border:2px dashed #033d2e;border-radius:12px;background:#f8fbff;padding:12px;">
                         <canvas id="admin-signature-pad"></canvas>
                     </div>
                     <input type="hidden" name="admin_signature_image" id="admin_signature_image">

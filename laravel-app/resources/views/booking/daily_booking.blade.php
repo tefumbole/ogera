@@ -14,7 +14,7 @@
         .calendar-toolbar h4 {
             margin: 0;
             font-weight: 800;
-            color: #0b3f90;
+            color: #033d2e;
         }
         .calendar-nav {
             display: flex;
@@ -22,7 +22,7 @@
             gap: 12px;
         }
         .calendar-nav a {
-            color: #0b3f90;
+            color: #033d2e;
             font-weight: 700;
             text-decoration: none;
         }
@@ -56,7 +56,7 @@
         .calendar-empty {
             min-height: 120px;
             border-radius: 14px;
-            border: 1px solid #e3e9f4;
+            border: 1px solid #e6efe9;
             background: #fff;
             padding: 10px;
         }
@@ -68,7 +68,7 @@
         }
         .calendar-day:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(11, 63, 144, 0.12);
+            box-shadow: 0 8px 20px rgba(3, 61, 46, 0.12);
         }
         .calendar-day.is-today {
             border-color: #c6ab47;
@@ -84,7 +84,7 @@
         .calendar-day-number {
             font-size: 18px;
             font-weight: 800;
-            color: #0b3f90;
+            color: #033d2e;
             margin-bottom: 6px;
         }
         .calendar-day-status {
@@ -98,7 +98,7 @@
             margin-bottom: 6px;
         }
         .calendar-day-status.booked {
-            background: #0b3f90;
+            background: #033d2e;
             color: #fff;
         }
         .calendar-day-status.free {
@@ -114,7 +114,7 @@
             font-size: 11px;
             line-height: 1.25;
             color: #1f2a44;
-            background: rgba(11, 63, 144, 0.06);
+            background: rgba(3, 61, 46, 0.06);
             border-radius: 6px;
             padding: 3px 5px;
             white-space: nowrap;
@@ -122,7 +122,7 @@
             text-overflow: ellipsis;
         }
         .calendar-day-line strong {
-            color: #0b3f90;
+            color: #033d2e;
             font-weight: 700;
         }
         .calendar-day-more {
@@ -161,7 +161,7 @@
         @media print {
             .no-print, .side-navbar, .header, .beyond-module-tabs, .calendar-toolbar form, .calendar-toolbar button { display: none !important; }
             .calendar-day, .calendar-empty { min-height: 72px; box-shadow: none !important; transform: none !important; }
-            .calendar-day.is-booked .calendar-day-status.booked { font-size: 12px; background: #0b3f90; color: #fff; }
+            .calendar-day.is-booked .calendar-day-status.booked { font-size: 12px; background: #033d2e; color: #fff; }
             .calendar-day.is-free .calendar-day-status { visibility: hidden; }
             .calendar-day-number { font-size: 16px; }
             .calendar-day-line { white-space: normal; }
@@ -260,8 +260,8 @@
                 </div>
 
                 <div class="calendar-legend no-print">
-                    <span><i style="background:#0b3f90;"></i> Booked day — click for full details</span>
-                    <span><i style="background:#edf2f9;border:1px solid #e3e9f4;"></i> Free day</span>
+                    <span><i style="background:#033d2e;"></i> Booked day — click for full details</span>
+                    <span><i style="background:#edf2f9;border:1px solid #e6efe9;"></i> Free day</span>
                 </div>
             </div>
         </div>

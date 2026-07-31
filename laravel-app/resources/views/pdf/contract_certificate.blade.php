@@ -26,11 +26,11 @@
             text-align: center;
             font-size: 22px;
             font-weight: bold;
-            color: #0b3f90;
+            color: #033d2e;
             margin: 20px 0 24px;
         }
         .cert-box {
-            border: 2px solid #0b3f90;
+            border: 2px solid #033d2e;
             border-radius: 8px;
             padding: 20px;
             margin: 16px 0;
@@ -61,7 +61,7 @@
     <p class="checksum">{{ $checksum ?? optional($revision)->checksum ?? '—' }}</p>
 </div>
 
-<h3 style="color:#0b3f90;margin-top:24px;">Signatories</h3>
+<h3 style="color:#033d2e;margin-top:24px;">Signatories</h3>
 <table>
     <thead>
         <tr>

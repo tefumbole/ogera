@@ -4,7 +4,7 @@
     <h4>Event Reminders</h4>
     @if(session('message'))<div class="alert alert-success">{{ session('message') }}</div>@endif
     <div class="table-responsive card"><table class="table mb-0">
-        <thead style="background:#0b3f90;color:#fff"><tr><th>Event</th><th>When</th><th>Recipients</th><th>Status</th><th></th></tr></thead>
+        <thead style="background:#033d2e;color:#fff"><tr><th>Event</th><th>When</th><th>Recipients</th><th>Status</th><th></th></tr></thead>
         <tbody>
             @foreach($reminders as $r)
                 <tr>

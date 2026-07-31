@@ -75,7 +75,7 @@ html {
 }
 .ogera-header__link {
   color: rgba(248, 246, 239, 0.92);
-  font-size: 1.02rem;
+  font-size: 1.22rem;
   font-weight: 400;
   letter-spacing: 0.02em;
   text-decoration: none;
@@ -88,6 +88,18 @@ html {
 .ogera-header__link.is-active {
   color: var(--og-gold-light);
   border-bottom-color: var(--og-gold);
+}
+.ogera-header__link--login {
+  border: 1px solid rgba(216, 173, 74, 0.55);
+  border-radius: 999px;
+  padding: 0.32rem 1.1rem;
+  color: var(--og-gold-light);
+}
+.ogera-header__link--login:hover,
+.ogera-header__link--login.is-active {
+  background: var(--og-gold);
+  border-color: var(--og-gold);
+  color: var(--og-forest);
 }
 .ogera-header__cta {
   display: none;
@@ -733,7 +745,31 @@ html {
   margin-top: 0.85rem;
   font-size: 0.9rem;
   line-height: 1.6;
-  max-width: 28ch;
+  max-width: 34ch;
+}
+.ogera-footer__top {
+  display: grid;
+  gap: 1.5rem 2.5rem;
+  align-items: start;
+}
+@media (min-width: 900px) {
+  .ogera-footer__top {
+    grid-template-columns: 1.7fr 1fr 1.1fr;
+  }
+}
+.ogera-footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+}
+.ogera-footer__links a {
+  margin-bottom: 0.25rem;
+}
+.ogera-footer__contact span {
+  display: block;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-bottom: 0.5rem;
 }
 .ogera-footer__bottom {
   margin-top: 2.5rem;
@@ -747,7 +783,7 @@ html {
 /* Page hero (sibling pages) */
 .ogera-page-hero {
   background: linear-gradient(120deg, var(--og-forest), var(--og-green));
-  padding: 7.5rem 1.25rem 4rem;
+  padding: 6rem 1.25rem 2.25rem;
   text-align: center;
   color: var(--og-warm);
 }

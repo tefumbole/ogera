@@ -8,13 +8,13 @@
     <style>
         body { background: #f3f6fb; font-family: "Nunito", sans-serif; }
         .portal-header {
-            background: #0b3f90; color: #fff; padding: 24px 0;
+            background: #033d2e; color: #fff; padding: 24px 0;
         }
         .portal-card {
             background: #fff; border-radius: 14px; padding: 20px;
-            box-shadow: 0 2px 12px rgba(11,63,144,0.08); margin-bottom: 18px;
+            box-shadow: 0 2px 12px rgba(3,61,46,0.08); margin-bottom: 18px;
         }
-        .badge-signed { background: #c6ab47; color: #10213d; }
+        .badge-signed { background: #c6ab47; color: #071711; }
     </style>
 </head>
 <body>

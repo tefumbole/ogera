@@ -33,8 +33,8 @@
                 <div class="col-lg-8 mb-4">
                     <div class="ts-card">
                         <div class="d-flex align-items-center mb-1" style="gap:8px;">
-                            <i class="dripicons-calendar" style="color:#0b3f90;"></i>
-                            <h5 class="mb-0" style="color:#0b3f90;font-weight:700;">Weekly Schedule</h5>
+                            <i class="dripicons-calendar" style="color:#033d2e;"></i>
+                            <h5 class="mb-0" style="color:#033d2e;font-weight:700;">Weekly Schedule</h5>
                         </div>
                         <p class="text-muted small mb-3">Define working hours for each day of the week.</p>
 

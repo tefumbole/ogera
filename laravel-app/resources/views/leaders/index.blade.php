@@ -8,7 +8,7 @@
     <div class="container-fluid">
         <div class="d-flex justify-content-between align-items-start flex-wrap mb-4" style="gap:12px;">
             <div>
-                <h3 class="mb-1" style="color:#0b3f90;font-weight:800;">About Us — Leaders</h3>
+                <h3 class="mb-1" style="color:#033d2e;font-weight:800;">About Us — Leaders</h3>
                 <p class="text-muted mb-0">Upload leadership photos and profiles shown on the public About Us page.</p>
             </div>
             <a href="{{ url('/about') }}#leadership" target="_blank" class="btn btn-outline-primary btn-sm">
@@ -212,7 +212,7 @@
         background: rgba(255,255,255,.9); border-radius: 6px; padding: 2px 6px; font-size: 12px; color: #64748b;
     }
     .leaders-photo {
-        height: 220px; background: #0b3f90; display:flex; align-items:center; justify-content:center;
+        height: 220px; background: #033d2e; display:flex; align-items:center; justify-content:center;
         border-radius: 12px 12px 0 0; overflow: hidden;
     }
     .leaders-photo img { width: 160px; height: 160px; object-fit: cover; border-radius: 999px; border: 4px solid #c6ab47; }
@@ -238,7 +238,7 @@
         padding: 8px 12px; font-size: 13px; cursor: pointer;
     }
     .leader-country-menu button:hover,
-    .leader-country-menu button.active { background: #eff6ff; color: #0b3f90; }
+    .leader-country-menu button.active { background: #eff6ff; color: #033d2e; }
     .leader-country-menu .leader-country-empty {
         padding: 10px 12px; font-size: 12px; color: #64748b;
     }

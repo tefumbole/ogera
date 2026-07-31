@@ -36,19 +36,19 @@
         box-shadow: 0 1px 3px rgba(15,23,42,.06); padding: 1.25rem 1.35rem 1.5rem;
         margin-bottom: 1rem;
     }
-    .tm-create-card > h2 { color: #0b3f90; font-size: 1.15rem; font-weight: 700; margin: 0 0 4px; }
+    .tm-create-card > h2 { color: #033d2e; font-size: 1.15rem; font-weight: 700; margin: 0 0 4px; }
     .tm-create-card > .tm-card-desc { color: #6b7280; font-size: 13px; margin: 0 0 1rem; }
     .tm-task-card {
-        border: 2px solid #0b3f90; border-radius: 14px; background: #fff;
+        border: 2px solid #033d2e; border-radius: 14px; background: #fff;
         overflow: hidden; margin-bottom: 1rem;
     }
-    .tm-task-bar { height: 6px; background: #0b3f90; }
+    .tm-task-bar { height: 6px; background: #033d2e; }
     .tm-task-body { padding: 1.1rem 1.15rem 1.25rem; }
     .tm-task-head {
         display: flex; align-items: center; justify-content: space-between;
         margin-bottom: 1rem;
     }
-    .tm-task-head .tm-task-label { font-weight: 700; font-size: 14px; color: #0b3f90; }
+    .tm-task-head .tm-task-label { font-weight: 700; font-size: 14px; color: #033d2e; }
     .tm-task-remove {
         border: 0; background: transparent; color: #e11d48; font-size: 13px;
         font-weight: 600; cursor: pointer; padding: 4px 8px;
@@ -59,7 +59,7 @@
         width: 100%; border: 1px solid #d7deea; border-radius: 8px;
         padding: 9px 12px; font-size: 14px; background: #fff;
     }
-    .tm-field:focus { outline: none; border-color: #0b3f90; box-shadow: 0 0 0 3px rgba(11,63,144,.12); }
+    .tm-field:focus { outline: none; border-color: #033d2e; box-shadow: 0 0 0 3px rgba(3,61,46,.12); }
     textarea.tm-field { min-height: 88px; resize: vertical; }
     .tm-main-grid {
         display: grid; grid-template-columns: 1fr 168px; gap: 1rem; margin-bottom: 1rem;
@@ -73,9 +73,9 @@
         text-align: left; padding: 8px 12px; border-radius: 7px;
         font-size: 13px; font-weight: 500; color: #374151; cursor: pointer;
     }
-    .tm-priority-box button.active { background: #0b3f90; color: #fff; }
+    .tm-priority-box button.active { background: #033d2e; color: #fff; }
     .tm-ph {
-        display: inline-block; border: 1px solid #9bb6e0; color: #0b3f90; border-radius: 999px;
+        display: inline-block; border: 1px solid #9bb6e0; color: #033d2e; border-radius: 999px;
         padding: 2px 10px; font-size: 12px; margin: 2px 2px 0 0; cursor: pointer; background: #f0f6ff;
         font-weight: 600;
     }
@@ -97,7 +97,7 @@
         border: 0; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 600;
         background: #f1f5f9; color: #334155; cursor: pointer; margin: 0 4px 6px 0;
     }
-    .tm-pill.active { background: #0b3f90; color: #fff; }
+    .tm-pill.active { background: #033d2e; color: #fff; }
     .tm-pill-outline {
         border: 1px solid #cbd5e1; border-radius: 8px; padding: 5px 10px; font-size: 12px;
         font-weight: 600; background: #fff; color: #334155; cursor: pointer;
@@ -110,7 +110,7 @@
     .tm-browse-pdf:hover { background: #f8fafc; }
     .tm-pdf-name { font-size: 13px; color: #475569; margin-left: 8px; }
     .tm-user-list {
-        max-height: 180px; overflow: auto; border: 1px solid #e3e9f4; border-radius: 10px; background: #fff;
+        max-height: 180px; overflow: auto; border: 1px solid #e6efe9; border-radius: 10px; background: #fff;
     }
     .tm-user-item { padding: 10px 12px; border-bottom: 1px solid #f0f3f8; cursor: pointer; text-align: left; width: 100%; background: #fff; border-left: 0; border-right: 0; border-top: 0; display: block; }
     .tm-user-item:last-child { border-bottom: 0; }
@@ -118,36 +118,36 @@
     .tm-user-item .meta { color: #6b7280; font-size: 12px; }
     .tm-chip {
         display: inline-flex; align-items: center; gap: 6px;
-        border: 1px solid #0b3f90; color: #0b3f90; background: #eef4ff;
+        border: 1px solid #033d2e; color: #033d2e; background: #eef4ff;
         border-radius: 999px; padding: 4px 10px; font-size: 12px; font-weight: 600; margin: 2px;
     }
     .tm-chip button {
-        border: 0; background: transparent; color: #0b3f90; font-weight: 800; line-height: 1; cursor: pointer; padding: 0 2px;
+        border: 0; background: transparent; color: #033d2e; font-weight: 800; line-height: 1; cursor: pointer; padding: 0 2px;
     }
     .tm-send-opt {
         border: 1px solid #d7deea; border-radius: 10px; padding: 10px 14px; cursor: pointer; flex: 1;
         font-size: 13px; font-weight: 600; color: #334155; background: #fff;
         display: flex; align-items: center; gap: 8px;
     }
-    .tm-send-opt.active { border-color: #0b3f90; background: #eef4ff; color: #0b3f90; }
+    .tm-send-opt.active { border-color: #033d2e; background: #eef4ff; color: #033d2e; }
     .tm-add-another {
         width: 100%; border: 1px dashed #94a3b8; background: #fff; border-radius: 10px;
         padding: 12px; font-weight: 600; color: #475569; cursor: pointer; margin-top: 4px;
     }
-    .tm-add-another:hover { background: #f8fafc; color: #0b3f90; border-color: #0b3f90; }
+    .tm-add-another:hover { background: #f8fafc; color: #033d2e; border-color: #033d2e; }
     .tm-actions {
         display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap;
         position: sticky; bottom: 12px; background: rgba(248,250,252,.95);
         border-top: 1px solid #e5e7eb; padding: 12px 0; margin-top: 8px; z-index: 5;
     }
     .tm-btn-cancel {
-        border: 1px solid #0b3f90; background: #fff; color: #0b3f90;
+        border: 1px solid #033d2e; background: #fff; color: #033d2e;
         border-radius: 8px; padding: 10px 18px; font-weight: 600; font-size: 14px;
         text-decoration: none; display: inline-flex; align-items: center;
     }
-    .tm-btn-cancel:hover { background: #f0f6ff; color: #0b3f90; text-decoration: none; }
+    .tm-btn-cancel:hover { background: #f0f6ff; color: #033d2e; text-decoration: none; }
     .tm-btn-send {
-        border: 0; background: #0b3f90; color: #fff; border-radius: 8px;
+        border: 0; background: #033d2e; color: #fff; border-radius: 8px;
         padding: 10px 22px; font-weight: 700; font-size: 14px; min-width: 200px;
         display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;
     }
@@ -184,7 +184,7 @@ window.TM_USERS_SEARCH = @json(route('tasks.users.search'));
 (function () {
     var container = document.getElementById('tm-tasks');
     var taskIndex = 0;
-    var colors = ['#0b3f90', '#16a34a', '#ea580c', '#dc2626', '#7c3aed', '#0d9488'];
+    var colors = ['#033d2e', '#16a34a', '#ea580c', '#dc2626', '#7c3aed', '#0d9488'];
     var searchTimers = {};
 
     function esc(s) {

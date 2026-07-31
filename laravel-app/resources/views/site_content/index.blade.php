@@ -9,7 +9,7 @@
         margin-bottom: 1.5rem;
     }
     .reorder-list .list-group-item {
-        border-left: 4px solid #0b3f90;
+        border-left: 4px solid #033d2e;
         transition: background 0.15s ease;
     }
     .reorder-list .list-group-item:nth-child(6n+2) { border-left-color: #7b61ff; }
@@ -23,12 +23,12 @@
     .reorder-list .list-group-item { cursor: grab; }
     .reorder-list .list-group-item.sortable-ghost {
         opacity: 0.45;
-        border: 2px dashed #0b3f90;
+        border: 2px dashed #033d2e;
         background: #eef4ff;
     }
-    .reorder-list .list-group-item.sortable-drag { cursor: grabbing; box-shadow: 0 8px 20px rgba(11,63,144,0.18); }
+    .reorder-list .list-group-item.sortable-drag { cursor: grabbing; box-shadow: 0 8px 20px rgba(3,61,46,0.18); }
     .reorder-drag-handle {
-        color: #0b3f90;
+        color: #033d2e;
         font-weight: 700;
         font-size: 12px;
         margin-right: 10px;

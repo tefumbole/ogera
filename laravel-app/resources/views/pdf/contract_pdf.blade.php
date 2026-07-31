@@ -32,7 +32,7 @@
         .contract-meta h2 {
             font-size: 18px;
             margin: 0 0 6px;
-            color: #0b3f90;
+            color: #033d2e;
         }
         .contract-body { margin-top: 12px; }
         .contract-body p { margin: 0 0 10px; }

@@ -19,7 +19,7 @@ class OgeraLandingContent
             'video' => null,
             'ctas' => [
                 ['label' => 'Plan My Event', 'url' => url('/events'), 'style' => 'primary'],
-                ['label' => 'Grow My Business', 'url' => url('/about') . '?service=business#contact', 'style' => 'outline'],
+                ['label' => 'Grow My Business', 'url' => url('/contact') . '?service=business', 'style' => 'outline'],
             ],
             'link' => ['label' => 'Explore Rentals', 'url' => url('/rentals')],
             'meta' => 'Mövenpick Hotel · KN 4 Avenue · Kigali',
@@ -54,7 +54,7 @@ class OgeraLandingContent
                     'title' => 'Business Development',
                     'body' => 'Strategy, brand positioning, partnerships, and growth programs that turn ambition into measurable traction.',
                     'cta' => 'Start a conversation',
-                    'url' => url('/about') . '?service=business#contact',
+                    'url' => url('/contact') . '?service=business',
                 ],
                 [
                     'num' => '02',
@@ -122,7 +122,7 @@ class OgeraLandingContent
         return [
             'heading' => 'Ready to build something memorable?',
             'body' => 'Tell us about your brand, event, or rental need. We’ll respond with a clear next step.',
-            'primary' => ['label' => 'Start a Project', 'url' => url('/about') . '#contact'],
+            'primary' => ['label' => 'Start a Project', 'url' => url('/contact')],
             'secondary' => ['label' => 'View Gallery', 'url' => url('/gallery')],
         ];
     }
@@ -140,7 +140,7 @@ class OgeraLandingContent
             'phone' => '+250 786 887 936',
             'email' => 'info@ogeragency.com',
             'website' => 'www.ogeragency.com',
-            'hours_weekday' => '9:00 AM - 6:00 PM',
+            'hours_weekday' => '9:00 AM - 5:00 PM',
             'hours_weekend' => 'By appointment',
         ];
     }

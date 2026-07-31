@@ -5,16 +5,16 @@
 <style>
     .events-page .stat-card {
         border-radius: 14px;
-        border: 1px solid #e3e9f4;
+        border: 1px solid #e6efe9;
         background: #fff;
         padding: 18px 20px;
-        box-shadow: 0 8px 20px rgba(11, 63, 144, 0.06);
+        box-shadow: 0 8px 20px rgba(3, 61, 46, 0.06);
         height: 100%;
     }
     .events-page .stat-card .value {
         font-size: 28px;
         font-weight: 800;
-        color: #0b3f90;
+        color: #033d2e;
         line-height: 1.1;
     }
     .events-page .stat-card .label {
@@ -27,12 +27,12 @@
     }
     .events-page .panel-card {
         border-radius: 14px;
-        border: 1px solid #e3e9f4;
+        border: 1px solid #e6efe9;
         background: #fff;
         overflow: hidden;
     }
     .events-page .panel-card .panel-head {
-        background: linear-gradient(135deg, #0b3f90, #1456b8);
+        background: linear-gradient(135deg, #033d2e, #07513d);
         color: #fff;
         padding: 14px 18px;
         font-weight: 700;
@@ -45,7 +45,7 @@
         text-transform: uppercase;
     }
     .event-status-draft { background: #e2e8f0; color: #475569; }
-    .event-status-planning, .event-status-approved { background: #dbeafe; color: #1d4ed8; }
+    .event-status-planning, .event-status-approved { background: #dbeafe; color: #07513d; }
     .event-status-event_in_progress { background: #fef3c7; color: #b45309; }
     .event-status-completed { background: #d1fae5; color: #047857; }
     .event-status-cancelled { background: #fee2e2; color: #b91c1c; }

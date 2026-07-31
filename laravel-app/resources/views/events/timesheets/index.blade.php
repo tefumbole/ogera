@@ -8,7 +8,7 @@
         @foreach(['submitted','approved','rejected','draft'] as $s)<option value="{{ $s }}" {{ request('status')===$s?'selected':'' }}>{{ ucfirst($s) }}</option>@endforeach
     </select></form>
     <div class="table-responsive card"><table class="table mb-0">
-        <thead style="background:#0b3f90;color:#fff"><tr><th>Event</th><th>Worker</th><th>Days</th><th>Hours</th><th>Status</th><th>Actions</th></tr></thead>
+        <thead style="background:#033d2e;color:#fff"><tr><th>Event</th><th>Worker</th><th>Days</th><th>Hours</th><th>Status</th><th>Actions</th></tr></thead>
         <tbody>
             @foreach($timesheets as $ts)
                 <tr>

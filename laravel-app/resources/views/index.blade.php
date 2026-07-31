@@ -223,7 +223,7 @@
         <div class="beyond-quick-grid">
           @if(Auth::user()->role_id <= 2)
           <a href="{{ route('user.index') }}" class="beyond-quick-card">
-            <div class="icon-wrap blue" style="background:rgba(11,63,144,.12);color:#0b3f90;"><i class="dripicons-user-group"></i></div>
+            <div class="icon-wrap blue" style="background:rgba(3,61,46,.12);color:#033d2e;"><i class="dripicons-user-group"></i></div>
             <div>
               <h5>Manage Users</h5>
               <p>View and manage system users and roles</p>
@@ -704,7 +704,7 @@
                     labels: labels,
                     datasets: [{
                         data: values,
-                        backgroundColor: ['#0b3f90', '#00a86b', '#7b61ff', '#f59e0b'],
+                        backgroundColor: ['#033d2e', '#00a86b', '#7b61ff', '#f59e0b'],
                         borderWidth: 0
                     }]
                 },

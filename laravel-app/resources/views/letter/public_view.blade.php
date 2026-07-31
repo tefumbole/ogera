@@ -12,11 +12,11 @@
             margin: 24px auto;
             background: #fff;
             border-radius: 14px;
-            box-shadow: 0 12px 30px rgba(11, 63, 144, 0.08);
+            box-shadow: 0 12px 30px rgba(3, 61, 46, 0.08);
             padding: 28px;
         }
         .letter-public-meta { color: #6f7b91; font-size: 14px; margin-bottom: 18px; }
-        .letter-public-subject { color: #0b3f90; font-weight: 800; margin-bottom: 18px; }
+        .letter-public-subject { color: #033d2e; font-weight: 800; margin-bottom: 18px; }
     </style>
 </head>
 <body>

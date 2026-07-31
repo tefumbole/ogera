@@ -63,7 +63,7 @@
         }
         .auth-title {
             margin: 0;
-            color: #0b3f90;
+            color: #033d2e;
             font-size: clamp(22px, 4.5vw, 28px);
             font-weight: 800;
             letter-spacing: 0.02em;
@@ -80,7 +80,7 @@
             width: 100%;
             height: 2px;
             margin: 18px 0 24px;
-            background: #0b3f90;
+            background: #033d2e;
             border: 0;
         }
         .field {
@@ -94,7 +94,7 @@
             transform: translateY(-50%);
             width: 18px;
             height: 18px;
-            color: #0b3f90;
+            color: #033d2e;
             pointer-events: none;
         }
         .auth-input {
@@ -109,14 +109,14 @@
         }
         .auth-input:focus {
             outline: none;
-            box-shadow: 0 0 0 2px rgba(11, 63, 144, 0.25);
+            box-shadow: 0 0 0 2px rgba(3, 61, 46, 0.25);
         }
         .btn-login {
             width: 100%;
             height: 50px;
             border: 0;
             border-radius: 999px;
-            background: #0b3f90;
+            background: #033d2e;
             color: #fff;
             font-size: 16px;
             font-weight: 700;
@@ -144,7 +144,7 @@
             color: #4b5563;
         }
         .portal-link a {
-            color: #0b3f90;
+            color: #033d2e;
             font-weight: 600;
             text-decoration: none;
         }
@@ -159,7 +159,7 @@
         }
         .credit-footer .version {
             font-weight: 700;
-            color: #0b3f90;
+            color: #033d2e;
             letter-spacing: 0.02em;
         }
         .credit-footer .dev {

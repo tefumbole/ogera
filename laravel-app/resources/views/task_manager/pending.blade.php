@@ -17,7 +17,7 @@
                     <span class="badge badge-warning">{{ optional($a->task)->priority }}</span>
                     <span class="badge badge-secondary">Pending</span>
                 </div>
-                <h5 class="mt-2 mb-1" style="color:#0b3f90;">{{ optional($a->task)->title }}</h5>
+                <h5 class="mt-2 mb-1" style="color:#033d2e;">{{ optional($a->task)->title }}</h5>
                 <p class="mb-1"><i class="dripicons-user"></i> Assignee: {{ optional($u)->name }} — {{ optional($u)->phone }}</p>
                 <p class="text-muted">{{ \Illuminate\Support\Str::limit(strip_tags(optional($a->task)->description), 160) }}</p>
                 <div class="small text-muted">

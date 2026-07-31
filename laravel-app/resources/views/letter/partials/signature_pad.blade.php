@@ -7,9 +7,9 @@
     $formId = $formId ?? null;
 @endphp
 <div class="letter-signature-block mb-3">
-    <label class="font-weight-bold" style="color:#0b3f90;">Your Signature <strong>*</strong></label>
+    <label class="font-weight-bold" style="color:#033d2e;">Your Signature <strong>*</strong></label>
     <p class="text-muted small mb-2">Sign below. The date will be added automatically in small text under your signature.</p>
-    <div class="signature-pad-wrap mb-2" style="border:2px dashed #0b3f90;border-radius:12px;background:#f8fbff;padding:12px;max-width:520px;">
+    <div class="signature-pad-wrap mb-2" style="border:2px dashed #033d2e;border-radius:12px;background:#f8fbff;padding:12px;max-width:520px;">
         <canvas id="{{ $padId }}" width="500" height="140" style="width:100%;max-width:500px;background:transparent;border-radius:8px;touch-action:none;"></canvas>
     </div>
     <input type="hidden" name="{{ $fieldName }}" id="{{ $hiddenId }}">

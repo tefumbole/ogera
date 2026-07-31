@@ -4,7 +4,7 @@
 <section class="forms">
     <div class="container-fluid" style="max-width:1100px;margin:0 auto;">
         <div class="mb-3">
-            <h3 style="color:#0b3f90;font-weight:800;">{{ $pageTitle }}</h3>
+            <h3 style="color:#033d2e;font-weight:800;">{{ $pageTitle }}</h3>
             <p class="text-muted mb-0">Staff permission requests from the public Permissions page.</p>
         </div>
 

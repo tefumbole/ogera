@@ -16,7 +16,7 @@
             </div>
             <div class="an-page-card py-2 px-3 mb-0">
                 <small class="text-muted d-block">Selected Recipients</small>
-                <strong id="an-count" style="color:#0b3f90;font-size:1.25rem;">0</strong>
+                <strong id="an-count" style="color:#033d2e;font-size:1.25rem;">0</strong>
             </div>
         </div>
 
@@ -29,31 +29,31 @@
     @media (max-width: 992px) { .an-layout { grid-template-columns: 1fr; } }
     .an-label { display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px; }
     .an-field { width:100%; border:1px solid #d7deea; border-radius:8px; padding:9px 12px; font-size:14px; }
-    .an-field:focus { outline:none; border-color:#0b3f90; box-shadow:0 0 0 3px rgba(11,63,144,.12); }
+    .an-field:focus { outline:none; border-color:#033d2e; box-shadow:0 0 0 3px rgba(3,61,46,.12); }
     textarea.an-field { min-height:140px; resize:vertical; }
     .an-ph {
-        display:inline-block; border:1px solid #9bb6e0; color:#0b3f90; border-radius:999px;
+        display:inline-block; border:1px solid #9bb6e0; color:#033d2e; border-radius:999px;
         padding:2px 10px; font-size:12px; margin:2px 2px 0 0; cursor:pointer; background:#f0f6ff; font-weight:600;
     }
     .an-pill {
         border:0; border-radius:999px; padding:6px 12px; font-size:12px; font-weight:600;
         background:#f1f5f9; color:#334155; cursor:pointer; margin:0 4px 6px 0;
     }
-    .an-pill.active { background:#0b3f90; color:#fff; }
-    .an-user-list { max-height:220px; overflow:auto; border:1px solid #e3e9f4; border-radius:10px; background:#fff; }
+    .an-pill.active { background:#033d2e; color:#fff; }
+    .an-user-list { max-height:220px; overflow:auto; border:1px solid #e6efe9; border-radius:10px; background:#fff; }
     .an-user-item { display:block; width:100%; text-align:left; padding:10px 12px; border:0; border-bottom:1px solid #f0f3f8; background:#fff; cursor:pointer; }
     .an-user-item:hover, .an-user-item.selected { background:#f0f6ff; }
     .an-user-item .meta { color:#6b7280; font-size:12px; }
     .an-chip {
-        display:inline-flex; align-items:center; gap:6px; border:1px solid #0b3f90; color:#0b3f90;
+        display:inline-flex; align-items:center; gap:6px; border:1px solid #033d2e; color:#033d2e;
         background:#eef4ff; border-radius:999px; padding:4px 10px; font-size:12px; font-weight:600; margin:2px;
     }
-    .an-chip button { border:0; background:transparent; color:#0b3f90; font-weight:800; cursor:pointer; }
+    .an-chip button { border:0; background:transparent; color:#033d2e; font-weight:800; cursor:pointer; }
     .an-send-opt {
         border:1px solid #d7deea; border-radius:10px; padding:10px 12px; cursor:pointer;
         font-size:13px; font-weight:600; margin-bottom:8px; background:#fff;
     }
-    .an-send-opt.active { border-color:#0b3f90; background:#eef4ff; color:#0b3f90; }
+    .an-send-opt.active { border-color:#033d2e; background:#eef4ff; color:#033d2e; }
     .an-info { background:#eff6ff; border:1px solid #bfdbfe; color:#1e40af; border-radius:8px; padding:8px 10px; font-size:12px; margin-top:8px; }
     .an-drop {
         border:1px dashed #94a3b8; border-radius:10px; padding:16px; text-align:center; color:#64748b; font-size:13px;
@@ -69,7 +69,7 @@
             <div class="an-layout">
                 <div class="an-page-card">
                     <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap" style="gap:8px;">
-                        <h5 class="mb-0" style="color:#0b3f90;font-weight:700;">Message Content</h5>
+                        <h5 class="mb-0" style="color:#033d2e;font-weight:700;">Message Content</h5>
                         <div>
                             <label class="an-label mb-0">Template</label>
                             <select class="an-field" id="an-template-pick" style="min-width:180px;">
@@ -130,7 +130,7 @@
 
                 <div>
                     <div class="an-page-card">
-                        <h5 style="color:#0b3f90;font-weight:700;">Sending Options</h5>
+                        <h5 style="color:#033d2e;font-weight:700;">Sending Options</h5>
                         <label class="d-flex align-items-center" style="gap:8px;font-weight:600;">
                             <input type="checkbox" checked disabled> Send via WhatsApp
                         </label>
@@ -157,7 +157,7 @@
                     </div>
 
                     <div class="an-page-card">
-                        <h5 style="color:#0b3f90;font-weight:700;">Select Recipients *</h5>
+                        <h5 style="color:#033d2e;font-weight:700;">Select Recipients *</h5>
                         <div class="mb-2">
                             <button type="button" class="an-pill active an-rf" data-role="customers">Customers</button>
                             <button type="button" class="an-pill an-rf" data-role="staff">System Users</button>

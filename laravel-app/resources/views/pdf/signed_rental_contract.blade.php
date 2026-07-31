@@ -15,13 +15,13 @@
         }
         .content { position: relative; z-index: 1; }
         .contract-section { margin-bottom: 14px; page-break-inside: avoid; }
-        .contract-section h5 { color: #0b3f90; margin: 0 0 6px; font-size: 14px; }
+        .contract-section h5 { color: #033d2e; margin: 0 0 6px; font-size: 14px; }
         table { width: 100%; border-collapse: collapse; margin-top: 8px; }
         th, td { border: 1px solid #d7deea; padding: 8px; text-align: left; }
-        th { background: #eef3fb; color: #0b3f90; }
+        th { background: #eef3fb; color: #033d2e; }
         .signature img { max-width: 240px; max-height: 100px; border: 1px solid #c6ab47; }
         .meta { margin-bottom: 12px; }
-        .meta h4 { color: #0b3f90; margin: 0 0 8px; }
+        .meta h4 { color: #033d2e; margin: 0 0 8px; }
         .booking-note p, .booking-note li { margin: 0 0 6px; }
     </style>
 </head>
@@ -34,11 +34,11 @@
     @if(!empty($headerPath) && file_exists($headerPath) && ($general_setting->invoice_format ?? '') === 'beyond_a4')
         <img src="{{ $headerPath }}" style="width:100%;margin-bottom:12px;">
     @else
-        <div style="text-align:center;margin-bottom:12px;border-bottom:2px solid #0b3f90;padding-bottom:8px;">
+        <div style="text-align:center;margin-bottom:12px;border-bottom:2px solid #033d2e;padding-bottom:8px;">
             @if(!empty($general_setting->site_logo))
                 <img src="{{ public_path('logo/' . $general_setting->site_logo) }}" height="48">
             @endif
-            <h2 style="color:#0b3f90;margin:4px 0;">{{ optional($booking->biller)->company_name ?? ($general_setting->site_title ?? 'Equipment Rental') }}</h2>
+            <h2 style="color:#033d2e;margin:4px 0;">{{ optional($booking->biller)->company_name ?? ($general_setting->site_title ?? 'Equipment Rental') }}</h2>
         </div>
     @endif
 

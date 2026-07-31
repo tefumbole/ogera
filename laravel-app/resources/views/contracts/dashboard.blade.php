@@ -20,26 +20,26 @@
             <div class="col-md-3 mb-3">
                 <div class="ct-card" style="border-left:4px solid #f59e0b;">
                     <div class="text-muted small">Awaiting client</div>
-                    <div style="font-size:2rem;font-weight:800;color:#0b3f90;">{{ $awaitingClient }}</div>
+                    <div style="font-size:2rem;font-weight:800;color:#033d2e;">{{ $awaitingClient }}</div>
                 </div>
             </div>
             <div class="col-md-3 mb-3">
                 <div class="ct-card" style="border-left:4px solid #7b61ff;">
                     <div class="text-muted small">Awaiting admin</div>
-                    <div style="font-size:2rem;font-weight:800;color:#0b3f90;">{{ $awaitingAdmin }}</div>
+                    <div style="font-size:2rem;font-weight:800;color:#033d2e;">{{ $awaitingAdmin }}</div>
                 </div>
             </div>
             <div class="col-md-3 mb-3">
                 <div class="ct-card" style="border-left:4px solid #10b981;">
                     <div class="text-muted small">Signed (all)</div>
-                    <div style="font-size:2rem;font-weight:800;color:#0b3f90;">{{ $signed }}</div>
+                    <div style="font-size:2rem;font-weight:800;color:#033d2e;">{{ $signed }}</div>
                     <div class="text-muted small">{{ $signedThisMonth }} this month</div>
                 </div>
             </div>
             <div class="col-md-3 mb-3">
-                <div class="ct-card" style="border-left:4px solid #0b3f90;">
+                <div class="ct-card" style="border-left:4px solid #033d2e;">
                     <div class="text-muted small">Draft / in review</div>
-                    <div style="font-size:2rem;font-weight:800;color:#0b3f90;">{{ $draft }}</div>
+                    <div style="font-size:2rem;font-weight:800;color:#033d2e;">{{ $draft }}</div>
                     <div class="text-muted small">{{ $total }} total contracts</div>
                 </div>
             </div>
@@ -48,7 +48,7 @@
         <div class="row">
             <div class="col-lg-6 mb-3">
                 <div class="ct-card">
-                    <h5 class="mb-3" style="color:#0b3f90;">By type</h5>
+                    <h5 class="mb-3" style="color:#033d2e;">By type</h5>
                     @if(($byType ?? collect())->count())
                         <ul class="list-unstyled mb-0">
                             @foreach($byType as $name => $count)
@@ -64,7 +64,7 @@
             </div>
             <div class="col-lg-6 mb-3">
                 <div class="ct-card">
-                    <h5 class="mb-3" style="color:#0b3f90;">Expiring within {{ $expiryDays }} days</h5>
+                    <h5 class="mb-3" style="color:#033d2e;">Expiring within {{ $expiryDays }} days</h5>
                     @if(($expiring ?? collect())->count())
                         <div class="table-responsive">
                             <table class="table table-sm mb-0">
@@ -90,7 +90,7 @@
         <div class="row">
             <div class="col-lg-6 mb-3">
                 <div class="ct-card">
-                    <h5 class="mb-3" style="color:#0b3f90;">Stale awaiting signature (3+ days)</h5>
+                    <h5 class="mb-3" style="color:#033d2e;">Stale awaiting signature (3+ days)</h5>
                     @if(($staleAwaiting ?? collect())->count())
                         <ul class="list-unstyled mb-0">
                             @foreach($staleAwaiting as $c)
@@ -108,7 +108,7 @@
             </div>
             <div class="col-lg-6 mb-3">
                 <div class="ct-card">
-                    <h5 class="mb-3" style="color:#0b3f90;">Recently signed</h5>
+                    <h5 class="mb-3" style="color:#033d2e;">Recently signed</h5>
                     @if(($recentSigned ?? collect())->count())
                         <ul class="list-unstyled mb-0">
                             @foreach($recentSigned as $c)

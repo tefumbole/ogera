@@ -7,7 +7,7 @@
         * { font-family: DejaVu Sans, sans-serif; font-size: 12px; }
         table { width: 100%; border-collapse: collapse; margin-top: 12px; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background: #0b3f90; color: #fff; }
+        th { background: #033d2e; color: #fff; }
         .signatures { margin-top: 24px; width: 100%; }
         .signatures td { border: 0; vertical-align: top; width: 50%; padding: 0 12px 0 0; }
         .signature-box { border: 1px solid #ddd; padding: 10px; min-height: 120px; }

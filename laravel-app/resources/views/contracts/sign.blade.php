@@ -6,7 +6,7 @@
     <title>Sign Contract — {{ $contract->number ?? '' }}</title>
     <style>
         :root {
-            --primary: #0b3f90;
+            --primary: #033d2e;
             --accent: #c6ab47;
             --text: #1f2a44;
             --muted: #64748b;

@@ -16,8 +16,8 @@
                     <p class="value green">{{ $stats['completed'] }}</p>
                 </div>
                 <div class="cm-stat" style="min-width:120px;border-color:#bfdbfe;">
-                    <p class="label" style="color:#1d4ed8;">AVG PROGRESS</p>
-                    <p class="value" style="color:#1d4ed8;">{{ number_format($stats['avg'], 0) }}%</p>
+                    <p class="label" style="color:#07513d;">AVG PROGRESS</p>
+                    <p class="value" style="color:#07513d;">{{ number_format($stats['avg'], 0) }}%</p>
                 </div>
             </div>
         </div>

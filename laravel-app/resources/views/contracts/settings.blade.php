@@ -57,7 +57,7 @@
                     </div>
                 </div>
 
-                <h5 class="mt-2 mb-3" style="color:#0b3f90;">Expiry alerts</h5>
+                <h5 class="mt-2 mb-3" style="color:#033d2e;">Expiry alerts</h5>
                 <div class="row">
                     <div class="col-md-4 mb-3">
                         <label class="ct-label">Alert window (days before end date)</label>
@@ -77,7 +77,7 @@
                 </div>
 
                 @if(! empty($rates) && count($rates))
-                    <h5 class="mt-4 mb-3" style="color:#0b3f90;">Engineer daily rates (XAF)</h5>
+                    <h5 class="mt-4 mb-3" style="color:#033d2e;">Engineer daily rates (XAF)</h5>
                     <div class="row">
                         @foreach($rates as $rate)
                             <div class="col-md-4 mb-3">

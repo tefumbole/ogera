@@ -3,7 +3,7 @@
 @if(! $event->assignments->isEmpty())
 <div class="card mb-3" style="border:1px solid #d7e6f7;">
     <div class="card-body">
-        <h6 class="mb-2" style="font-weight:700;color:#0b3f90;">Bulk Engineer Engagements (Enterprise Contracts)</h6>
+        <h6 class="mb-2" style="font-weight:700;color:#033d2e;">Bulk Engineer Engagements (Enterprise Contracts)</h6>
         <p class="text-muted small">Creates draft contracts from the <strong>ENG-EVENT</strong> template for selected workers. Open each from the Contracts module to send for signature.</p>
         <form method="POST" action="{{ route('contracts.bulk_engineer', $event->id) }}">
             @csrf
@@ -70,7 +70,7 @@
 
             <div class="table-responsive">
                 <table class="table table-sm table-hover mb-0">
-                    <thead style="background:#0b3f90;color:#fff;">
+                    <thead style="background:#033d2e;color:#fff;">
                         <tr><th>Ref</th><th>Worker</th><th>Role</th><th>Status</th><th>Actions</th></tr>
                     </thead>
                     <tbody>

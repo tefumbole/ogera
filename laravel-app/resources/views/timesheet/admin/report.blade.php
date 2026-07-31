@@ -42,26 +42,26 @@
                 <div class="col-md-4 mb-2">
                     <div class="ts-card text-center py-3">
                         <div class="text-muted small">TOTAL HOURS</div>
-                        <div style="font-size:1.75rem;font-weight:800;color:#0b3f90;">{{ number_format($report['total_hours'], 2) }}h</div>
+                        <div style="font-size:1.75rem;font-weight:800;color:#033d2e;">{{ number_format($report['total_hours'], 2) }}h</div>
                     </div>
                 </div>
                 <div class="col-md-4 mb-2">
                     <div class="ts-card text-center py-3">
                         <div class="text-muted small">ENTRIES</div>
-                        <div style="font-size:1.75rem;font-weight:800;color:#0b3f90;">{{ $report['rows']->count() }}</div>
+                        <div style="font-size:1.75rem;font-weight:800;color:#033d2e;">{{ $report['rows']->count() }}</div>
                     </div>
                 </div>
                 <div class="col-md-4 mb-2">
                     <div class="ts-card text-center py-3">
                         <div class="text-muted small">EMPLOYEES</div>
-                        <div style="font-size:1.75rem;font-weight:800;color:#0b3f90;">{{ $report['by_employee']->count() }}</div>
+                        <div style="font-size:1.75rem;font-weight:800;color:#033d2e;">{{ $report['by_employee']->count() }}</div>
                     </div>
                 </div>
             </div>
 
             @if($report['by_employee']->count())
                 <div class="ts-card mb-4">
-                    <h5 style="color:#0b3f90;font-weight:700;">By Employee</h5>
+                    <h5 style="color:#033d2e;font-weight:700;">By Employee</h5>
                     <div class="table-responsive">
                         <table class="table mb-0">
                             <thead><tr><th>Employee</th><th>Entries</th><th>Hours</th></tr></thead>
@@ -80,7 +80,7 @@
             @endif
 
             <div class="ts-card">
-                <h5 style="color:#0b3f90;font-weight:700;">Detailed Log</h5>
+                <h5 style="color:#033d2e;font-weight:700;">Detailed Log</h5>
                 <div class="table-responsive">
                     <table class="table mb-0">
                         <thead>

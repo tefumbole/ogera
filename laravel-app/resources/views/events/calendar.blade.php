@@ -8,7 +8,7 @@
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-bordered">
-                        <thead style="background:#0b3f90;color:#fff;">
+                        <thead style="background:#033d2e;color:#fff;">
                             <tr>
                                 <th>Date</th>
                                 <th>Event</th>

@@ -7,7 +7,7 @@
     <link rel="icon" type="image/png" href="{{ url('public/logo', $general_setting->site_logo) }}" />
     <style>
         :root {
-            --primary: #0b3f90;
+            --primary: #033d2e;
             --accent: #c6ab47;
             --text: #1f2a44;
             --muted: #6f7b91;
@@ -20,7 +20,7 @@
         }
         .wrap { max-width: 920px; margin: 0 auto; padding: 24px 16px 40px; }
         .hero {
-            background: linear-gradient(135deg, #0b3f90, #072f6b);
+            background: linear-gradient(135deg, #033d2e, #02261c);
             color: #fff;
             border-radius: 16px;
             padding: 24px;
@@ -30,7 +30,7 @@
         .hero p { margin: 0; color: #dce7ff; }
         .card {
             background: #fff;
-            border: 1px solid #e3e9f4;
+            border: 1px solid #e6efe9;
             border-radius: 14px;
             padding: 20px;
             margin-bottom: 16px;

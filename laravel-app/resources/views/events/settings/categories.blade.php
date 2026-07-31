@@ -42,7 +42,7 @@
                 <div class="card">
                     <div class="table-responsive">
                         <table class="table table-hover mb-0">
-                            <thead style="background:#0b3f90;color:#fff;">
+                            <thead style="background:#033d2e;color:#fff;">
                                 <tr>
                                     <th>Category</th>
                                     <th>Code</th>
