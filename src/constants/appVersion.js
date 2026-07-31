@@ -1,5 +1,5 @@
 /** Beyond Enterprise ERP release identifier — update when creating a new restore point. */
-export const APP_VERSION = 'OGERA_ERP_V1.4.0';
+export const APP_VERSION = 'OGERA_ERP_V1.4.4';
 
 export const APP_VERSION_LABEL = 'Version';
 
