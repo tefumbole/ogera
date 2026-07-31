@@ -189,7 +189,16 @@ class SettingController extends Controller
 
     public function rewardPointSetting()
     {
-        $lims_reward_point_setting_data = RewardPointSetting::latest()->first();
+        $lims_reward_point_setting_data = RewardPointSetting::firstOrCreate(
+            ['id' => 1],
+            [
+                'per_point_amount' => 0,
+                'minimum_amount' => 0,
+                'duration' => 1,
+                'type' => 'Year',
+                'is_active' => false,
+            ]
+        );
         return view('setting.reward_point_setting', compact('lims_reward_point_setting_data'));
     }
 
@@ -200,7 +209,9 @@ class SettingController extends Controller
             $data['is_active'] = true;
         else
             $data['is_active'] = false;
-        RewardPointSetting::latest()->first()->update($data);
+        $setting = RewardPointSetting::firstOrNew(['id' => 1]);
+        $setting->fill($data);
+        $setting->save();
         return redirect()->back()->with('message', 'Reward point setting updated successfully');
     }
 

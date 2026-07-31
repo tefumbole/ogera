@@ -1162,7 +1162,7 @@
                         <div class="column-5">
                             <button style="background-color: #b33771" type="button" class="btn btn-custom payment-btn" data-toggle="modal" data-target="#add-payment" id="deposit-btn"><i class="fa fa-university"></i> Deposit</button>
                         </div>
-                        @if($lims_reward_point_setting_data->is_active)
+                        @if(optional($lims_reward_point_setting_data)->is_active)
                         <div class="column-5">
                             <button style="background-color: #319398" type="button" class="btn btn-custom payment-btn" data-toggle="modal" data-target="#add-payment" id="point-btn"><i class="dripicons-rocket"></i> Points</button>
                         </div>
@@ -1213,7 +1213,7 @@
                                                 <option value="4">Cheque</option>
                                                 <option value="5">Paypal</option>
                                                 <option value="6">Deposit</option>
-                                                @if($lims_reward_point_setting_data->is_active)
+                                                @if(optional($lims_reward_point_setting_data)->is_active)
                                                 <option value="7">Points</option>
                                                 @endif
                                             </select>
