@@ -82,6 +82,7 @@ rsync -az --delete --human-readable ${RSYNC_EXTRA[@]+"${RSYNC_EXTRA[@]}"} \
     --exclude='/storage/framework/sessions/*' \
     --exclude='/storage/framework/views/*' \
     --exclude='/public/uploads/' \
+    --exclude='/public/logo/' \
     --exclude='/bootstrap/cache/*.php' \
     --exclude='/.phpunit.result.cache' \
     laravel-app/ "${SSH_USER}@${SSH_HOST}:${REMOTE_ROOT}/"
