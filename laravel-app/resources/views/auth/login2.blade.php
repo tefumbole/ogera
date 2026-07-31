@@ -149,7 +149,7 @@
           <!-- <p>{{trans('file.Do not have an account?')}}</p><a href="{{url('register')}}" class="signup">{{trans('file.Register')}}</a> -->
         </div>
         <div class="copyrights text-center">
-          <p>{{trans('file.Developed By')}} <span class="external">{{$general_setting->developed_by}}</span></p>
+          <p>{{trans('file.Developed By')}} <span class="external">Alpha Bridge Technologies | +250 784 006 160</span></p>
         </div>
       </div>
     </div>

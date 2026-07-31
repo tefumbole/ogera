@@ -57,7 +57,7 @@
             @yield('auth_body')
             <div class="mt-6 pt-4 border-t border-gray-100 text-center text-xs text-gray-500 leading-relaxed">
                 <div class="font-bold text-brand-blue tracking-wide">{{ \App\Support\AppVersion::bcl() }}</div>
-                <div class="mt-1">Developed By: <span class="font-semibold text-gray-700">Sr. Engr. Tefu R. Mbole</span></div>
+                <div class="mt-1">Developed By: <span class="font-semibold text-gray-700">Alpha Bridge Technologies</span> | +250 784 006 160</div>
             </div>
         </div>
     </div>

@@ -14,18 +14,17 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
             <h2 class="text-4xl font-bold text-brand-blue">{{ \App\Support\SiteContent::text('services.heading', 'Explore Our Expertise') }}</h2>
-            <p class="text-xl text-gray-600 mt-4">{{ \App\Support\SiteContent::text('services.subheading', "From IT infrastructure to cutting-edge AI solutions, we've got you covered.") }}</p>
+            <p class="text-xl text-gray-600 mt-4">{{ \App\Support\SiteContent::text('services.subheading', "Business growth, unforgettable events, and reliable equipment — all under one roof.") }}</p>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             @foreach ($services as $service)
                 <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 p-6 flex flex-col">
                     <div class="text-6xl mb-4 flex-shrink-0">{{ $service['emoji'] }}</div>
                     <h3 class="text-2xl font-bold text-brand-blue mb-3">{{ $service['title'] }}</h3>
                     <p class="text-gray-700 text-sm flex-grow mb-4">{{ $service['description'] }}</p>
-                    <a href="https://wa.me/250786887936?text={{ urlencode('Hello OGERA Agency, I would like a quote for ' . $service['title']) }}"
-                       target="_blank" rel="noopener"
+                    <a href="{{ $service['url'] ?? url('/contact') }}"
                        class="inline-flex items-center gap-2 bg-brand-blue hover:bg-brand-dark text-white px-6 py-3 rounded-md text-sm font-semibold self-start">
-                        <i data-lucide="message-circle" class="w-4 h-4"></i> Get a Quote
+                        Learn More <i data-lucide="arrow-right" class="w-4 h-4"></i>
                     </a>
                 </div>
             @endforeach

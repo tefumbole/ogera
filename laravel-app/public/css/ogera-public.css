@@ -10,6 +10,7 @@ html {
 .ogera-public {
   --og-forest: #033d2e;
   --og-green: #07513d;
+  --og-footer: #063d2c;
   --og-black: #071711;
   --og-gold: #d8ad4a;
   --og-gold-light: #f1d58b;
@@ -90,10 +91,29 @@ html {
   border-bottom-color: var(--og-gold);
 }
 .ogera-header__link--login {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
   border: 1px solid rgba(216, 173, 74, 0.55);
   border-radius: 999px;
   padding: 0.32rem 1.1rem;
   color: var(--og-gold-light);
+}
+.ogera-header__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  color: var(--og-warm);
+  border: 1px solid rgba(248, 246, 239, 0.25);
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+.ogera-header__icon:hover {
+  color: var(--og-forest);
+  background: var(--og-gold);
+  border-color: var(--og-gold);
 }
 .ogera-header__link--login:hover,
 .ogera-header__link--login.is-active {
@@ -707,77 +727,132 @@ html {
 
 /* Footer */
 .ogera-footer {
-  background: var(--og-black);
-  color: rgba(248, 246, 239, 0.78);
   margin-top: auto;
-  padding: 3rem 0 1.5rem;
+  color: rgba(248, 246, 239, 0.88);
 }
-.ogera-footer__grid {
+.ogera-footer__wave {
+  display: block;
+  line-height: 0;
+}
+.ogera-footer__wave svg {
+  display: block;
+  width: 100%;
+  height: 5rem;
+}
+.ogera-wave__gold {
+  fill: var(--og-gold);
+}
+.ogera-wave__body {
+  fill: var(--og-footer);
+}
+.ogera-footer__body {
+  background: var(--og-footer);
+  padding: 0.5rem 0 1.5rem;
+}
+.ogera-footer__main {
   display: grid;
   gap: 2rem;
+  align-items: start;
 }
-@media (min-width: 900px) {
-  .ogera-footer__grid {
-    grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
+@media (min-width: 1024px) {
+  .ogera-footer__main {
+    grid-template-columns: auto 1fr 1fr 1.5fr;
     gap: 2.5rem;
   }
+  /* Gold rules between the columns, as in the brand artwork */
+  .ogera-footer__main > * + * {
+    border-left: 1px solid rgba(216, 173, 74, 0.45);
+    padding-left: 2.5rem;
+  }
+}
+.ogera-footer__qr img {
+  width: 8.25rem;
+  height: 8.25rem;
+  object-fit: contain;
+  background: #fff;
+  padding: 0.35rem;
+  border-radius: 0.35rem;
 }
 .ogera-footer h3 {
-  color: var(--og-gold);
-  font-size: 0.85rem;
-  letter-spacing: 0.12em;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: #fff;
+  font-size: 1.05rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  font-weight: 500;
-  margin-bottom: 1rem;
+  font-weight: 600;
+  margin-bottom: 1.1rem;
   font-family: var(--og-sans);
 }
+.ogera-footer h3 svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  stroke-width: 1.5;
+  color: #fff;
+  flex-shrink: 0;
+}
 .ogera-footer a {
-  color: rgba(248, 246, 239, 0.78);
+  color: rgba(248, 246, 239, 0.88);
   text-decoration: none;
-  display: block;
-  font-size: 0.92rem;
-  margin-bottom: 0.45rem;
 }
 .ogera-footer a:hover {
   color: var(--og-gold-light);
 }
-.ogera-footer__brand p {
-  margin-top: 0.85rem;
-  font-size: 0.9rem;
-  line-height: 1.6;
-  max-width: 34ch;
+.ogera-footer__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
-.ogera-footer__top {
+.ogera-footer__list li {
+  position: relative;
+  padding-left: 1.35rem;
+  margin-bottom: 0.7rem;
+  font-size: 0.98rem;
+  line-height: 1.5;
+}
+/* Gold caret bullets */
+.ogera-footer__list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.45em;
+  border-left: 0.42rem solid var(--og-gold);
+  border-top: 0.3rem solid transparent;
+  border-bottom: 0.3rem solid transparent;
+}
+.ogera-footer__contact {
   display: grid;
-  gap: 1.5rem 2.5rem;
-  align-items: start;
+  gap: 0.85rem 1.75rem;
 }
-@media (min-width: 900px) {
-  .ogera-footer__top {
-    grid-template-columns: 1.7fr 1fr 1.1fr;
+@media (min-width: 640px) {
+  .ogera-footer__contact {
+    grid-template-columns: 1fr 1fr;
   }
 }
-.ogera-footer__links {
+.ogera-footer__contact > a,
+.ogera-footer__contact-item {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem 1.25rem;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.95rem;
+  line-height: 1.45;
 }
-.ogera-footer__links a {
-  margin-bottom: 0.25rem;
-}
-.ogera-footer__contact span {
-  display: block;
-  font-size: 0.9rem;
-  line-height: 1.6;
-  margin-bottom: 0.5rem;
+.ogera-footer__contact svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  stroke-width: 1.5;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+  color: #fff;
 }
 .ogera-footer__bottom {
-  margin-top: 2.5rem;
+  margin-top: 2.25rem;
   padding-top: 1.25rem;
-  border-top: 1px solid rgba(248, 246, 239, 0.12);
+  border-top: 1px solid rgba(248, 246, 239, 0.14);
   text-align: center;
   font-size: 0.8rem;
-  color: rgba(248, 246, 239, 0.5);
+  color: rgba(248, 246, 239, 0.62);
 }
 
 /* Page hero (sibling pages) */

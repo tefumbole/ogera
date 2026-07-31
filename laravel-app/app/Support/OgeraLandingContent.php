@@ -156,6 +156,7 @@ class OgeraLandingContent
             'website' => 'www.ogeragency.com',
             'website_url' => 'https://www.ogeragency.com',
             'wa' => '250786887936',
+            'tin' => '155836532',
         ];
     }
 

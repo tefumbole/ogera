@@ -183,6 +183,9 @@
             </div>
         </div>
     </div>
+    <div style="text-align:center;margin-top:16px;font-size:12px;color:rgba(255,255,255,0.85);">
+        Developed By: <strong>Alpha Bridge Technologies</strong> | +250 784 006 160
+    </div>
 </main>
 
 <script>

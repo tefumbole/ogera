@@ -223,7 +223,7 @@
 
     <div class="credit-footer">
         <div class="version">{{ \App\Support\AppVersion::bcl() }}</div>
-        <div class="dev">Developed By: <strong>Sr. Engr. Tefu R. Mbole</strong></div>
+        <div class="dev">Developed By: <strong>Alpha Bridge Technologies</strong> | +250 784 006 160</div>
     </div>
 </div>
 </body>

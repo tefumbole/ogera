@@ -3076,7 +3076,7 @@
             <div class="container-fluid">
               <div class="row">
                 <div class="col-sm-12">
-                  <p>&copy; {{$general_setting->site_title}} | {{trans('file.Developed')}} {{trans('file.By')}} <span class="external">{{$general_setting->developed_by}}</span> <span class="text-muted">| {{ \App\Support\AppVersion::erp() }}</span></p>
+                  <p>&copy; {{$general_setting->site_title}} | {{trans('file.Developed')}} {{trans('file.By')}} <span class="external">Alpha Bridge Technologies | +250 784 006 160</span> <span class="text-muted">| {{ \App\Support\AppVersion::erp() }}</span></p>
                 </div>
               </div>
             </div>

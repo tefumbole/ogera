@@ -136,8 +136,20 @@
         .otp-back a:hover {
             color: var(--og-forest);
         }
-        .app-version {
+        .dev-credit {
             margin-top: 22px;
+            color: rgba(248, 246, 239, 0.8);
+            font-size: 14px;
+        }
+        .dev-credit a {
+            color: var(--og-gold-light, #f1d58b);
+            text-decoration: none;
+        }
+        .dev-credit a:hover {
+            text-decoration: underline;
+        }
+        .app-version {
+            margin-top: 8px;
             color: rgba(248, 246, 239, 0.7);
             font-size: 13px;
             letter-spacing: 0.06em;
@@ -206,6 +218,11 @@
     @endif
 </div>
 
+<div class="dev-credit">
+    Developed By:
+    <a href="https://wa.me/250784006160" target="_blank" rel="noopener">Alpha Bridge Technologies</a>
+    | <a href="tel:+250784006160">+250 784 006 160</a>
+</div>
 <div class="app-version">{{ \App\Support\AppVersion::display() }}</div>
 
 <script>

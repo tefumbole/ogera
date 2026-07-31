@@ -7,29 +7,29 @@
 
 @include('beyond.partials.hero', [
     'title' => \App\Support\SiteContent::text('about.hero_title', 'About OGERA'),
-    'subtitle' => \App\Support\SiteContent::text('about.hero_subtitle', 'Business development, unforgettable events, and premium equipment rental — crafted for brands and hosts who expect more.'),
+    'subtitle' => \App\Support\SiteContent::text('about.hero_subtitle', 'We help businesses, individuals and events succeed through strategy, resources, and execution.'),
 ])
 
 <section class="py-16 bg-white">
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-3xl font-bold text-brand-blue mb-6">{{ \App\Support\SiteContent::text('about.mission_heading', 'Our Mission') }}</h2>
-        <p class="text-lg text-gray-600 leading-relaxed">
-            {{ \App\Support\SiteContent::text('about.mission_text', 'To help ambitious brands and hosts across Rwanda and beyond succeed — combining strategic business development, standout event management, and reliable equipment rental under one roof, delivered with clarity, creativity, and precision.') }}
-        </p>
-        <div class="grid sm:grid-cols-2 gap-6 mt-10 max-w-xl mx-auto text-left">
-            <div class="flex items-start gap-3">
-                <div class="bg-blue-100 p-2 rounded-lg"><i data-lucide="target" class="w-6 h-6 text-brand-blue"></i></div>
-                <div>
-                    <h3 class="font-semibold text-gray-900">Excellence</h3>
-                    <p class="text-sm text-gray-500">World-class standards</p>
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="p-8 rounded-2xl bg-gray-50 border-t-4 border-t-brand-gold shadow-sm">
+                <div class="flex items-center gap-3 mb-4">
+                    <i data-lucide="target" class="w-7 h-7 text-brand-gold"></i>
+                    <h2 class="text-2xl font-bold text-brand-blue">{{ \App\Support\SiteContent::text('about.mission_heading', 'Our Mission') }}</h2>
                 </div>
+                <p class="text-gray-600 leading-relaxed">
+                    {{ \App\Support\SiteContent::text('about.mission_text', 'To provide innovative business solutions, premium rental services, and unforgettable events that empower our clients to succeed.') }}
+                </p>
             </div>
-            <div class="flex items-start gap-3">
-                <div class="bg-blue-100 p-2 rounded-lg"><i data-lucide="globe-2" class="w-6 h-6 text-brand-blue"></i></div>
-                <div>
-                    <h3 class="font-semibold text-gray-900">Global Reach</h3>
-                    <p class="text-sm text-gray-500">International partnerships</p>
+            <div class="p-8 rounded-2xl bg-gray-50 border-t-4 border-t-brand-blue shadow-sm">
+                <div class="flex items-center gap-3 mb-4">
+                    <i data-lucide="eye" class="w-7 h-7 text-brand-blue"></i>
+                    <h2 class="text-2xl font-bold text-brand-blue">{{ \App\Support\SiteContent::text('about.vision_heading', 'Our Vision') }}</h2>
                 </div>
+                <p class="text-gray-600 leading-relaxed">
+                    {{ \App\Support\SiteContent::text('about.vision_text', 'To redefine excellence through innovative business consulting, world-class event management, and dependable rental services that exceed expectations.') }}
+                </p>
             </div>
         </div>
     </div>
@@ -54,7 +54,7 @@
         <div class="text-center mb-16">
             <h2 class="text-4xl font-bold text-white mb-4">{{ \App\Support\SiteContent::text('about.leadership_heading', 'Our Leadership') }}</h2>
             <div class="h-1 w-24 bg-brand-gold mx-auto"></div>
-            <p class="mt-4 text-xl text-gray-300">{{ \App\Support\SiteContent::text('about.leadership_subtext', 'The visionaries driving Beyond Enterprise forward') }}</p>
+            <p class="mt-4 text-xl text-gray-300">{{ \App\Support\SiteContent::text('about.leadership_subtext', 'The visionaries driving OGERA Agency forward') }}</p>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             @foreach($leaders as $leader)
@@ -105,6 +105,21 @@
                     <p class="text-gray-600">{{ $desc }}</p>
                 </div>
             @endforeach
+        </div>
+    </div>
+</section>
+
+<section class="py-16 bg-gray-50">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl font-bold text-brand-blue mb-3">{{ \App\Support\SiteContent::text('about.registration_heading', 'Company Registration') }}</h2>
+        <p class="text-gray-600 mb-8">{{ \App\Support\SiteContent::text('about.registration_text', 'OGERA Agency is a duly registered company in Rwanda.') }}</p>
+        <div class="inline-flex flex-col items-center gap-4 bg-white rounded-2xl shadow-md p-6">
+            <img src="{{ asset('public/branding/ogera-registration-qr.png') }}" alt="OGERA Agency registration QR code" class="w-44 h-44 object-contain">
+            <div>
+                <div class="text-sm uppercase tracking-wide text-gray-500">TIN Number</div>
+                <div class="text-2xl font-bold text-brand-blue">{{ \App\Support\OgeraLandingContent::footer()['tin'] }}</div>
+            </div>
+            <p class="text-xs text-gray-500 max-w-xs">Scan the QR code to verify OGERA Agency's official company registration.</p>
         </div>
     </div>
 </section>

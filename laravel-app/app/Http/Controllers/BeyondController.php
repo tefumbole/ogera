@@ -84,13 +84,24 @@ class BeyondController extends Controller
     private function servicesList()
     {
         return [
-            ['emoji' => '🤖', 'title' => 'Artificial Intelligence', 'description' => 'Cutting-edge AI solutions for business automation and intelligent decision-making'],
-            ['emoji' => '☁️', 'title' => 'Cloud Computing', 'description' => 'Scalable cloud infrastructure and migration services for modern enterprises'],
-            ['emoji' => '🔒', 'title' => 'Cyber Security', 'description' => 'Comprehensive security solutions to protect your digital assets and data'],
-            ['emoji' => '💼', 'title' => 'General IT Consultancy', 'description' => 'Expert IT guidance and strategic consulting for digital transformation'],
-            ['emoji' => '📞', 'title' => 'VoIP', 'description' => 'Reliable voice over IP solutions for seamless business communication'],
-            ['emoji' => '🌐', 'title' => 'Network Infrastructure Design', 'description' => 'Robust network architecture and infrastructure planning for optimal performance'],
-            ['emoji' => '📹', 'title' => 'CCTV and More', 'description' => 'Advanced surveillance and security systems for comprehensive monitoring'],
+            [
+                'emoji' => '📈',
+                'title' => 'Business Development Consulting',
+                'description' => 'Strategy, brand positioning, partnerships, and growth programs that turn ambition into measurable traction.',
+                'url' => url('/contact') . '?service=business',
+            ],
+            [
+                'emoji' => '📦',
+                'title' => 'Rental Services',
+                'description' => 'Premium AV, staging, and event equipment — delivered, installed, and fully supported for your production.',
+                'url' => url('/rentals'),
+            ],
+            [
+                'emoji' => '🎉',
+                'title' => 'Event Planning & Management',
+                'description' => 'Corporate, social, and cultural events designed and produced end-to-end — from concept to guest experience.',
+                'url' => url('/events'),
+            ],
         ];
     }
 }

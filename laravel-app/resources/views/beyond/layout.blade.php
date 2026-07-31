@@ -95,7 +95,9 @@
                 <a href="{{ $link['url'] }}" class="ogera-header__link {{ $active ? 'is-active' : '' }}">{{ $link['label'] }}</a>
             @endforeach
             @unless ($headerUser)
-                <a href="{{ url('/login') }}" class="ogera-header__link ogera-header__link--login {{ request()->is('login') ? 'is-active' : '' }}">Login</a>
+                <a href="{{ url('/login') }}" class="ogera-header__link ogera-header__link--login {{ request()->is('login') ? 'is-active' : '' }}">
+                    <i data-lucide="log-in" class="w-4 h-4"></i> Login
+                </a>
             @endunless
         </nav>
 
@@ -129,6 +131,9 @@
                     </div>
                 </div>
             @endif
+            <a href="https://mail.hostinger.com" target="_blank" rel="noopener" class="ogera-header__icon" title="Webmail" aria-label="Email">
+                <i data-lucide="mail" class="w-5 h-5"></i>
+            </a>
             <a href="{{ url('/contact') }}" class="ogera-header__cta">Start a Project</a>
         </div>
 
@@ -152,6 +157,7 @@
             @unless ($headerUser)
                 <a href="{{ url('/login') }}" @click="open = false">Login</a>
             @endunless
+            <a href="https://mail.hostinger.com" target="_blank" rel="noopener" @click="open = false">Webmail</a>
             <a href="{{ url('/contact') }}" @click="open = false" class="mt-3 !border-0 !text-[var(--og-forest)] !bg-[var(--og-gold)] text-center rounded-full py-3 font-medium">Start a Project</a>
             @if ($headerUser)
                 <div class="mt-4 pt-4 border-t border-white/10 space-y-2">
@@ -178,36 +184,70 @@
 </main>
 
 <footer class="ogera-footer">
-    <div class="ogera-container">
-        <div class="ogera-footer__top">
-            <div class="ogera-footer__brand">
-                <div class="text-xl text-[var(--og-gold)] ogera-serif">{{ $siteTitle }}</div>
-                <p>{{ $footer['blurb'] }}</p>
+    <div class="ogera-footer__wave" aria-hidden="true">
+        <svg viewBox="0 0 1440 90" preserveAspectRatio="none">
+            <path class="ogera-wave__gold" d="M0,44 C260,4 560,0 820,22 C1060,42 1260,58 1440,26 L1440,90 L0,90 Z"></path>
+            <path class="ogera-wave__body" d="M0,60 C260,20 560,16 820,38 C1060,58 1260,74 1440,42 L1440,90 L0,90 Z"></path>
+        </svg>
+    </div>
+
+    <div class="ogera-footer__body">
+        <div class="ogera-container">
+            <div class="ogera-footer__main">
+
+                <div class="ogera-footer__qr">
+                    <img src="{{ asset('public/branding/ogera-registration-qr.png') }}"
+                         alt="OGERA Agency registration QR code">
+                </div>
+
+                <div class="ogera-footer__col">
+                    <h3><i data-lucide="clipboard-list"></i> Services</h3>
+                    <ul class="ogera-footer__list">
+                        <li><a href="{{ url('/contact') }}?service=business">Business Development</a></li>
+                        <li><a href="{{ url('/services') }}">Business Consultancy</a></li>
+                    </ul>
+                </div>
+
+                <div class="ogera-footer__col">
+                    <h3><i data-lucide="calendar-days"></i> Events &amp; Rentals</h3>
+                    <ul class="ogera-footer__list">
+                        <li><a href="{{ url('/events') }}">Event Planning &amp; Management</a></li>
+                        <li><a href="{{ url('/rentals') }}">Rental Services</a></li>
+                    </ul>
+                </div>
+
+                <div class="ogera-footer__col ogera-footer__col--contact">
+                    <h3><i data-lucide="user"></i> Contact</h3>
+                    <div class="ogera-footer__contact">
+                        <a href="mailto:{{ $footer['email'] }}">
+                            <i data-lucide="mail"></i><span>{{ $footer['email'] }}</span>
+                        </a>
+                        <a href="tel:{{ $footer['phone_tel'] }}">
+                            <i data-lucide="phone"></i><span>{{ $footer['phone'] }}</span>
+                        </a>
+                        <a href="{{ $footer['website_url'] }}" target="_blank" rel="noopener">
+                            <i data-lucide="globe"></i><span>{{ $footer['website'] }}</span>
+                        </a>
+                        <span class="ogera-footer__contact-item">
+                            <i data-lucide="map-pin"></i><span>{{ $footer['address'] }}</span>
+                        </span>
+                        <span class="ogera-footer__contact-item">
+                            <i data-lucide="file-text"></i><span>TIN: {{ $footer['tin'] }}</span>
+                        </span>
+                    </div>
+                </div>
+
             </div>
-            <nav class="ogera-footer__links" aria-label="Footer">
-                <a href="{{ url('/') }}">Home</a>
-                <a href="{{ url('/about') }}">About</a>
-                <a href="{{ url('/services') }}">Services</a>
-                <a href="{{ url('/events') }}">Events</a>
-                <a href="{{ url('/rentals') }}">Rentals</a>
-                <a href="{{ url('/gallery') }}">Gallery</a>
-                <a href="{{ url('/contact') }}">Contact</a>
-            </nav>
-            <div class="ogera-footer__contact">
-                <span>{{ $footer['address'] }}</span>
-                <a href="tel:{{ $footer['phone_tel'] }}">{{ $footer['phone'] }}</a>
-                <a href="mailto:{{ $footer['email'] }}">{{ $footer['email'] }}</a>
-                <a href="{{ $footer['website_url'] }}" target="_blank" rel="noopener">{{ $footer['website'] }}</a>
+
+            <div class="ogera-footer__bottom">
+                <p>© {{ date('Y') }} OGERA Agency. All rights reserved.</p>
+                <p class="mt-1">
+                    Developed By:
+                    <a href="https://wa.me/250784006160" target="_blank" rel="noopener" style="display:inline;">Alpha Bridge Technologies</a>
+                    | <a href="tel:+250784006160" style="display:inline;">+250 784 006 160</a>
+                </p>
+                <p class="mt-1 opacity-70">{{ \App\Support\AppVersion::bcl() }}</p>
             </div>
-        </div>
-        <div class="ogera-footer__bottom">
-            <p>© {{ date('Y') }} OGERA Agency. All rights reserved.</p>
-            <p class="mt-1">
-                Developed By:
-                <a href="https://wa.me/250784006160" target="_blank" rel="noopener" style="display:inline;">Alpha Bridge Technologies</a>
-                | <a href="tel:+250784006160" style="display:inline;">+250 784 006 160</a>
-            </p>
-            <p class="mt-1 opacity-70">{{ \App\Support\AppVersion::bcl() }}</p>
         </div>
     </div>
 </footer>
