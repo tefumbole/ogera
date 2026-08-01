@@ -10,6 +10,7 @@ use App\GeneralSetting;
 use App\Notifications\ContractWorkflowNotification;
 use App\Payment;
 use App\Support\BookingCategoryHelper;
+use App\Support\PersonName;
 use App\Support\WhatsAppMessage;
 use App\User;
 use Auth;
@@ -1079,8 +1080,17 @@ class RentalContractController extends Controller
             }
         }
 
+        // The login is the phone number, but the name column must hold a name —
+        // it is what the booking list, Task Manager and WhatsApp greetings read.
+        $name = PersonName::pick($customer->name, $customer->company_name) ?: $phone;
+
         $existing = User::where('phone', $phone)->where('role_id', 5)->first();
         if ($existing) {
+            $better = PersonName::pick($existing->name, $name);
+            if ($better !== '' && $better !== $existing->name) {
+                $existing->name = $better;
+                $existing->save();
+            }
             $customer->user_id = $existing->id;
             $customer->save();
             return $existing;
@@ -1088,7 +1098,7 @@ class RentalContractController extends Controller
 
         $password = Str::random(8);
         $user = User::create([
-            'name' => $phone,
+            'name' => $name,
             'phone' => $phone,
             'email' => $customer->email ?: ($phone . '@rental.local'),
             'password' => bcrypt($password),

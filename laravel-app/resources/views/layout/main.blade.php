@@ -3060,6 +3060,7 @@
         @include('components.image_paste_script')
         @include('components.whatsapp_phone_script')
         @include('components.activity_click_logger')
+        @include('components.table_action_menu')
         <script>
             if ('serviceWorker' in navigator ) {
                 window.addEventListener('load', function() {
