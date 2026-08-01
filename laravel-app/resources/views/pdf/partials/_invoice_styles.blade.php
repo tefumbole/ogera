@@ -221,14 +221,18 @@
     .inv-note p:last-child { margin-bottom: 0; }
     .inv-note ul, .inv-note ol { margin: 3px 0 3px 14px; padding: 0; }
 
-    /* Client signature stamp on an approved document. The PNG is already
-       trimmed to the strokes and transparent, so no frame is drawn around it. */
-    .inv-signature {
-        width: 46%;
-        margin-top: 12px;
-        page-break-inside: avoid;
-    }
-    .inv-signature .inv-label {
+    /* Closing row: client signature on the left, codes on the right, so an
+       approved quotation does not spill onto a second page. The signature PNG
+       is already trimmed and transparent, so no frame is drawn around it. */
+    table.inv-closing { width: 100%; border-collapse: collapse; margin-top: 10px; page-break-inside: avoid; }
+    table.inv-closing td { vertical-align: top; padding: 0; }
+    .inv-closing-sign { width: 48%; padding-right: 14px !important; }
+    .inv-closing-codes { text-align: left; }
+    .inv-closing-codes .inv-qr,
+    .inv-closing-codes .inv-barcode { text-align: center; margin: 0 0 5px; }
+    .inv-closing-codes img { display: block; margin: 0 auto; }
+
+    .inv-closing-sign .inv-label {
         display: block;
         font-size: 9px;
         font-weight: bold;
