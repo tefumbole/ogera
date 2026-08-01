@@ -24,7 +24,7 @@
 
         if (isLikelyHeic(file)) {
             // Many phones cannot decode HEIC in-browser; ask for camera JPEG or convert.
-            alert('This phone photo format (HEIC) is not supported. Please use “Snap ID” (camera) or attach a JPG/PNG/PDF.');
+            alert('This phone photo format (HEIC) is not supported. Please retake the photo with your camera, or attach a JPG, PNG or PDF.');
             callback(null, false);
             return;
         }
@@ -58,7 +58,7 @@
                 }, 'image/jpeg', quality);
             };
             img.onerror = function () {
-                alert('Could not read that image. Please use “Snap ID” (camera) or attach a JPG/PNG/PDF.');
+                alert('Could not read that image. Please retake the photo with your camera, or attach a JPG, PNG or PDF.');
                 callback(null, false);
             };
             img.src = event.target.result;

@@ -2,26 +2,61 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Goods Received - {{ $general_setting->site_title ?? 'Sign' }}</title>
     <style>
-        body { margin: 0; font-family: Nunito, sans-serif; background: #f4f7fb; color: #1f2a44; }
-        .wrap { max-width: 900px; margin: 0 auto; padding: 24px 16px 100px; }
-        .card { background: #fff; border-radius: 14px; padding: 20px; margin-bottom: 16px; box-shadow: 0 8px 24px rgba(3,61,46,.08); }
-        h1 { margin: 0 0 8px; color: #033d2e; }
+        * { box-sizing: border-box; }
+        html { -webkit-text-size-adjust: 100%; }
+        body { margin: 0; font-family: Nunito, sans-serif; background: #f4f7fb; color: #1f2a44; overflow-x: hidden; }
+        .wrap { max-width: 900px; margin: 0 auto; padding: 24px 16px 140px; }
+        .card { background: #fff; border-radius: 14px; padding: 20px; margin-bottom: 16px; box-shadow: 0 8px 24px rgba(3,61,46,.08); overflow-wrap: anywhere; }
+        h1 { margin: 0 0 8px; color: #033d2e; font-size: clamp(20px, 5.4vw, 30px); }
+        .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
         table { width: 100%; border-collapse: collapse; }
         th, td { border-bottom: 1px solid #e6efe9; padding: 10px 8px; text-align: left; font-size: 14px; }
         th { color: #033d2e; }
-        .btn { border: 0; border-radius: 10px; padding: 12px 18px; font-weight: 700; cursor: pointer; }
+        .btn {
+            border: 0; border-radius: 10px; padding: 12px 18px; font-weight: 700; cursor: pointer;
+            min-height: 48px; font-size: 15px; -webkit-tap-highlight-color: rgba(3,61,46,.2);
+        }
         .btn-primary { background: #033d2e; color: #fff; }
         .btn-accent { background: #c6ab47; color: #071711; }
         .btn-outline { background: #fff; border: 2px solid #033d2e; color: #033d2e; }
-        .footer-bar { position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-top: 1px solid #e6efe9; padding: 14px 16px; }
+        .footer-bar {
+            position: fixed; left: 0; right: 0; bottom: 0; z-index: 900;
+            background: #fff; border-top: 1px solid #e6efe9;
+            padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+        }
         .footer-inner { max-width: 900px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
         .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 1000; align-items: center; justify-content: center; padding: 16px; }
-        .modal { background: #fff; border-radius: 14px; width: 100%; max-width: 640px; padding: 18px; }
+        .modal {
+            background: #fff; border-radius: 14px; width: 100%; max-width: 640px; padding: 18px;
+            max-height: calc(100vh - 32px); overflow-y: auto;
+        }
         #signature-pad { width: 100%; height: 180px; border: 2px dashed #c6ab47; border-radius: 10px; touch-action: none; }
-        .checkbox-row { display: flex; gap: 10px; align-items: flex-start; margin-top: 14px; }
+        .checkbox-row { display: flex; gap: 12px; align-items: flex-start; margin-top: 14px; }
+        .checkbox-row input { margin-top: 3px; width: 22px; height: 22px; flex: 0 0 22px; }
+        .modal-actions { display: flex; gap: 10px; margin-top: 12px; justify-content: flex-end; flex-wrap: wrap; }
+
+        @media (max-width: 640px) {
+            .wrap { padding: 16px 12px 150px; }
+            .card { padding: 15px; }
+            /* One labelled card per item beats a table the client has to scroll sideways. */
+            .table-wrap { overflow-x: visible; }
+            table thead { display: none; }
+            table, table tbody, table tr, table td { display: block; width: 100%; }
+            table tr { border: 1px solid #e0e8f2; border-radius: 12px; padding: 4px 12px; margin-bottom: 10px; }
+            table td {
+                display: flex; justify-content: space-between; align-items: baseline; gap: 14px;
+                padding: 8px 0; text-align: right; border-bottom: 1px solid #eef3f8;
+            }
+            table tr td:last-child { border-bottom: 0; }
+            table td::before { content: attr(data-label); color: #033d2e; font-weight: 700; text-align: left; flex: 0 0 auto; }
+            .footer-inner { flex-direction: column; align-items: stretch; gap: 10px; }
+            .footer-inner > div:first-child { font-size: 13.5px; }
+            .footer-inner .btn { width: 100%; }
+            .modal-actions .btn { flex: 1 1 100%; }
+        }
     </style>
 </head>
 <body>
@@ -42,28 +77,30 @@
 
     <div class="card">
         <h3 style="margin-top:0;color:#033d2e;">Equipment Delivered</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Equipment</th>
-                    <th>Qty</th>
-                    <th>From</th>
-                    <th>To</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($items as $index => $item)
+        <div class="table-wrap">
+            <table>
+                <thead>
                     <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>{{ $item['name'] }}</td>
-                        <td>{{ $item['qty'] }}</td>
-                        <td>{{ $item['start'] ? date('d/m/Y H:i', strtotime($item['start'])) : '-' }}</td>
-                        <td>{{ $item['end'] ? date('d/m/Y H:i', strtotime($item['end'])) : '-' }}</td>
+                        <th>#</th>
+                        <th>Equipment</th>
+                        <th>Qty</th>
+                        <th>From</th>
+                        <th>To</th>
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach($items as $index => $item)
+                        <tr>
+                            <td data-label="Item">{{ $index + 1 }}</td>
+                            <td data-label="Equipment">{{ $item['name'] }}</td>
+                            <td data-label="Qty">{{ $item['qty'] }}</td>
+                            <td data-label="From">{{ $item['start'] ? date('d/m/Y H:i', strtotime($item['start'])) : '-' }}</td>
+                            <td data-label="To">{{ $item['end'] ? date('d/m/Y H:i', strtotime($item['end'])) : '-' }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
         <p style="margin-top:12px;color:#6c757d;"><em>No pricing is shown on this delivery confirmation.</em></p>
     </div>
 
@@ -75,7 +112,7 @@
             @if($isDelivered)
                 <div style="margin-bottom:14px;">
                     <label for="signer_name" style="display:block;font-weight:700;margin-bottom:6px;">Your Name (person delivering)</label>
-                    <input type="text" name="signer_name" id="signer_name" maxlength="191" style="width:100%;padding:10px 12px;border:1px solid #d7e0ef;border-radius:10px;" placeholder="e.g. John from Beyond Company">
+                    <input type="text" name="signer_name" id="signer_name" maxlength="191" style="width:100%;padding:10px 12px;border:1px solid #d7e0ef;border-radius:10px;" placeholder="e.g. John from the delivery team">
                 </div>
             @endif
             <div class="checkbox-row">
@@ -107,7 +144,7 @@
     <div class="modal">
         <h3 style="margin-top:0;">Sign Goods Received</h3>
         <canvas id="signature-pad"></canvas>
-        <div style="display:flex;gap:10px;margin-top:12px;justify-content:flex-end;">
+        <div class="modal-actions">
             <button type="button" class="btn btn-outline" id="close-signature-modal">Cancel</button>
             <button type="button" class="btn btn-outline" id="clear-signature">Clear</button>
             <button type="button" class="btn btn-primary" id="confirm-signature">Confirm</button>

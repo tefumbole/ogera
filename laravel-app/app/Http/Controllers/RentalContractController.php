@@ -59,8 +59,8 @@ class RentalContractController extends Controller
             // Mobile retina PNG/JPEG data-URLs can exceed 500KB; client now prefers JPEG.
             'signature_image' => 'required|string|max:2500000',
             'id_card' => 'nullable|file|mimes:jpeg,jpg,png,webp,pdf|max:15360',
-            'id_card_front' => 'nullable|file|mimes:jpeg,jpg,png,webp|max:15360',
-            'id_card_back' => 'nullable|file|mimes:jpeg,jpg,png,webp|max:15360',
+            'id_card_front' => 'nullable|file|mimes:jpeg,jpg,png,webp,pdf|max:15360',
+            'id_card_back' => 'nullable|file|mimes:jpeg,jpg,png,webp,pdf|max:15360',
         ]);
 
         $booking = $contract->booking;
@@ -71,17 +71,21 @@ class RentalContractController extends Controller
             return back()->withErrors(['agreement' => 'Please read the full rental agreement before signing.'])->withInput();
         }
 
+        // Front and back are attached separately. `id_card` remains accepted so a
+        // page already open from an older link can still be submitted.
         $hasSingle = $request->hasFile('id_card');
         $hasFront = $request->hasFile('id_card_front');
         $hasBack = $request->hasFile('id_card_back');
-        if (!$hasSingle && !($hasFront && $hasBack)) {
+        if (!$hasSingle && !$hasFront && !$hasBack) {
             return back()->withErrors([
-                'id_card' => 'Please attach one ID file, or snap both the front and back of the ID card.',
+                'id_card' => 'Please attach both sides of your ID card — the front and the back.',
             ])->withInput();
         }
-        if (($hasFront && !$hasBack) || (!$hasFront && $hasBack)) {
+        if (!$hasSingle && ($hasFront xor $hasBack)) {
             return back()->withErrors([
-                'id_card' => 'Camera capture needs both the front and the back of the ID card.',
+                'id_card' => $hasFront
+                    ? 'The back of your ID card is still missing. Please attach it as well.'
+                    : 'The front of your ID card is still missing. Please attach it as well.',
             ])->withInput();
         }
 
@@ -99,7 +103,7 @@ class RentalContractController extends Controller
         } catch (\Throwable $e) {
             Log::warning('ID card upload failed for contract '.$contract->id.': '.$e->getMessage());
             return back()->withErrors([
-                'id_card' => 'Could not save the ID file. Please attach a JPG, PNG, or PDF (max 15MB), or snap front and back with the camera.',
+                'id_card' => 'Could not save the ID file. Please attach a JPG, PNG or PDF (max 15MB) for each side.',
             ])->withInput();
         }
 
@@ -860,9 +864,16 @@ class RentalContractController extends Controller
         $out = [];
         foreach ($parts as $relative) {
             $ext = strtolower(pathinfo($relative, PATHINFO_EXTENSION));
-            $label = strpos($relative, '_back') !== false
-                ? 'Back'
-                : (strpos($relative, '_front') !== false ? 'Front' : 'ID Card');
+            // "_frontback" is the stitched image and must be matched before "_front".
+            if (strpos($relative, '_frontback') !== false) {
+                $label = 'ID Card (front & back)';
+            } elseif (strpos($relative, '_back') !== false) {
+                $label = 'Back';
+            } elseif (strpos($relative, '_front') !== false) {
+                $label = 'Front';
+            } else {
+                $label = 'ID Card';
+            }
             $out[] = [
                 'label' => $label,
                 'url' => $this->publicAssetUrl($relative),

@@ -2,105 +2,10 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Equipment Rental Agreement - {{ \App\Support\SiteBrand::siteTitle($general_setting ?? null) }}</title>
     <link rel="icon" type="image/png" href="{{ \App\Support\SiteBrand::logoUrl($general_setting ?? null) }}" />
-    <style>
-        :root {
-            --primary: #033d2e;
-            --primary-dark: #02261c;
-            --accent: #c6ab47;
-            --text: #ffffff;
-            --muted: #b8c7e6;
-        }
-        * { box-sizing: border-box; }
-        body {
-            margin: 0;
-            font-family: "Nunito", sans-serif;
-            background: linear-gradient(180deg, #041f4a 0%, #033d2e 100%);
-            color: var(--text);
-            min-height: 100vh;
-        }
-        .wrap { max-width: 920px; margin: 0 auto; padding: 24px 16px 120px; }
-        .hero { text-align: center; margin-bottom: 24px; }
-        .hero img { width: 72px; height: 72px; object-fit: contain; margin-bottom: 10px; }
-        .hero h1 { margin: 0 0 8px; font-size: 32px; }
-        .hero p { color: var(--muted); margin: 0; }
-        .card {
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.12);
-            border-radius: 16px;
-            padding: 18px 20px;
-            margin-bottom: 14px;
-        }
-        .card-head { display: flex; gap: 12px; align-items: center; margin-bottom: 10px; }
-        .num {
-            width: 34px; height: 34px; border-radius: 8px;
-            border: 2px solid var(--accent); display: flex; align-items: center; justify-content: center;
-            color: var(--accent); font-weight: 800;
-        }
-        .card h3 { margin: 0; color: var(--accent); font-size: 18px; }
-        .card p, .card li { color: #e8efff; line-height: 1.6; font-size: 15px; }
-        table.equipment { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        table.equipment th, table.equipment td {
-            border-bottom: 1px solid rgba(255,255,255,0.12);
-            padding: 10px 8px; text-align: left; font-size: 14px;
-        }
-        table.equipment th { color: var(--accent); }
-        .signature-box {
-            background: #fff8dc;
-            border: 2px solid var(--accent);
-            border-radius: 14px;
-            padding: 18px;
-            color: #5c4a12;
-            margin-top: 24px;
-        }
-        .signature-box h4 { margin: 0 0 8px; display: flex; align-items: center; gap: 8px; }
-        .btn {
-            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-            border-radius: 10px; padding: 12px 18px; font-weight: 700; cursor: pointer; border: 0;
-        }
-        .btn-outline { background: #fff; border: 2px solid #9a7b1f; color: #6b5612; }
-        .btn-primary { background: var(--primary); color: #fff; }
-        .btn-accent { background: var(--accent); color: #071711; }
-        .btn-danger-outline { background: #fff; border: 2px solid #dc3545; color: #dc3545; }
-        .checkbox-row { display: flex; gap: 10px; align-items: flex-start; margin-top: 14px; color: #e8efff; }
-        .checkbox-row input { margin-top: 4px; }
-        .footer-bar {
-            position: fixed; left: 0; right: 0; bottom: 0;
-            background: rgba(4, 31, 74, 0.96); border-top: 1px solid rgba(255,255,255,0.12);
-            padding: 14px 16px;
-        }
-        .footer-inner {
-            max-width: 920px; margin: 0 auto; display: flex; flex-wrap: wrap;
-            gap: 12px; align-items: center; justify-content: space-between;
-        }
-        .modal-backdrop {
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 1000;
-            align-items: center; justify-content: center; padding: 16px;
-        }
-        .modal-backdrop.open { display: flex; }
-        .modal {
-            background: #fff; color: #1f2a44; border-radius: 16px; width: 100%; max-width: 720px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.35); overflow: hidden;
-        }
-        .modal-header { padding: 18px 20px; border-bottom: 1px solid #e5eaf3; }
-        .modal-header h3 { margin: 0 0 6px; }
-        .modal-body { padding: 18px 20px; }
-        .modal-footer { padding: 16px 20px; border-top: 1px solid #e5eaf3; display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
-        #signature-pad {
-            width: 100%; height: 220px; border: 2px solid #d7deea; border-radius: 12px;
-            touch-action: none; background: #fff;
-        }
-        .preview-signature { max-width: 100%; border: 1px dashed #c6ab47; border-radius: 8px; display: none; margin-top: 10px; }
-        .alert { padding: 12px 14px; border-radius: 10px; margin-bottom: 14px; }
-        .alert-danger { background: #ffe5e5; color: #842029; }
-        .id-options { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
-        .hidden-input { display: none; }
-        @media (max-width: 640px) {
-            .footer-inner { flex-direction: column; align-items: stretch; }
-        }
-    </style>
+    @include('booking.partials.agreement_styles')
 </head>
 <body>
 <div class="wrap">
@@ -129,30 +34,32 @@
         </div>
         <div class="card">
             <div class="card-head"><div class="num">4</div><h3>Equipment List & Pricing</h3></div>
-            <table class="equipment">
-                <thead>
-                    <tr>
-                        <th>Equipment</th>
-                        <th>Code</th>
-                        <th>Qty</th>
-                        <th>Unit Price</th>
-                        <th>Subtotal</th>
-                        <th>Return By</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($items as $item)
+            <div class="table-wrap">
+                <table class="equipment">
+                    <thead>
                         <tr>
-                            <td>{{ $item['name'] }}</td>
-                            <td>{{ $item['code'] }}</td>
-                            <td>{{ $item['qty'] }}</td>
-                            <td>{{ number_format($item['unit_price'], 2) }}</td>
-                            <td>{{ number_format($item['total'], 2) }}</td>
-                            <td>{{ $item['end'] ? date('d M Y, H:i', strtotime($item['end'])) : 'As scheduled' }}</td>
+                            <th>Equipment</th>
+                            <th>Code</th>
+                            <th>Qty</th>
+                            <th>Unit Price</th>
+                            <th>Subtotal</th>
+                            <th>Return By</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach($items as $item)
+                            <tr>
+                                <td data-label="Equipment">{{ $item['name'] }}</td>
+                                <td data-label="Code">{{ $item['code'] }}</td>
+                                <td data-label="Qty">{{ $item['qty'] }}</td>
+                                <td data-label="Unit Price">{{ number_format($item['unit_price'], 2) }}</td>
+                                <td data-label="Subtotal">{{ number_format($item['total'], 2) }}</td>
+                                <td data-label="Return By">{{ $item['end'] ? date('d M Y, H:i', strtotime($item['end'])) : 'As scheduled' }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
             <p style="margin-top:12px;">Grand Total: <strong>{{ number_format($booking->grand_total, 2) }}</strong></p>
         </div>
         @if(!empty($booking->booking_note))
@@ -208,7 +115,7 @@
 <div class="footer-bar">
     <div class="footer-inner">
         <div>Do you accept the terms outlined in this rental agreement?</div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <div class="footer-actions">
             <a href="{{ route('login') }}" class="btn btn-danger-outline">I Disagree</a>
             <button type="button" class="btn btn-accent" id="submit-agreement">✓ Submit Agreement</button>
         </div>
@@ -219,7 +126,7 @@
     <div class="modal">
         <div class="modal-header">
             <h3>Sign Your Agreement</h3>
-            <p style="margin:0;color:#6f7b91;">Draw your signature above using your mouse, trackpad, or touchscreen.</p>
+            <p style="margin:0;color:#6f7b91;">Draw your signature in the box below using your finger, mouse, or trackpad.</p>
         </div>
         <div class="modal-body">
             <canvas id="signature-pad"></canvas>
