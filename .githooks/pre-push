@@ -40,7 +40,11 @@ while read -r local_ref local_sha remote_ref remote_sha; do
     changed_files="$(git diff --name-only $range 2>/dev/null || true)"
   fi
 
-  if echo "$changed_files" | grep -q 'appVersion.js'; then
+  # Not a pipeline on purpose: pipefail is on, and grep -q exits the moment it
+  # matches, which SIGPIPEs echo on a file list this long. The pipeline then
+  # reports 141 even on a match, so this skip never fired and every tag push
+  # died trying to commit a version bump that was already committed.
+  if [[ "$changed_files" == *appVersion.js* ]]; then
     continue
   fi
 
