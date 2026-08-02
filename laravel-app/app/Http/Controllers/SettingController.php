@@ -56,11 +56,15 @@ class SettingController extends Controller
         $lims_biller_list = Biller::where('is_active', true)->get();
         $zones_array = array();
         $timestamp = time();
-        foreach(timezone_identifiers_list() as $key => $zone) {
-            date_default_timezone_set($zone);
+        $appTimezone = config('app.timezone') ?: 'UTC';
+        foreach (timezone_identifiers_list() as $key => $zone) {
+            // Offset without mutating the process timezone (the old loop left
+            // PHP stuck on the last zone in the list).
+            $offset = (new \DateTime('now', new \DateTimeZone($zone)))->format('P');
             $zones_array[$key]['zone'] = $zone;
-            $zones_array[$key]['diff_from_GMT'] = 'UTC/GMT ' . date('P', $timestamp);
+            $zones_array[$key]['diff_from_GMT'] = 'UTC/GMT ' . $offset;
         }
+        date_default_timezone_set($appTimezone);
         return view('setting.general_setting', compact('lims_general_setting_data', 'lims_account_list', 'zones_array', 'lims_currency_list', 'lims_category_list', 'lims_unit_list', 'lims_warehouse_list', 'lims_biller_list'));
     }
 
@@ -124,13 +128,29 @@ class SettingController extends Controller
         ]);
 
         $data = $request->except('site_logo');
-        //return $data;
-        //writting timezone info in .env file
-        $path = '.env';
-        $searchArray = array('APP_TIMEZONE='.env('APP_TIMEZONE'));
-        $replaceArray = array('APP_TIMEZONE='.$data['timezone']);
 
-//        file_put_contents($path, str_replace($searchArray, $replaceArray, file_get_contents($path)));
+        // Persist timezone to .env and refresh config so schedule:run / reminders
+        // use the zone the admin just chose. (The old write was commented out, and
+        // env('APP_TIMEZONE') is null when config is cached — so the dropdown never
+        // showed the saved value either.)
+        $timezone = trim((string) ($data['timezone'] ?? ''));
+        if ($timezone !== '' && in_array($timezone, timezone_identifiers_list(), true)) {
+            if (! EnvFile::upsert(['APP_TIMEZONE' => $timezone])) {
+                return redirect()->back()->with('not_permitted', '.env file is missing or not writable; timezone was not saved.');
+            }
+            config(['app.timezone' => $timezone]);
+            date_default_timezone_set($timezone);
+            try {
+                // Clear only — caching from a web request can bake incomplete env.
+                // Deploy re-runs config:cache; until then Laravel reads .env directly.
+                Artisan::call('config:clear');
+            } catch (\Throwable $e) {
+                // ignore — .env is already written
+            }
+            if (function_exists('opcache_reset')) {
+                @opcache_reset();
+            }
+        }
 
         $general_setting = GeneralSetting::latest()->first();
         $general_setting->id = 1;

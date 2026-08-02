@@ -190,14 +190,14 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>{{trans('file.Time Zone')}}</label>
-                                        @if($lims_general_setting_data)
-                                        <input type="hidden" name="timezone_hidden" value="{{env('APP_TIMEZONE')}}">
-                                        @endif
-                                        <select name="timezone" class="selectpicker form-control" data-live-search="true" title="Select TimeZone...">
+                                        @php $currentTimezone = config('app.timezone') ?: 'UTC'; @endphp
+                                        <input type="hidden" name="timezone_hidden" value="{{ $currentTimezone }}">
+                                        <select name="timezone" class="selectpicker form-control" data-live-search="true" title="Select TimeZone..." required>
                                             @foreach($zones_array as $zone)
-                                            <option value="{{$zone['zone']}}">{{$zone['diff_from_GMT'] . ' - ' . $zone['zone']}}</option>
+                                            <option value="{{$zone['zone']}}" @if($zone['zone'] === $currentTimezone) selected @endif>{{$zone['diff_from_GMT'] . ' - ' . $zone['zone']}}</option>
                                             @endforeach
                                         </select>
+                                        <small class="text-muted">Reminders and scheduled jobs use this zone (currently {{ $currentTimezone }}).</small>
                                     </div>
                                 </div>
                                 <div class="col-md-6 d-none">
@@ -323,17 +323,23 @@
             $("input[name=state]").prop("required", true);
         }
     })
-    if($("input[name='timezone_hidden']").val()){
+    if ($("input[name='timezone_hidden']").val()) {
         $('select[name=timezone]').val($("input[name='timezone_hidden']").val());
+    }
+    if ($("input[name='staff_access_hidden']").val()) {
         $('select[name=staff_access]').val($("input[name='staff_access_hidden']").val());
+    }
+    if ($("input[name='date_format_hidden']").val()) {
         $('select[name=date_format]').val($("input[name='date_format_hidden']").val());
+    }
+    if ($("input[name='invoice_format_hidden']").val()) {
         $('select[name=invoice_format]').val($("input[name='invoice_format_hidden']").val());
-        if($("input[name='invoice_format_hidden']").val() == 'gst') {
+        if ($("input[name='invoice_format_hidden']").val() == 'gst') {
             $('select[name=state]').val($("input[name='state_hidden']").val());
             $("#state").removeClass('d-none');
         }
-        $('.selectpicker').selectpicker('refresh');
     }
+    $('.selectpicker').selectpicker('refresh');
 
     $('.theme-option').on('click', function() {
         $.get('general_setting/change-theme/' + $(this).data('color'), function(data) {
