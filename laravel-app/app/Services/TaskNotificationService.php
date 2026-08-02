@@ -32,6 +32,41 @@ class TaskNotificationService extends Controller
         }
     }
 
+    /**
+     * WhatsApp the task's files to one recipient, straight after their text.
+     *
+     * Wasender carries one document per message, so every file is its own
+     * send. Failures are logged and swallowed: a single unreadable PDF must
+     * not stop the remaining people from being told about their task.
+     */
+    protected function sendTaskFiles(Task $task, $phone)
+    {
+        if (empty(trim((string) $phone))) {
+            return 0;
+        }
+
+        $sent = 0;
+        foreach ($task->attachments as $attachment) {
+            $path = public_path(ltrim((string) $attachment->file_url, '/'));
+            if (! is_file($path)) {
+                Log::warning('Task attachment missing on disk, not sent: ' . $path);
+                continue;
+            }
+            try {
+                $this->sendWhatsAppDocumentToPhone(
+                    $phone,
+                    $path,
+                    $attachment->file_name ?: basename($attachment->file_url)
+                );
+                $sent++;
+            } catch (\Exception $e) {
+                Log::warning('Task attachment WhatsApp failed: ' . $e->getMessage());
+            }
+        }
+
+        return $sent;
+    }
+
     public function notifyAssignment(TaskAssignment $assignment)
     {
         $assignment->load(['task']);
@@ -51,12 +86,17 @@ class TaskNotificationService extends Controller
         ]);
         $message = TaskPersonalization::personalize($template, $vars);
 
-        return $this->sendPhone($user->phone, $message);
+        $delivered = $this->sendPhone($user->phone, $message);
+        if ($delivered) {
+            $this->sendTaskFiles($task, $user->phone);
+        }
+
+        return $delivered;
     }
 
     public function notifyCcOnAssignment(Task $task)
     {
-        $task->load(['assignments', 'ccRecipients']);
+        $task->load(['assignments', 'ccRecipients', 'attachments']);
         $assigneeNames = BeyondUser::whereIn('id', $task->assignments->pluck('user_id'))
             ->pluck('name')->filter()->implode(', ') ?: 'the assignee(s)';
 
@@ -87,6 +127,7 @@ class TaskNotificationService extends Controller
             $msg .= "👉 View tasks:\n" . url('/user/tasks') . "\n\n_" . \App\Support\SiteBrand::siteTitle() . "_";
 
             if ($this->sendPhone($user->phone, $msg)) {
+                $this->sendTaskFiles($task, $user->phone);
                 $sent++;
             }
         }
@@ -189,7 +230,7 @@ class TaskNotificationService extends Controller
 
     public function dispatchTaskNotifications(Task $task)
     {
-        $task->load(['assignments', 'ccRecipients']);
+        $task->load(['assignments', 'ccRecipients', 'attachments']);
         foreach ($task->assignments as $assignment) {
             $this->notifyAssignment($assignment);
         }
