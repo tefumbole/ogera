@@ -82,9 +82,30 @@ rsync -az --delete --human-readable ${RSYNC_EXTRA[@]+"${RSYNC_EXTRA[@]}"} \
     --exclude='/storage/framework/sessions/*' \
     --exclude='/storage/framework/views/*' \
     --exclude='/storage/app/backups/' \
+    `# Everything below public/ that users upload at runtime. --delete removes` \
+    `# anything the local tree does not have, so a directory missing from this` \
+    `# list is wiped on every deploy. Add new upload directories here.` \
     --exclude='/public/uploads/' \
     --exclude='/public/logo/' \
     --exclude='/public/images/leaders/' \
+    --exclude='/public/images/task/' \
+    --exclude='/public/images/user/' \
+    --exclude='/public/images/product/' \
+    --exclude='/public/images/customer/' \
+    --exclude='/public/images/announcements/' \
+    --exclude='/public/images/bookings/' \
+    --exclude='/public/images/events/' \
+    --exclude='/public/images/gallery/' \
+    --exclude='/public/images/quotations/' \
+    --exclude='/public/images/sales/' \
+    --exclude='/public/images/site/' \
+    --exclude='/public/announcement/' \
+    --exclude='/public/letter/' \
+    --exclude='/public/booking_contracts/' \
+    --exclude='/public/booking_delivery_notes/' \
+    --exclude='/public/booking_receipts/' \
+    --exclude='/public/event_contracts/' \
+    --exclude='/public/event_payments/' \
     --exclude='/bootstrap/cache/*.php' \
     --exclude='/.phpunit.result.cache' \
     laravel-app/ "${SSH_USER}@${SSH_HOST}:${REMOTE_ROOT}/"
