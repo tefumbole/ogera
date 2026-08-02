@@ -732,6 +732,8 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::post('user/deletebyselection', 'UserController@deleteBySelection');
 	Route::resource('user','UserController');
 
+	Route::get('setting/testing-guide', 'TestingGuideController@index')->name('setting.testingGuide');
+
 	Route::get('setting/activity-logs', 'ActivityLogController@index')->name('activity-logs.index');
 	Route::post('setting/activity-logs/clicks', 'ActivityLogController@storeClicks')->name('activity-logs.clicks');
 	Route::post('setting/activity-logs/delete', 'ActivityLogController@destroy')->name('activity-logs.destroy');

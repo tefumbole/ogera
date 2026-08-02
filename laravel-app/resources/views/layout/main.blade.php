@@ -2421,6 +2421,7 @@
                                 @endif
                                 <li id="user-menu"><a href="{{route('user.profile', ['id' => Auth::id()])}}">{{trans('file.User Profile')}}</a></li>
                                 <li id="my-transactions-menu"><a href="{{url('my-transactions/'.date('Y').'/'.date('m'))}}">{{trans('file.My Transaction')}}</a></li>
+                                <li id="testing-guide-menu"><a href="{{route('setting.testingGuide')}}">Testing Guide</a></li>
                                 @if($backup_database_permission_active)
                                     <li id="backup-database-menu"><a href="{{route('setting.backup')}}">{{trans('file.Backup Database')}}</a></li>
                                 @endif
@@ -3302,6 +3303,7 @@
                   'tax-menu': 'dripicons-percent',
                   'user-menu': 'dripicons-user',
                   'my-transactions-menu': 'dripicons-swap',
+                  'testing-guide-menu': 'dripicons-checklist',
                   'my-holiday-menu': 'dripicons-vibrate',
                   'create-sms-menu': 'dripicons-message',
                   'backup-database-menu': 'dripicons-stack',
