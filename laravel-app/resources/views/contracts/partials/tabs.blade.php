@@ -115,23 +115,4 @@
     .ct-wizard-step { display: none; }
     .ct-wizard-step.is-visible { display: block; }
 </style>
-@php
-    $ctTab = $ctTab ?? '';
-    $tabs = [
-        ['contracts.dashboard', 'Dashboard', 'dripicons-graph-bar', 'tone-blue'],
-        ['contracts.index', 'Contract List', 'dripicons-document', 'tone-blue'],
-        ['contracts.awaiting_client', 'Awaiting Client Signature', 'dripicons-clock', 'tone-orange'],
-        ['contracts.awaiting_admin', 'Awaiting Admin Signature', 'dripicons-user-id', 'tone-purple'],
-        ['contracts.signed', 'Signed', 'dripicons-checkmark', 'tone-green'],
-        ['contracts.templates', 'Templates', 'dripicons-copy', 'tone-teal'],
-        ['contracts.clauses', 'Clause Library', 'dripicons-list', 'tone-teal'],
-        ['contracts.settings', 'Settings', 'dripicons-gear', 'tone-gold'],
-    ];
-@endphp
-<nav class="ct-nav" aria-label="Contracts">
-    @foreach($tabs as $tab)
-        <a href="{{ route($tab[0]) }}" class="{{ $tab[3] }} {{ $ctTab === $tab[0] ? 'is-active' : '' }}">
-            <i class="{{ $tab[2] }}"></i> {{ $tab[1] }}
-        </a>
-    @endforeach
-</nav>
+{{-- Module tabs come from the layout's beyond-module-tabs bar; do not render a second row. --}}

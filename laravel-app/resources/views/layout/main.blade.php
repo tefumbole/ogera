@@ -1402,6 +1402,7 @@
                                         <li id="tasks-list-menu"><a href="{{ route('tasks.index') }}">All Tasks</a></li>
                                         <li id="tasks-scheduled-menu"><a href="{{ route('tasks.scheduled') }}">Scheduled</a></li>
                                         <li id="tasks-reminders-menu"><a href="{{ route('tasks.reminders') }}">Reminders</a></li>
+                                        <li id="tasks-my-menu"><a href="{{ route('user.tasks') }}">My Tasks</a></li>
                                         <li id="tasks-pending-menu"><a href="{{ route('tasks.pending') }}">Pending Acceptances</a></li>
                                     @endif
                                     @if(in_array('tasks.create', $all_permission))
@@ -3316,7 +3317,15 @@
                   'sms-setting-menu': 'dripicons-message',
                   'pos-setting-menu': 'dripicons-cart',
                   'hrm-setting-menu': 'dripicons-user-group',
-                  'notification-menu': 'dripicons-bell'
+                  'notification-menu': 'dripicons-bell',
+                  'tasks-dashboard-menu': 'dripicons-view-thumb',
+                  'tasks-list-menu': 'dripicons-view-list',
+                  'tasks-scheduled-menu': 'dripicons-calendar',
+                  'tasks-reminders-menu': 'dripicons-clock',
+                  'tasks-my-menu': 'dripicons-checkmark',
+                  'tasks-pending-menu': 'dripicons-inbox',
+                  'tasks-create-menu': 'dripicons-plus',
+                  'tasks-settings-menu': 'dripicons-gear'
               };
 
               function resolveTabIcon($link, $parentLink) {
