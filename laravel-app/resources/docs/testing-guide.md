@@ -39,16 +39,18 @@ announcements, booking reminders, task reminders, contract reminders — only
 fires if a cron job runs every minute on the host. Sending something
 *immediately* does not need cron; scheduling it for later does.
 
-The account has no `crontab` command over SSH, so the entry has to be added in
-hPanel under Advanced → Cron Jobs, set to run every minute:
+If nobody is using the admin, timed sends wait. While the site is in use, an
+automatic fallback runs `schedule:run` about once a minute after each page load
+(`OGERA_SCHEDULER_AUTO=true`). For reliable delivery with no one logged in, add
+this cron in hPanel under Advanced → Cron Jobs, every minute:
 
 ```
 cd /home/u152889834/domains/ogeragency.com/public_html && /opt/alt/php74/usr/bin/php artisan schedule:run >> /dev/null 2>&1
 ```
 
 The PHP 7.4 path matters: the site is Laravel 6 and will not run on the
-account's newer PHP. Before testing anything timed, confirm with whoever manages
-the Hostinger account that this cron exists.
+account's newer PHP. Once that cron exists, set `OGERA_SCHEDULER_AUTO=false`
+in Settings → .env Settings.
 
 ---
 
