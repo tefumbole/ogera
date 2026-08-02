@@ -1,1 +1,1 @@
-export const APP_VERSION = 'OGERA_ERP_V1.7.8';
+export const APP_VERSION = 'OGERA_ERP_V1.8.0';
