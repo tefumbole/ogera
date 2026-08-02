@@ -28,6 +28,9 @@ Route::get('/quotation-approval/{token}', 'QuotationApprovalController@show')->n
 Route::post('/quotation-approval/{token}/approve', 'QuotationApprovalController@approve')->name('quotation.client.approve');
 Route::post('/quotation-approval/{token}/reject', 'QuotationApprovalController@reject')->name('quotation.client.reject');
 
+Route::get('/sign-your-signature/{token}', 'UserSignatureController@show')->name('user.signature.show');
+Route::post('/sign-your-signature/{token}', 'UserSignatureController@store')->name('user.signature.submit');
+
 Route::get('/delivery-sign/{token}', 'DeliverySignatureController@show')->name('delivery.client.show');
 Route::post('/delivery-sign/{token}/sign', 'DeliverySignatureController@sign')->name('delivery.client.sign');
 Route::get('/verify/delivery/{id}/{token}', 'DeliveryVerifyController@show')->name('delivery.verify');
@@ -731,6 +734,7 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::put('user/changepass/{id}', 'UserController@changePassword')->name('user.password');
 	Route::get('user/genpass', 'UserController@generatePassword');
 	Route::post('user/deletebyselection', 'UserController@deleteBySelection');
+	Route::post('user/{id}/send-signature-request', 'UserSignatureController@send')->name('user.signature.send');
 	Route::resource('user','UserController');
 
 	Route::get('setting/testing-guide', 'TestingGuideController@index')->name('setting.testingGuide');

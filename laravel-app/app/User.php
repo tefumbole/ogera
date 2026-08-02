@@ -2,9 +2,11 @@
 
 namespace App;
 
+use App\Support\UserSignature;
 use App\Traits\NormalizesWhatsAppPhones;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Str;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
@@ -20,8 +22,10 @@ class User extends Authenticatable
     ];
 
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token', 'signature_token',
     ];
+
+    protected $dates = ['signature_requested_at', 'signature_signed_at'];
 
     public function isActive()
     {
@@ -38,5 +42,41 @@ class User extends Authenticatable
 
     public function customer() {
         return $this->hasOne('App\Customer', 'user_id', 'id');
+    }
+
+    public function hasSignature()
+    {
+        return ! empty($this->sign) && UserSignature::path($this->sign) !== null;
+    }
+
+    public function signatureUrl()
+    {
+        return UserSignature::url($this->sign);
+    }
+
+    /**
+     * Issue a fresh signing token, invalidating any link already sent.
+     */
+    public function rotateSignatureToken()
+    {
+        $this->signature_token = Str::random(48);
+        $this->signature_requested_at = now();
+        $this->save();
+
+        return $this->signature_token;
+    }
+
+    public function signatureRequestUrl()
+    {
+        if (empty($this->signature_token)) {
+            $this->rotateSignatureToken();
+        }
+
+        return url('sign-your-signature/'.$this->signature_token);
+    }
+
+    public function isOpenForSignatureRequest()
+    {
+        return ! empty($this->signature_token) && ! $this->is_deleted;
     }
 }

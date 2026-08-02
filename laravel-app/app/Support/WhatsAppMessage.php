@@ -43,6 +43,22 @@ class WhatsAppMessage
         return "\n_" . self::companyName() . '_';
     }
 
+    /**
+     * Asks a staff member to draw the signature that will be stamped on the
+     * documents they issue.
+     */
+    public static function userSignatureRequest($userName, $signUrl)
+    {
+        $msg = self::statusBlock('✍️', 'Signature Required');
+        $msg .= self::greeting($userName);
+        $msg .= 'An account has been set up for you at *'.self::companyName()."*.\n\n";
+        $msg .= "Open the secure link below and draw your signature once. It is then placed automatically on the quotations, invoices and rental documents you issue.\n";
+        $msg .= self::actionLink('Add my signature', $signUrl);
+        $msg .= self::footer();
+
+        return $msg;
+    }
+
     public static function signatureRequest($customerName, $bookingRef, $signUrl, $company = null, $contractType = null)
     {
         $company = $company ?: self::companyName();

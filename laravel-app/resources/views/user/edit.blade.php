@@ -100,32 +100,15 @@
                                           @endforeach
                                         </select>
                                     </div>
-                                    <div class="form-group" id="sign">
-                                        <label><strong>@if($lims_user_data->role_id == 12) Image @else {{trans('file.Sign')}} @endif  </strong></label>
-                                        <input type="file" class="form-control" name="sign">
-                                        @if($lims_user_data->sign)
-                                        <img src="{{url('public/images/user',$lims_user_data->sign)}}" height="50vw">
-                                        @else
-                                            <span>No sign found</span>
-                                        @endif
-                                    </div>
-                                    <div class="form-group" id="stemp">
-                                        <label><strong>@if($lims_user_data->role_id == 12) Logo @else {{trans('file.Stemp')}}@endif </strong></label>
-                                        <input type="file" class="form-control" name="stemp">
-                                        @if($lims_user_data->stemp)
-                                            <img src="{{url('public/images/user',$lims_user_data->stemp)}}" height="50vw">
-                                        @else
-                                            <span>No Comment found</span>
-                                        @endif
-                                    </div>
-                                    <div class="form-group" id="approve">
-                                        <label><strong>{{trans('file.Approve')}} </strong></label>
-                                        <input type="file" class="form-control" name="approve">
-                                        @if($lims_user_data->approve)
-                                            <img src="{{url('public/images/user',$lims_user_data->approve)}}" height="50vw">
-                                        @else
-                                            <span>No Approve found</span>
-                                        @endif
+                                    @include('user.partials.signature_fields')
+
+                                    <div class="form-group" id="request-signature">
+                                        <input class="mt-2" type="checkbox" name="request_signature" value="1" id="request_signature">
+                                        <label class="mt-2" for="request_signature"><strong>Send this user a link to sign</strong></label>
+                                        <small class="d-block text-muted">
+                                            They get a secure link by WhatsApp and email, draw their signature once, and it
+                                            replaces whatever is on file.
+                                        </small>
                                     </div>
                                 </div>
                             </div>
@@ -144,6 +127,16 @@
     $('#warehouseId').hide();
 
 
+    // A signature belongs to any staff member who issues documents; only the
+    // letter stamps stay tied to the senior roles.
+    function applySignatureVisibility(roleId) {
+        var isCustomer = roleId == 5;
+        $('#sign').toggle(!isCustomer);
+        $('#request-signature').toggle(!isCustomer);
+        $('#stemp').toggle(!isCustomer && (roleId > 8 || roleId == 1));
+        $('#approve').toggle(!isCustomer && (roleId > 8 || roleId == 1));
+    }
+
     $('select[name=role_id]').val($("input[name='role_id_hidden']").val());
     if($('select[name=role_id]').val() > 2 && $('select[name=role_id]').val() < 8){
         $('#warehouseId').show();
@@ -155,35 +148,24 @@
         $('select[name="biller_id"]').prop('required',false);
         $('#biller-id').hide();
         $('#warehouseId').hide();
-        $('#sign').show();
-        $('#stemp').show();
     }
+    applySignatureVisibility($('select[name=role_id]').val());
     $('.selectpicker').selectpicker('refresh');
 
     $('select[name="role_id"]').on('change', function() {
+        applySignatureVisibility($(this).val());
+
         if($(this).val() > 2 && $('select[name=role_id]').val() < 8){
             $('select[name="warehouse_id"]').prop('required',true);
             $('select[name="biller_id"]').prop('required',true);
             $('#biller-id').show();
             $('#warehouseId').show();
-            $('#sign').hide(300);
-            $('#stemp').hide(300);
         }
-        else if($(this).val() > 8 || $(this).val() == 1) {
+        else {
             $('select[name="warehouse_id"]').prop('required',false);
             $('select[name="biller_id"]').prop('required',false);
             $('#biller-id').hide();
             $('#warehouseId').hide();
-            $('#sign').show(300);
-            $('#stemp').show(300);
-        }
-        else{
-            $('select[name="warehouse_id"]').prop('required',false);
-            $('select[name="biller_id"]').prop('required',false);
-            $('#biller-id').hide();
-            $('#warehouseId').hide();
-            $('#sign').hide();
-            $('#stemp').hide();
         }
     });
 
@@ -194,4 +176,6 @@
     });
 
 </script>
+
+@include('components.signature_pad')
 @endsection

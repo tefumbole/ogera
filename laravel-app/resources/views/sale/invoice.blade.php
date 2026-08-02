@@ -151,10 +151,27 @@
             font-weight: bold;
             text-transform: uppercase;
         }
-        .codes { margin-top: 8px; text-align: left; }
-        .codes .created-by { font-size: 10px; line-height: 1.4; margin-bottom: 6px; text-align: left; }
+        .codes { margin-top: 10px; text-align: center; }
+        .codes .created-by { font-size: 10px; line-height: 1.4; margin-bottom: 7px; text-align: center; }
         .codes .code-media { text-align: center; }
         .codes img { display: block; margin: 0 auto; }
+
+        /* Signatures rest on one line, issuer on the right, codes centred below. */
+        table.sign-row { width: 100%; border-collapse: collapse; margin-top: 12px; page-break-inside: avoid; }
+        table.sign-row td { width: 50%; vertical-align: bottom; padding: 0; }
+        table.sign-row .sign-right { padding-left: 14px; text-align: right; }
+        .sign-label {
+            display: block;
+            font-size: 9px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: .6px;
+            color: #1f2a44;
+            margin-bottom: 3px;
+        }
+        .sign-img { max-height: 56px; max-width: 100%; }
+        .sign-name { font-weight: bold; font-size: 10.5px; border-top: 1px solid #c9cfdf; padding-top: 3px; margin-top: 2px; }
+        .sign-meta { font-size: 9px; color: #6b7386; }
         .thanks { text-align: center; color: #6b7386; margin: 6px 0; }
         .centered { text-align: center; }
         @media print {
@@ -407,13 +424,28 @@
         </table>
 
         <div class="thanks">{{ trans('file.Thank you for shopping with us. Please come again') }}</div>
+
+        @php
+            $invoiceCreator = @$lims_sale_data->user;
+            $invoiceCreatorSignature = \App\Support\UserSignature::documentSignature($invoiceCreator);
+        @endphp
+        @if($invoiceCreator)
+            <table class="sign-row">
+                <tr>
+                    <td></td>
+                    <td class="sign-right">
+                        <span class="sign-label">For and on behalf of {{ \App\Support\SiteBrand::siteTitle() }}</span>
+                        @if($invoiceCreatorSignature)
+                            <img class="sign-img" src="{{ $invoiceCreatorSignature }}" alt="Authorised signature">
+                        @endif
+                        <div class="sign-name">{{ $invoiceCreator->name }}</div>
+                        @if($invoiceCreator->email)<div class="sign-meta">{{ $invoiceCreator->email }}</div>@endif
+                    </td>
+                </tr>
+            </table>
+        @endif
+
         <div class="codes">
-            @if(@$lims_sale_data->user)
-                <div class="created-by">
-                    <strong>{{ trans('file.Created By') }}:</strong> {{ $lims_sale_data->user->name }}
-                    @if(@$lims_sale_data->user->email)<br>{{ $lims_sale_data->user->email }}@endif
-                </div>
-            @endif
             <div class="code-media" style="margin:0 0 6px;">
                 <?php echo '<img src="data:image/png;base64,'.DNS2D::getBarcodePNG($invoiceQrUrl, 'QRCODE').'" height="48" width="48" alt="qrcode">'; ?>
             </div>

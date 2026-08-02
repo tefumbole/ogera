@@ -139,17 +139,16 @@
                                           @endforeach
                                         </select>
                                     </div>
-                                    <div class="form-group" id="sign">
-                                        <label><strong>{{trans('file.Sign')}} </strong></label>
-                                        <input type="file" class="form-control" name="sign">
-                                    </div>
-                                    <div class="form-group" id="stemp">
-                                        <label><strong>{{trans('file.Stemp')}}</strong></label>
-                                        <input type="file" class="form-control" name="stemp">
-                                    </div>
-                                    <div class="form-group" id="approve">
-                                        <label><strong>{{trans('file.Approve')}}</strong></label>
-                                        <input type="file" class="form-control" name="approve">
+                                    @include('user.partials.signature_fields')
+
+                                    <div class="form-group" id="request-signature">
+                                        <input class="mt-2" type="checkbox" name="request_signature" value="1" id="request_signature">
+                                        <label class="mt-2" for="request_signature"><strong>Send this user a link to sign</strong></label>
+                                        <small class="d-block text-muted">
+                                            Use this when you are creating the account for someone else. They get a secure
+                                            link by WhatsApp and email, draw their signature once, and it is stored against
+                                            their name.
+                                        </small>
                                     </div>
                                 </div>
                             </div>
@@ -170,7 +169,8 @@
     $('#warehouseId').hide();
     $('#biller-id').hide();
     $('.customer-section').hide();
-    $('#sign').hide();
+    // A signature belongs to any staff member who issues documents, so it is
+    // offered from the start. The letter stamps stay tied to the senior roles.
     $('#stemp').hide();
     $('#approve').hide();
 
@@ -185,8 +185,12 @@
     });
 
     $('select[name="role_id"]').on('change', function() {
+        // Customers never issue documents in their own name.
+        var isCustomer = $(this).val() == 5;
+        $('#sign').toggle(!isCustomer);
+        $('#request-signature').toggle(!isCustomer);
+
         if($(this).val() == 5) {
-            $('#sign').hide(300);
             $('#stemp').hide(300);
             $('#approve').hide(300);
             $('#biller-id').hide(300);
@@ -202,7 +206,6 @@
             $('#biller-id').show(300);
             $('#warehouseId').show(300);
             $('.customer-section').hide(300);
-            $('#sign').hide(300);
             $('#stemp').hide(300);
             $('#approve').hide(300);
             $('.customer-input').prop('required',false);
@@ -212,7 +215,6 @@
             $('select[name="biller_id"]').prop('required',false);
             $('#biller-id').hide(300);
             $('#warehouseId').hide(300);
-            $('#sign').show(300);
             $('#stemp').show(300);
             $('#approve').show(300);
             $('.customer-section').hide(300);
@@ -223,7 +225,6 @@
             $('select[name="biller_id"]').prop('required',false);
             $('#biller-id').hide(300);
             $('#warehouseId').hide(300);
-            $('#sign').hide(300);
             $('#approve').hide(300);
             $('#stemp').hide(300);
             $('.customer-section').hide(300);
@@ -231,4 +232,6 @@
         }
     });
 </script>
+
+@include('components.signature_pad')
 @endsection

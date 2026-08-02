@@ -190,41 +190,18 @@
 </table>
 
 @php
-    $clientSignature = $client_signature_data_uri ?? null;
     $isApproved = (int) ($lims_sale_data->quotation_status ?? 0) === \App\Quotation::STATUS_APPROVED;
+    // The QR encodes the public copy of this quotation, so a scan verifies it.
+    $closing = [
+        'creator' => @$lims_sale_data->user,
+        'clientSignature' => $isApproved ? ($client_signature_data_uri ?? null) : null,
+        'clientName' => @$lims_customer_data->name,
+        'clientSignedAt' => $lims_sale_data->client_signed_at ?? null,
+        'qrData' => route('quotation.scan', $lims_sale_data->reference_no),
+        'barcodeData' => $lims_sale_data->reference_no,
+    ];
 @endphp
-{{-- Signature and codes share one row so a signed quotation still fits a page. --}}
-<table class="inv-closing">
-    <tr>
-        @if($isApproved && $clientSignature)
-            <td class="inv-closing-sign">
-                <span class="inv-label">Approved &amp; signed by client</span>
-                <img class="inv-signature-img" src="{{ $clientSignature }}" alt="Client signature">
-                <div class="inv-signature-name">{{ @$lims_customer_data->name }}</div>
-                <div class="inv-signature-meta">
-                    @if($lims_sale_data->client_signed_at)
-                        Signed {{ $lims_sale_data->client_signed_at->format('d-m-Y H:i') }}
-                    @endif
-                </div>
-            </td>
-        @endif
-        <td class="inv-closing-codes">
-            @if(@$lims_sale_data->user)
-                <div class="inv-created">
-                    <strong>{{ trans('file.Created By') }}:</strong> {{ $lims_sale_data->user->name }}
-                    @if(@$lims_sale_data->user->email)<br>{{ $lims_sale_data->user->email }}@endif
-                </div>
-            @endif
-            <div class="inv-qr">
-                {{-- Encodes the public copy of this quotation so a scan verifies it. --}}
-                <?php echo '<img src="data:image/png;base64,'.DNS2D::getBarcodePNG(route('quotation.scan', $lims_sale_data->reference_no), 'QRCODE').'" height="78" width="78" alt="qrcode">'; ?>
-            </div>
-            <div class="inv-barcode">
-                <?php echo '<img src="data:image/png;base64,'.DNS1D::getBarcodePNG($lims_sale_data->reference_no, 'C128').'" height="22" width="150" alt="barcode">'; ?>
-            </div>
-        </td>
-    </tr>
-</table>
+@include('pdf.partials._invoice_closing', $closing)
 
 @include('pdf.partials._invoice_close')
 </body>

@@ -221,16 +221,19 @@
     .inv-note p:last-child { margin-bottom: 0; }
     .inv-note ul, .inv-note ol { margin: 3px 0 3px 14px; padding: 0; }
 
-    /* Closing row: client signature on the left, codes on the right, so an
-       approved quotation does not spill onto a second page. The signature PNG
-       is already trimmed and transparent, so no frame is drawn around it. */
-    table.inv-closing { width: 100%; border-collapse: collapse; margin-top: 10px; page-break-inside: avoid; }
-    table.inv-closing td { vertical-align: top; padding: 0; }
-    .inv-closing-sign { width: 48%; padding-right: 14px !important; }
-    .inv-closing-codes { text-align: left; }
-    .inv-closing-codes .inv-qr,
-    .inv-closing-codes .inv-barcode { text-align: center; margin: 0 0 5px; }
-    .inv-closing-codes img { display: block; margin: 0 auto; }
+    /* Closing row: the client signs on the left and we countersign on the
+       right, both resting on the same line, with the codes centred beneath.
+       Signature PNGs are trimmed and transparent, so no frame is drawn. */
+    table.inv-closing { width: 100%; border-collapse: collapse; margin-top: 12px; page-break-inside: avoid; }
+    table.inv-closing td { width: 50%; vertical-align: bottom; padding: 0; }
+    .inv-closing-sign { padding-right: 14px !important; }
+    .inv-closing-sign-right { padding-right: 0 !important; padding-left: 14px !important; text-align: right; }
+
+    .inv-codes-center { margin-top: 12px; text-align: center; page-break-inside: avoid; }
+    .inv-codes-center .inv-created { font-size: 10px; line-height: 1.4; margin-bottom: 7px; text-align: center; }
+    .inv-codes-center .inv-qr,
+    .inv-codes-center .inv-barcode { text-align: center; margin: 0 0 5px; }
+    .inv-codes-center img { display: block; margin: 0 auto; }
 
     .inv-closing-sign .inv-label {
         display: block;

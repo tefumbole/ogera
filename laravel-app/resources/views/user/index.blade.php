@@ -60,6 +60,11 @@
                                 <li>
                                 	<a href="{{ route('user.edit', $user->id) }}" class="btn btn-link"><i class="dripicons-document-edit"></i> {{trans('file.edit')}}</a>
                                 </li>
+                                {{ Form::open(['route' => ['user.signature.send', $user->id], 'method' => 'POST'] ) }}
+                                <li>
+                                    <button type="submit" class="btn btn-link" onclick="return confirm('Send {{ addslashes($user->name) }} a link to add their signature?')"><i class="dripicons-pencil"></i> Send for Signature</button>
+                                </li>
+                                {{ Form::close() }}
                                 @endif
                                 <li class="divider"></li>
                                 @if(in_array("users-delete", $all_permission))

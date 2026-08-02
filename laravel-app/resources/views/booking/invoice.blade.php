@@ -319,11 +319,31 @@
                 </tr>
                 @endforeach
                 <tr><td class="centered" colspan="3">{{trans('file.Thank you for shopping with us. Please come again')}}</td></tr>
+                @php
+                    $rentalCreator = @$lims_sale_data->user;
+                    $rentalCreatorSignature = \App\Support\UserSignature::documentSignature($rentalCreator);
+                @endphp
+                @if($rentalCreator)
+                <tr>
+                    <td colspan="3" style="padding-top:14px;">
+                        <div style="text-align:right;">
+                            <span style="display:block;font-size:9px;font-weight:bold;text-transform:uppercase;letter-spacing:.6px;color:#1f2a44;margin-bottom:3px;">
+                                {{ $rentalCreatorSignature ? 'For and on behalf of ' . \App\Support\SiteBrand::siteTitle() : trans('file.Created By') }}
+                            </span>
+                            @if($rentalCreatorSignature)
+                                <img src="{{ $rentalCreatorSignature }}" alt="Authorised signature" style="max-height:56px;max-width:100%;">
+                            @endif
+                            <div style="font-weight:bold;font-size:11px;border-top:1px solid #c9cfdf;padding-top:3px;margin-top:2px;display:inline-block;min-width:200px;">{{ $rentalCreator->name }}</div>
+                            @if($rentalCreator->email)<div style="font-size:9px;color:#6b7386;">{{ $rentalCreator->email }}</div>@endif
+                        </div>
+                    </td>
+                </tr>
+                @endif
                 <tr>
                     <td class="centered" colspan="3">
-                    <?php echo '<img style="margin-top:10px;" src="data:image/png;base64,' . DNS1D::getBarcodePNG($lims_sale_data->reference_no, 'C128') . '" width="300" alt="barcode"   />';?>
+                    <?php echo '<img style="margin-top:10px;" src="data:image/png;base64,' . DNS2D::getBarcodePNG($lims_sale_data->reference_no, 'QRCODE') . '" alt="qrcode"   />';?>
                     <br>
-                    <?php echo '<img style="margin-top:10px;" src="data:image/png;base64,' . DNS2D::getBarcodePNG($lims_sale_data->reference_no, 'QRCODE') . '" alt="barcode"   />';?>
+                    <?php echo '<img style="margin-top:10px;" src="data:image/png;base64,' . DNS1D::getBarcodePNG($lims_sale_data->reference_no, 'C128') . '" width="300" alt="barcode"   />';?>
                     </td>
                 </tr>
             </tbody>

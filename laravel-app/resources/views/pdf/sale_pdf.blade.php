@@ -33,11 +33,9 @@
         table.inv-items tbody td { padding: 3px 4px; }
         table.inv-summary { margin-top: 6px; }
         .inv-box { padding: 5px 7px; margin-bottom: 5px; }
-        .inv-codes-block { margin-top: 8px; page-break-inside: avoid; text-align: left; }
-        .inv-codes-block .inv-created { font-size: 10px; line-height: 1.4; margin-bottom: 6px; text-align: left; }
-        .inv-codes-block .inv-qr,
-        .inv-codes-block .inv-barcode { text-align: center; }
-        .inv-codes-block img { display: block; margin: 0 auto; }
+        table.inv-closing { margin-top: 8px; }
+        .inv-codes-center { margin-top: 8px; }
+        .inv-signature-img { max-height: 52px; }
     </style>
 </head>
 <body>
@@ -258,20 +256,12 @@
     </tr>
 </table>
 
-<div class="inv-codes-block">
-    @if(@$lims_sale_data->user)
-        <div class="inv-created">
-            <strong>{{ trans('file.Created By') }}:</strong> {{ $lims_sale_data->user->name }}
-            @if(@$lims_sale_data->user->email)<br>{{ $lims_sale_data->user->email }}@endif
-        </div>
-    @endif
-    <div class="inv-qr" style="margin:0 0 6px;">
-        <?php echo '<img src="data:image/png;base64,'.DNS2D::getBarcodePNG($invoiceQrUrl, 'QRCODE').'" height="52" width="52" alt="qrcode">'; ?>
-    </div>
-    <div class="inv-barcode">
-        <?php echo '<img src="data:image/png;base64,'.DNS1D::getBarcodePNG($lims_sale_data->reference_no, 'C128').'" height="24" width="160" alt="barcode">'; ?>
-    </div>
-</div>
+@include('pdf.partials._invoice_closing', [
+    'creator' => @$lims_sale_data->user,
+    'qrData' => $invoiceQrUrl,
+    'barcodeData' => $lims_sale_data->reference_no,
+    'qrSize' => 62,
+])
 
 @include('pdf.partials._invoice_close')
 </body>

@@ -495,34 +495,13 @@
             saleDetails(sale);
         });
 
-        $("#print-btn").on("click", function(){
-            var printRoot = document.getElementById('sale-invoice-print');
-            if (!printRoot) return;
-            var newWin = window.open('', 'Print-Window', 'width=900,height=720');
-            if (!newWin) {
-                alert('Please allow pop-ups to print the invoice.');
-                return;
-            }
-            var css = '<link rel="stylesheet" href="<?php echo asset('public/vendor/bootstrap/css/bootstrap.min.css') ?>" type="text/css">' +
-                '<style type="text/css">' +
-                '@page{size:A4;margin:10mm}' +
-                'body{margin:10px;background:#fff;font-size:12px;color:#1f2a44}' +
-                '.d-print-none{display:none!important}' +
-                '.modal-content{border:0;box-shadow:none}' +
+        $(document).on("click", "#print-btn", function(){
+            printDocument('sale-invoice-print', 'Invoice',
                 '.sale-letter-header{max-height:90px!important;object-fit:contain}' +
                 '.sale-letter-footer{max-height:70px!important;object-fit:contain}' +
                 '.sale-watermark{opacity:0.07!important}' +
                 'table.product-sale-list{font-size:11px}' +
-                'table.product-sale-list th,table.product-sale-list td{padding:4px 6px}' +
-                '</style>';
-            newWin.document.open();
-            newWin.document.write('<!DOCTYPE html><html><head><title>Invoice</title>' + css + '</head><body>' + printRoot.innerHTML + '</body></html>');
-            newWin.document.close();
-            setTimeout(function(){
-                newWin.focus();
-                newWin.print();
-                setTimeout(function(){ try { newWin.close(); } catch (e) {} }, 400);
-            }, 450);
+                'table.product-sale-list th,table.product-sale-list td{padding:4px 6px}');
         });
 
         $(document).on("click", "table.sale-list tbody .add-payment", function() {
@@ -1126,7 +1105,11 @@
             if (staffNote && staffNote.toLowerCase() !== 'null') {
                 htmlfooter += '<p class="mb-1"><strong>{{trans("file.Staff Note")}}:</strong> ' + staffNote + '</p>';
             }
-            htmlfooter += '<p class="mb-0 text-left" style="font-size:12px;line-height:1.4;text-align:left;"><strong>{{trans("file.Created By")}}:</strong> ' + sale[25] + (sale[26] ? '<br>' + sale[26] : '') + '</p>';
+            htmlfooter += signatureRow({
+                issuerSignature: sale[30],
+                issuerName: sale[25],
+                issuerEmail: sale[26]
+            });
             $('#sale-content').html(htmltext);
             $('#sale-footer').html(htmlfooter);
             $('#sale-details').modal('show');
@@ -1167,6 +1150,9 @@
         }
 
     </script>
+
+    @include('components.invoice_signature_row')
+    @include('components.print_document')
 @endsection
 
 @section('scripts')

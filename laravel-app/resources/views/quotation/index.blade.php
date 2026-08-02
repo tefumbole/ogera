@@ -37,7 +37,7 @@
                         $status = \App\Quotation::statusLabel($quotation->quotation_status);
                         $st = (int) $quotation->quotation_status;
                         ?>
-                    <tr class="quotation-link" data-quotation='["{{date($general_setting->date_format, strtotime($quotation->created_at->toDateString()))}}", "{{$quotation->reference_no}}", "{{$status}}", "{{@$quotation->biller->name}}", "{{@$quotation->biller->company_name}}","{{@$quotation->biller->email}}", "{{@$quotation->biller->phone_number}}", "{{@$quotation->biller->address}}", "{{@$quotation->biller->city}}", "{{@$quotation->customer->name}}", "{{@$quotation->customer->phone_number}}", "{{@$quotation->customer->address}}", "{{@$quotation->customer->city}}", "{{$quotation->id}}", "{{$quotation->total_tax}}", "{{$quotation->total_discount}}", "{{$quotation->total_price}}", "{{$quotation->order_tax}}", "{{$quotation->order_tax_rate}}", "{{$quotation->order_discount}}", "{{$quotation->shipping_cost}}", "{{$quotation->grand_total}}", {!! json_encode(\App\Support\BookingNoteFormatter::forDisplay($quotation->note), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) !!}, "{{@$quotation->user->name}}", "{{@$quotation->user->email}}"]'>
+                    <tr class="quotation-link" data-quotation='["{{date($general_setting->date_format, strtotime($quotation->created_at->toDateString()))}}", "{{$quotation->reference_no}}", "{{$status}}", "{{@$quotation->biller->name}}", "{{@$quotation->biller->company_name}}","{{@$quotation->biller->email}}", "{{@$quotation->biller->phone_number}}", "{{@$quotation->biller->address}}", "{{@$quotation->biller->city}}", "{{@$quotation->customer->name}}", "{{@$quotation->customer->phone_number}}", "{{@$quotation->customer->address}}", "{{@$quotation->customer->city}}", "{{$quotation->id}}", "{{$quotation->total_tax}}", "{{$quotation->total_discount}}", "{{$quotation->total_price}}", "{{$quotation->order_tax}}", "{{$quotation->order_tax_rate}}", "{{$quotation->order_discount}}", "{{$quotation->shipping_cost}}", "{{$quotation->grand_total}}", {!! json_encode(\App\Support\BookingNoteFormatter::forDisplay($quotation->note), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) !!}, "{{@$quotation->user->name}}", "{{@$quotation->user->email}}", "{{ $st === \App\Quotation::STATUS_APPROVED ? $quotation->clientSignatureUrl() : '' }}", "{{ $quotation->client_signed_at ? $quotation->client_signed_at->format('d-m-Y H:i') : '' }}", "{{ \App\Support\UserSignature::url(@$quotation->user->sign) }}"]'>
                         <td>{{$key}}</td>
                         <td>{{ date($general_setting->date_format, strtotime($quotation->created_at->toDateString())) . ' '. $quotation->created_at->toTimeString() }}</td>
                         <td>{{ $quotation->reference_no }}</td>
@@ -136,7 +136,7 @@
     @php extract(\App\Support\Letterhead::viewVars(), EXTR_SKIP); @endphp
     <div id="quotation-details" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" class="modal fade text-left">
         <div role="document" class="modal-dialog {{ !empty($quotationLetterhead) ? 'modal-lg' : '' }}">
-            <div class="modal-content quotation-details-sheet">
+            <div class="modal-content quotation-details-sheet" id="quotation-invoice-print">
                 <div class="container mt-3 pb-2 {{ !empty($quotationLetterhead) ? '' : 'border-bottom' }}">
                     <div class="row">
                         <div class="col-md-5">
@@ -245,13 +245,13 @@
             quotationDetails(quotation);
         });
 
-        $("#print-btn").on("click", function(){
-            var divToPrint=document.getElementById('quotation-details');
-            var newWin=window.open('','Print-Window');
-            newWin.document.open();
-            newWin.document.write('<link rel="stylesheet" href="<?php echo asset('public/vendor/bootstrap/css/bootstrap.min.css') ?>" type="text/css"><style type="text/css">@media print {.modal-dialog { max-width: 1000px;} }</style><body onload="window.print()">'+divToPrint.innerHTML+'</body>');
-            newWin.document.close();
-            setTimeout(function(){newWin.close();},30);
+        $(document).on("click", "#print-btn", function(){
+            printDocument('quotation-invoice-print', 'Quotation',
+                '.quotation-system-watermark{position:absolute;left:50%;top:40%;width:45%;max-width:280px;transform:translate(-50%,-50%);opacity:.10}' +
+                '.quotation-details-body{position:relative}' +
+                '.quotation-details-body .modal-body,.quotation-details-body table{position:relative;z-index:1}' +
+                'table.product-quotation-list{font-size:11px}' +
+                'table.product-quotation-list th,table.product-quotation-list td{padding:4px 6px;border:1px solid #dee2e6}');
         });
 
         $('#quotation-table').DataTable( {
@@ -485,8 +485,15 @@
                     + noteHtml
                     + '</div></div>';
             }
-            htmlfooter += '<p class="mb-2 text-left" style="font-size:12px;line-height:1.4;text-align:left;"><strong>{{trans("file.Created By")}}:</strong> '
-                + quotation[23] + (quotation[24] ? '<br>' + quotation[24] : '') + '</p>';
+            htmlfooter += signatureRow({
+                clientSignature: quotation[25],
+                clientName: quotation[9],
+                clientSignedAt: quotation[26],
+                clientLabel: 'Approved &amp; signed by client',
+                issuerSignature: quotation[27],
+                issuerName: quotation[23],
+                issuerEmail: quotation[24]
+            });
             htmlfooter += '<div class="text-center mb-2">' +
                 '<div style="margin:0 0 6px;"><img src="{{ url("bookings/qrcode") }}/' + refSafe + '" alt="qrcode" height="56" width="56"></div>' +
                 '<div><img src="{{ url("sales/barcode") }}/' + refSafe + '" alt="barcode" height="28" style="max-width:220px;"></div>' +
@@ -496,4 +503,7 @@
             $('#quotation-details').modal('show');
         }
     </script>
+
+    @include('components.invoice_signature_row')
+    @include('components.print_document')
 @endsection

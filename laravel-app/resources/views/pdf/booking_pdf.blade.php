@@ -261,20 +261,12 @@
     </tr>
 </table>
 
-<div class="inv-codes-block">
-    @if(@$lims_sale_data->user)
-        <div class="inv-created">
-            <strong>{{ trans('file.Created By') }}:</strong> {{ $lims_sale_data->user->name }}
-            @if(@$lims_sale_data->user->email)<br>{{ $lims_sale_data->user->email }}@endif
-        </div>
-    @endif
-    <div class="inv-qr" style="margin:0 0 6px;">
-        <?php echo '<img src="data:image/png;base64,'.DNS2D::getBarcodePNG($lims_sale_data->reference_no, 'QRCODE').'" height="52" width="52" alt="qrcode">'; ?>
-    </div>
-    <div class="inv-barcode">
-        <?php echo '<img src="data:image/png;base64,'.DNS1D::getBarcodePNG($lims_sale_data->reference_no, 'C128').'" height="24" width="160" alt="barcode">'; ?>
-    </div>
-</div>
+@include('pdf.partials._invoice_closing', [
+    'creator' => @$lims_sale_data->user,
+    'qrData' => $lims_sale_data->reference_no,
+    'barcodeData' => $lims_sale_data->reference_no,
+    'qrSize' => 62,
+])
 
 @include('pdf.partials._invoice_close')
 </body>

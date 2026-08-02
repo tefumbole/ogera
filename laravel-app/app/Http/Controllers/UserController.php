@@ -10,6 +10,7 @@ use App\Warehouse;
 use App\CustomerGroup;
 use App\Customer;
 use App\Support\RoleAccess;
+use App\Support\UserSignature;
 use Hash;
 use Illuminate\Support\Facades\Auth;
 use Keygen;
@@ -97,35 +98,7 @@ class UserController extends Controller
             'approve' => 'image|mimes:jpg,jpeg,png,gif,svg|max:10000',
         ]);
 
-        $data = $request->except('sign', 'stemp', 'approve');
-        $sign = $request->sign;
-        $stemp = $request->stemp;
-        $approve = $request->approve;
-        if ($sign) {
-            $ext = pathinfo($sign->getClientOriginalName(), PATHINFO_EXTENSION);
-            $imageName = preg_replace('/[^a-zA-Z0-9]/', '', $request['sign']);
-            $imageName = $imageName . '.' . $ext;
-            $sign->move('public/images/user', $imageName);
-
-            $data['sign'] = $imageName;
-        }
-        if ($stemp) {
-            $ext = pathinfo($stemp->getClientOriginalName(), PATHINFO_EXTENSION);
-            $imageName = preg_replace('/[^a-zA-Z0-9]/', '', $request['stemp']);
-            $imageName = $imageName . '.' . $ext;
-            $stemp->move('public/images/user', $imageName);
-
-            $data['stemp'] = $imageName;
-        }
-
-        if ($approve) {
-            $ext = pathinfo($approve->getClientOriginalName(), PATHINFO_EXTENSION);
-            $imageName = preg_replace('/[^a-zA-Z0-9]/', '', $request['approve']);
-            $imageName = $imageName . '.' . $ext;
-            $approve->move('public/images/user', $imageName);
-
-            $data['approve'] = $imageName;
-        }
+        $data = $request->except('sign', 'stemp', 'approve', 'sign_data', 'stemp_data', 'approve_data', 'request_signature');
         $message = 'User created successfully';
         try {
             Mail::send( 'mail.user_details', $data, function( $message ) use ($data)
@@ -149,6 +122,14 @@ class UserController extends Controller
             $data['is_active'] = true;
             Customer::create($data);
         }
+
+        $this->syncUserSignatures($user, $request);
+
+        if($request->filled('request_signature')) {
+            $sent = app(UserSignatureController::class)->dispatchRequest($user);
+            $message .= '. '.$sent['message'];
+        }
+
         return redirect('user')->with('message1', $message);
     }
 
@@ -198,55 +179,58 @@ class UserController extends Controller
             'approve' => 'image|mimes:jpg,jpeg,png,gif,svg|max:10000',
         ]);
 
-        $input = $request->except('sign', 'stemp', 'password', 'approve');
-        $sign = $request->sign;
-        $stemp = $request->stemp;
-        $approve = $request->approve;
-        if ($sign) {
-            $ext = pathinfo($sign->getClientOriginalName(), PATHINFO_EXTENSION);
-            $imageName = preg_replace('/[^a-zA-Z0-9]/', '', $request['sign']);
-            $imageName = $imageName . '.' . $ext;
-            $sign->move('public/images/user', $imageName);
-
-            $input['sign'] = $imageName;
-        }
-        if ($stemp) {
-            $ext = pathinfo($stemp->getClientOriginalName(), PATHINFO_EXTENSION);
-            $imageName = preg_replace('/[^a-zA-Z0-9]/', '', $request['stemp']);
-            $imageName = $imageName . '.' . $ext;
-            $stemp->move('public/images/user', $imageName);
-
-            $input['stemp'] = $imageName;
-        }
-
-        if ($approve) {
-            $ext = pathinfo($approve->getClientOriginalName(), PATHINFO_EXTENSION);
-            $imageName = preg_replace('/[^a-zA-Z0-9]/', '', $request['approve']);
-            $imageName = $imageName . '.' . $ext;
-            $approve->move('public/images/user', $imageName);
-
-            $input['approve'] = $imageName;
-        }
+        $input = $request->except('sign', 'stemp', 'password', 'approve', 'sign_data', 'stemp_data', 'approve_data', 'request_signature');
 
         if(!isset($input['is_active']))
             $input['is_active'] = false;
         if(!empty($request['password']))
             $input['password'] = bcrypt($request['password']);
         $lims_user_data = User::find($id);
-        if($lims_user_data->sign) {
-            $file = public_path('public/images/user/'.$lims_user_data->sign);
-            if(file_exists($file)){
-                unlink($file);
-            }
-        }
-        if($lims_user_data->stemp) {
-            $file = public_path('public/images/user/'.$lims_user_data->stemp);
-            if(file_exists($file)){
-                unlink($file);
-            }
-        }
         $lims_user_data->update($input);
-        return redirect('user')->with('message2', 'Data updated successfullly');
+
+        $this->syncUserSignatures($lims_user_data, $request);
+
+        $message = 'Data updated successfullly';
+        if($request->filled('request_signature')) {
+            $sent = app(UserSignatureController::class)->dispatchRequest($lims_user_data);
+            $message .= '. '.$sent['message'];
+        }
+
+        return redirect('user')->with('message2', $message);
+    }
+
+    /**
+     * Save whichever signature images arrived on the request.
+     *
+     * A field can come in drawn on the pad (a PNG data URL in `sign_data`) or
+     * uploaded/pasted as a file. Both are normalised to a cropped transparent
+     * PNG so nothing lands on a document inside a white box. A field that was
+     * left untouched keeps the image it already had.
+     */
+    protected function syncUserSignatures(User $user, Request $request)
+    {
+        $stored = [];
+
+        foreach (UserSignature::FIELDS as $field) {
+            $drawn = $request->input($field.'_data');
+            if (is_string($drawn) && $drawn !== '') {
+                $filename = UserSignature::storeFromDataUrl($user, $field, $drawn);
+            } elseif ($request->hasFile($field)) {
+                $filename = UserSignature::storeFromUpload($user, $field, $request->file($field));
+            } else {
+                continue;
+            }
+
+            if ($filename !== null) {
+                $stored[$field] = $filename;
+            }
+        }
+
+        if ($stored) {
+            $user->forceFill($stored)->save();
+        }
+
+        return $stored;
     }
 
     public function profile($id)
@@ -261,30 +245,11 @@ class UserController extends Controller
             return redirect()->back()->with('not_permitted', 'This feature is disable for demo!');
 
 
-        $input = $request->all();
-        if(Auth::user()->role_id == 12) {
-            $sign = $request->sign;
-            if ($sign) {
-                $ext = pathinfo($sign->getClientOriginalName(), PATHINFO_EXTENSION);
-                $imageName = preg_replace('/[^a-zA-Z0-9]/', '', $request['sign']);
-                $imageName = $imageName . '.' . $ext;
-                $sign->move('public/images/user', $imageName);
-
-                $input['sign'] = $imageName;
-            }
-            $stemp = $request->stemp;
-            if ($stemp) {
-                $ext = pathinfo($stemp->getClientOriginalName(), PATHINFO_EXTENSION);
-                $imageName = preg_replace('/[^a-zA-Z0-9]/', '', $request['sign']);
-                $imageName = $imageName . '.' . $ext;
-                $stemp->move('public/images/user', $imageName);
-
-                $input['stemp'] = $imageName;
-            }
-        }
+        $input = $request->except('sign', 'stemp', 'approve', 'sign_data', 'stemp_data', 'approve_data');
         $lims_user_data = User::find($id);
         $lims_customer_data = Customer::where('user_id', $lims_user_data->id)->first();
         $lims_user_data->update($input);
+        $this->syncUserSignatures($lims_user_data, $request);
         if($lims_customer_data) {
             $input['phone_number'] = $input['phone'];
             $lims_customer_data->update($input);
