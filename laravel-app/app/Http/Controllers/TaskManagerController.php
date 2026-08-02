@@ -7,11 +7,14 @@ use App\Task;
 use App\TaskCategory;
 use App\TaskMessageTemplate;
 use App\TaskReminder;
+use App\Services\PeopleDirectoryService;
 use App\Services\TaskService;
+use App\Support\WhatsAppPhone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Spatie\Permission\Models\Role;
 
 class TaskManagerController extends Controller
@@ -238,5 +241,30 @@ class TaskManagerController extends Controller
         );
 
         return response()->json($users);
+    }
+
+    /**
+     * Quick-add a person from the Assign To / CC picker.
+     */
+    public function storePerson(Request $request)
+    {
+        $this->authorizeTasks('tasks.create');
+
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:50',
+            'email' => 'nullable|email|max:255',
+            'address' => 'nullable|string|max:255',
+            'type' => 'required|in:staff,customer',
+        ]);
+
+        // Tasks go out over WhatsApp, so a number we cannot dial is not worth saving.
+        if (strlen(WhatsAppPhone::sanitizeForStorage($data['phone'])) < 8) {
+            throw ValidationException::withMessages([
+                'phone' => 'Enter a full mobile number, for example 675321739 or +237675321739.',
+            ]);
+        }
+
+        return response()->json(app(PeopleDirectoryService::class)->quickAddPerson($data));
     }
 }

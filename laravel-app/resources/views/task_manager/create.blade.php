@@ -102,6 +102,16 @@
         border: 1px solid #cbd5e1; border-radius: 8px; padding: 5px 10px; font-size: 12px;
         font-weight: 600; background: #fff; color: #334155; cursor: pointer;
     }
+    .tm-pill-add {
+        border: 1px solid #033d2e; border-radius: 8px; padding: 5px 12px; font-size: 12px;
+        font-weight: 700; background: #033d2e; color: #fff; cursor: pointer; white-space: nowrap;
+    }
+    .tm-pill-add:hover { background: #0a3578; border-color: #0a3578; }
+    #tm-person-modal .modal-content { border: 0; border-radius: 14px; }
+    #tm-person-modal .modal-header { border-bottom: 1px solid #eef2f7; }
+    #tm-person-modal .modal-title { color: #033d2e; font-weight: 700; font-size: 1.05rem; }
+    #tm-person-modal .modal-footer { border-top: 1px solid #eef2f7; }
+    #tm-person-modal .tm-field { margin-bottom: 2px; }
     .tm-browse-pdf {
         display: inline-flex; align-items: center; gap: 6px;
         border: 1px solid #cbd5e1; background: #fff; border-radius: 8px;
@@ -178,9 +188,50 @@
     </div>
 </section>
 
+{{-- Outside the form on purpose: nothing in here should be submitted with the tasks. --}}
+<div class="modal fade" id="tm-person-modal" tabindex="-1" role="dialog" aria-labelledby="tm-person-modal-title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tm-person-modal-title">Add a new person</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <p class="tm-hint" id="tm-person-context">They will be created and selected straight away.</p>
+                <div class="alert alert-danger d-none" id="tm-person-error"></div>
+                <div class="mb-3">
+                    <label class="tm-label">Add as</label>
+                    <div>
+                        <button type="button" class="tm-pill active tm-person-type" data-type="staff">Staff</button>
+                        <button type="button" class="tm-pill tm-person-type" data-type="customer">Customer</button>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="tm-label" for="tm-person-name">Full name <span class="req">*</span></label>
+                    <input type="text" id="tm-person-name" class="tm-field" placeholder="e.g. Jean Bosco Uwera" autocomplete="off">
+                </div>
+                <div class="mb-3">
+                    <label class="tm-label" for="tm-person-phone">WhatsApp number <span class="req">*</span></label>
+                    <input type="text" id="tm-person-phone" class="tm-field" placeholder="e.g. 675321739" autocomplete="off">
+                    <small class="tm-hint">Tasks are delivered on WhatsApp, so the number is required.</small>
+                </div>
+                <div>
+                    <label class="tm-label" for="tm-person-email">Email <span class="text-muted" style="font-weight:400;">(optional)</span></label>
+                    <input type="email" id="tm-person-email" class="tm-field" placeholder="name@example.com" autocomplete="off">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="tm-btn-cancel" data-dismiss="modal">Cancel</button>
+                <button type="button" class="tm-btn-send" id="tm-person-save" style="min-width:170px;">Save &amp; select</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 window.TM_USERS = @json($usersJson);
 window.TM_USERS_SEARCH = @json(route('tasks.users.search'));
+window.TM_PEOPLE_STORE = @json(route('tasks.people.store'));
 (function () {
     var container = document.getElementById('tm-tasks');
     var taskIndex = 0;
@@ -208,6 +259,130 @@ window.TM_USERS_SEARCH = @json(route('tasks.users.search'));
         (list || []).forEach(function (u) { map[u.id] = u; });
         window.TM_USERS = Object.keys(map).map(function (k) { return map[k]; });
     }
+
+    // --- Quick-add person modal ------------------------------------------
+    var personModal = {
+        el: document.getElementById('tm-person-modal'),
+        type: 'staff',
+        onCreated: null
+    };
+
+    function togglePersonModal(show) {
+        if (window.jQuery && window.jQuery.fn && window.jQuery.fn.modal) {
+            window.jQuery(personModal.el).modal(show ? 'show' : 'hide');
+            return;
+        }
+        // Bootstrap's JS is loaded in the layout head, but never trap the admin
+        // behind a modal that cannot open if that ever changes.
+        personModal.el.classList.toggle('show', show);
+        personModal.el.style.display = show ? 'block' : 'none';
+    }
+
+    function setPersonMessage(msg, kind) {
+        var box = document.getElementById('tm-person-error');
+        box.textContent = msg || '';
+        box.classList.toggle('d-none', !msg);
+        box.classList.toggle('alert-success', kind === 'success');
+        box.classList.toggle('alert-danger', kind !== 'success');
+    }
+
+    function syncPersonType() {
+        personModal.el.querySelectorAll('.tm-person-type').forEach(function (b) {
+            b.classList.toggle('active', b.getAttribute('data-type') === personModal.type);
+        });
+    }
+
+    function openPersonModal(contextLabel, defaultType, onCreated) {
+        personModal.onCreated = onCreated;
+        personModal.type = defaultType || 'staff';
+        document.getElementById('tm-person-context').textContent =
+            'They are added to the directory and selected as ' + contextLabel + ' straight away.';
+        ['tm-person-name', 'tm-person-phone', 'tm-person-email'].forEach(function (id) {
+            document.getElementById(id).value = '';
+        });
+        setPersonMessage('');
+        syncPersonType();
+        togglePersonModal(true);
+        setTimeout(function () { document.getElementById('tm-person-name').focus(); }, 300);
+    }
+
+    function firstError(data) {
+        if (data && data.errors) {
+            for (var key in data.errors) {
+                if (data.errors[key] && data.errors[key].length) return data.errors[key][0];
+            }
+        }
+        return (data && data.message) || '';
+    }
+
+    function savePerson() {
+        var btn = document.getElementById('tm-person-save');
+        var name = document.getElementById('tm-person-name').value.trim();
+        var phone = document.getElementById('tm-person-phone').value.trim();
+        var email = document.getElementById('tm-person-email').value.trim();
+
+        if (!name) { setPersonMessage('Enter the full name.'); return; }
+        if (!phone) { setPersonMessage('Enter a WhatsApp number.'); return; }
+
+        var token = document.querySelector('meta[name="csrf-token"]');
+        var body = new FormData();
+        body.append('name', name);
+        body.append('phone', phone);
+        body.append('email', email);
+        body.append('type', personModal.type);
+
+        setPersonMessage('');
+        btn.disabled = true;
+        btn.textContent = 'Saving…';
+
+        fetch(window.TM_PEOPLE_STORE, {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': token ? token.getAttribute('content') : ''
+            },
+            body: body
+        }).then(function (res) {
+            return res.text().then(function (text) {
+                var data = {};
+                try { data = text ? JSON.parse(text) : {}; } catch (err) { data = {}; }
+                return { ok: res.ok, data: data };
+            });
+        }).then(function (res) {
+            if (!res.ok || !res.data.person) {
+                throw new Error(firstError(res.data) || 'Could not save this person. Please try again.');
+            }
+            mergeUsers([res.data.person]);
+            if (personModal.onCreated) personModal.onCreated(res.data.person);
+            if (res.data.existing) {
+                setPersonMessage((res.data.person.name || 'That person')
+                    + ' was already in the directory — selected them instead of making a duplicate.', 'success');
+                setTimeout(function () { togglePersonModal(false); }, 1800);
+            } else {
+                togglePersonModal(false);
+            }
+        }).catch(function (err) {
+            setPersonMessage(err.message || 'Could not save this person. Please try again.');
+        }).then(function () {
+            btn.disabled = false;
+            btn.textContent = 'Save & select';
+        });
+    }
+
+    personModal.el.querySelectorAll('.tm-person-type').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            personModal.type = btn.getAttribute('data-type');
+            syncPersonType();
+        });
+    });
+    document.getElementById('tm-person-save').addEventListener('click', savePerson);
+    personModal.el.querySelectorAll('input').forEach(function (input) {
+        input.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') { e.preventDefault(); savePerson(); }
+        });
+    });
 
     function filterUsersLocal(query, roleFilter) {
         var q = (query || '').toLowerCase();
@@ -380,6 +555,7 @@ window.TM_USERS_SEARCH = @json(route('tasks.users.search'));
             + '    <div class="d-flex mb-2" style="gap:8px;">'
             + '      <div class="tm-search-wrap"><input type="search" class="tm-field tm-asearch" placeholder="Search…"></div>'
             + '      <button type="button" class="tm-pill-outline tm-aselect-all">Select everyone</button>'
+            + '      <button type="button" class="tm-pill-add tm-aadd" title="Add someone who is not in the list">+ New</button>'
             + '    </div>'
             + '    <div class="tm-user-list tm-alist"></div>'
             + '    <div class="tm-achips mt-2"></div>'
@@ -397,6 +573,7 @@ window.TM_USERS_SEARCH = @json(route('tasks.users.search'));
             + '    <div class="d-flex mb-2" style="gap:8px;">'
             + '      <div class="tm-search-wrap"><input type="search" class="tm-field tm-csearch" placeholder="Search CC recipients…"></div>'
             + '      <button type="button" class="tm-pill-outline tm-cselect-all">Select everyone</button>'
+            + '      <button type="button" class="tm-pill-add tm-cadd" title="Add someone who is not in the list">+ New</button>'
             + '    </div>'
             + '    <div class="tm-user-list tm-clist"></div>'
             + '    <div class="tm-cchips mt-2"></div>'
@@ -512,6 +689,31 @@ window.TM_USERS_SEARCH = @json(route('tasks.users.search'));
                 if (ccs.indexOf(u.id) === -1) ccs.push(u.id);
             });
             refreshCc();
+        });
+
+        // Clear the search box and go back to "All Members" so the person who was
+        // just created is actually visible in the list, not only as a chip.
+        function showEveryone(searchClass, pillClass) {
+            wrap.querySelector(searchClass).value = '';
+            wrap.querySelectorAll(pillClass).forEach(function (b) {
+                b.classList.toggle('active', b.getAttribute('data-role') === 'all');
+            });
+        }
+        wrap.querySelector('.tm-aadd').addEventListener('click', function () {
+            openPersonModal('an assignee', aRole === 'customers' ? 'customer' : 'staff', function (person) {
+                if (assignees.indexOf(person.id) === -1) assignees.push(person.id);
+                aRole = 'all';
+                showEveryone('.tm-asearch', '.tm-af');
+                refreshAssignees();
+            });
+        });
+        wrap.querySelector('.tm-cadd').addEventListener('click', function () {
+            openPersonModal('a CC recipient', cRole === 'customers' ? 'customer' : 'staff', function (person) {
+                if (ccs.indexOf(person.id) === -1) ccs.push(person.id);
+                cRole = 'all';
+                showEveryone('.tm-csearch', '.tm-cf');
+                refreshCc();
+            });
         });
 
         wrap.querySelectorAll('[data-priority] button').forEach(function (btn) {

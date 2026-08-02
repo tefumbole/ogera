@@ -5,6 +5,7 @@ namespace App\Services;
 use App\BeyondUser;
 use App\Customer;
 use App\CustomerGroup;
+use App\Support\WhatsAppPhone;
 use App\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -41,15 +42,7 @@ class PeopleDirectoryService
                 ->limit(150)
                 ->get(['id', 'name', 'email', 'phone', 'address', 'role'])
                 ->each(function ($u) use ($out) {
-                    $out->push([
-                        'id' => 'beyond:' . $u->id,
-                        'name' => $u->name ?: 'Untitled',
-                        'email' => $u->email,
-                        'phone' => $u->phone,
-                        'address' => $u->address,
-                        'role' => $u->role ?: 'staff',
-                        'source' => 'Portal',
-                    ]);
+                    $out->push($this->portalRow($u));
                 });
 
             User::query()
@@ -100,16 +93,7 @@ class PeopleDirectoryService
                 ->limit($customerLimit)
                 ->get(['id', 'name', 'email', 'phone_number', 'address', 'company_name'])
                 ->each(function ($c) use ($out) {
-                    $out->push([
-                        'id' => 'customer:' . $c->id,
-                        'name' => $c->name ?: ($c->company_name ?: 'Untitled'),
-                        'email' => $c->email,
-                        'phone' => $c->phone_number,
-                        'address' => $c->address,
-                        'organization' => $c->company_name,
-                        'role' => 'customer',
-                        'source' => 'Customer',
-                    ]);
+                    $out->push($this->customerRow($c));
                 });
         }
 
@@ -123,6 +107,143 @@ class PeopleDirectoryService
         }
 
         return $combined->take(600);
+    }
+
+    protected function portalRow($u)
+    {
+        return [
+            'id' => 'beyond:' . $u->id,
+            'name' => $u->name ?: 'Untitled',
+            'email' => $u->email,
+            'phone' => $u->phone,
+            'address' => $u->address,
+            'role' => $u->role ?: 'staff',
+            'source' => 'Portal',
+        ];
+    }
+
+    protected function customerRow($c)
+    {
+        return [
+            'id' => 'customer:' . $c->id,
+            'name' => $c->name ?: ($c->company_name ?: 'Untitled'),
+            'email' => $c->email,
+            'phone' => $c->phone_number,
+            'address' => $c->address,
+            'organization' => $c->company_name,
+            'role' => 'customer',
+            'source' => 'Customer',
+        ];
+    }
+
+    /**
+     * Create a person from the assignee picker's quick-add form.
+     *
+     * Returns ['person' => <row in eligibleForTasks() shape>, 'existing' => bool].
+     * A phone or email already in the directory returns that record instead of a
+     * second one, so adding the same person twice cannot fork their task history.
+     */
+    public function quickAddPerson(array $data)
+    {
+        $name = trim((string) ($data['name'] ?? ''));
+        $phone = WhatsAppPhone::sanitizeForStorage($data['phone'] ?? '');
+        $email = strtolower(trim((string) ($data['email'] ?? '')));
+        $address = trim((string) ($data['address'] ?? ''));
+
+        return ($data['type'] ?? 'staff') === 'customer'
+            ? $this->quickAddCustomer($name, $phone, $email, $address)
+            : $this->quickAddStaff($name, $phone, $email, $address);
+    }
+
+    protected function quickAddStaff($name, $phone, $email, $address)
+    {
+        $existing = $email !== '' ? BeyondUser::where('email', $email)->first() : null;
+        if (! $existing && $phone !== '') {
+            $existing = BeyondUser::where('phone', $phone)->first();
+        }
+        if ($existing) {
+            return ['person' => $this->portalRow($existing), 'existing' => true];
+        }
+
+        // Portal login needs a unique email; quick-add only asks for name and
+        // phone, so stand one in when it was left blank.
+        $login = $email !== '' ? $email : $this->uniqueValue(
+            $phone !== '' ? $phone . '@staff.ogeragency.com' : 'staff@staff.ogeragency.com',
+            function ($candidate) {
+                return BeyondUser::where('email', $candidate)->exists();
+            },
+            '@staff.ogeragency.com'
+        );
+
+        $user = BeyondUser::create([
+            'id' => (string) Str::uuid(),
+            'email' => $login,
+            'username' => $this->uniqueUsername($name, $login),
+            'password_hash' => Hash::make(Str::random(16)),
+            'name' => $name,
+            'role' => 'staff',
+            'status' => 'active',
+            'phone' => $phone,
+            'address' => $address ?: null,
+            'must_change_credentials' => true,
+        ]);
+
+        return ['person' => $this->portalRow($user), 'existing' => false];
+    }
+
+    protected function quickAddCustomer($name, $phone, $email, $address)
+    {
+        $existing = $phone !== '' ? Customer::where('phone_number', $phone)->first() : null;
+        if (! $existing && $email !== '') {
+            $existing = Customer::where('email', $email)->first();
+        }
+        if ($existing) {
+            if (! $existing->is_active) {
+                $existing->is_active = true;
+                $existing->save();
+            }
+
+            return ['person' => $this->customerRow($existing), 'existing' => true];
+        }
+
+        $group = CustomerGroup::where('name', 'GENERAL')->first() ?: CustomerGroup::orderBy('id')->first();
+        $customer = Customer::create([
+            'customer_group_id' => $group ? $group->id : 1,
+            'name' => $name,
+            'phone_number' => $phone,
+            'email' => $email ?: null,
+            'address' => $address ?: 'N/A',
+            'city' => 'N/A',
+            'is_active' => true,
+        ]);
+
+        return ['person' => $this->customerRow($customer), 'existing' => false];
+    }
+
+    protected function uniqueUsername($name, $login)
+    {
+        $base = Str::slug($name, '_') ?: explode('@', $login)[0];
+        $base = substr(preg_replace('/[^a-z0-9_]/', '', strtolower($base)), 0, 80) ?: 'staff';
+
+        return $this->uniqueValue($base, function ($candidate) {
+            return BeyondUser::where('username', $candidate)->exists();
+        });
+    }
+
+    /**
+     * Append a short random suffix until $taken() says the value is free.
+     * $suffix is the part that must stay at the end (a domain, for emails).
+     */
+    protected function uniqueValue($candidate, callable $taken, $suffix = '')
+    {
+        $stem = $suffix !== '' ? substr($candidate, 0, -strlen($suffix)) : $candidate;
+        $value = $candidate;
+
+        for ($attempt = 0; $attempt < 10 && $taken($value); $attempt++) {
+            $value = $stem . '_' . strtolower(Str::random(5)) . $suffix;
+        }
+
+        return $value;
     }
 
     /**

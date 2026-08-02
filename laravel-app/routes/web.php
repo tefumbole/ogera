@@ -308,6 +308,7 @@ Route::group(['middleware' => ['auth', 'active']], function() {
     Route::post('/admin/tasks/settings/templates', 'TaskManagerController@storeTemplate')->name('tasks.settings.templates.store');
     Route::post('/admin/tasks/settings/templates/{id}/delete', 'TaskManagerController@destroyTemplate')->name('tasks.settings.templates.destroy');
     Route::get('/admin/tasks/users/search', 'TaskManagerController@searchUsers')->name('tasks.users.search');
+    Route::post('/admin/tasks/people', 'TaskManagerController@storePerson')->name('tasks.people.store');
 
     // Job Board admin
     Route::get('/admin/permissions', 'StaffPermissionAdminController@index')->name('permissions.index');
