@@ -34,11 +34,16 @@ class RunScheduler
 
         try {
             // Cache::add is atomic enough on the file driver; Cache::lock is not.
-            if (! Cache::add('ogera.scheduler.auto', 1, 1)) {
+            // 60s matches cron's once-a-minute cadence: without it every request
+            // spawns a full schedule:run (~10 subprocesses) and starves PHP-FPM.
+            if (! Cache::add('ogera.scheduler.auto', 1, 60)) {
                 return;
             }
 
             Artisan::call('schedule:run');
+
+            // Heartbeat so "is the scheduler alive?" is answerable without guessing.
+            Cache::put('ogera.scheduler.last_run', time(), 86400);
         } catch (\Throwable $e) {
             Log::warning('Automatic schedule:run skipped: ' . $e->getMessage());
         }
