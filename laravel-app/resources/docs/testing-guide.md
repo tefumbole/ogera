@@ -34,23 +34,26 @@ If WhatsApp is not connected, logins that need an OTP and every "send to client"
 button will fail. Check **Settings → Messaging** first and confirm the API key
 and session are filled in. Anything marked 📱 below depends on it.
 
-**Some features need the scheduler.** Anything *timed* — scheduled
-announcements, booking reminders, task reminders, contract reminders — only
-fires if a cron job runs every minute on the host. Sending something
-*immediately* does not need cron; scheduling it for later does.
-
-If nobody is using the admin, timed sends wait. While the site is in use, an
-automatic fallback runs `schedule:run` about once a minute after each page load
-(`OGERA_SCHEDULER_AUTO=true`). For reliable delivery with no one logged in, add
-this cron in hPanel under Advanced → Cron Jobs, every minute:
+**Timed sends run on a cron job, and it is live.** Scheduled announcements,
+letters, booking reminders, task reminders and contract reminders are all
+dispatched by one hPanel cron running every minute:
 
 ```
-cd /home/u152889834/domains/ogeragency.com/public_html && /opt/alt/php74/usr/bin/php artisan schedule:run >> /dev/null 2>&1
+/bin/bash /home/u152889834/ogera-cron.sh
 ```
 
-The PHP 7.4 path matters: the site is Laravel 6 and will not run on the
-account's newer PHP. Once that cron exists, set `OGERA_SCHEDULER_AUTO=false`
-in Settings → .env Settings.
+That script lives in the account home directory, not in the app, so deploys
+cannot delete it. It runs `artisan schedule:run` with the PHP 7.4 binary — the
+site is Laravel 6 and fails on the account's newer PHP — and overwrites
+`/home/u152889834/ogera-cron.log` each minute with the last outcome. To check
+the scheduler is alive, read that file: it should show a timestamp less than a
+minute old and `exit=0`.
+
+Because cron handles this, the page-load fallback is off
+(`OGERA_SCHEDULER_AUTO=false`). Turn it back on only if the cron is ever removed.
+
+Times follow the zone in **Settings → General Setting** (currently
+`Africa/Kigali`), so a reminder set for 14:30 fires at 14:30 Kigali time.
 
 ---
 
