@@ -2,6 +2,15 @@
 
 return [
 
+    /*
+     * When true, due Artisan schedule work runs after a web response. Needed
+     * on hosts that cannot set cron over SSH. Turn off once hPanel cron runs
+     * `php artisan schedule:run` every minute.
+     */
+    'scheduler' => [
+        'auto' => (bool) env('OGERA_SCHEDULER_AUTO', true),
+    ],
+
     'backup' => [
 
         /*

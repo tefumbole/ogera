@@ -35,6 +35,11 @@
 @endsection
 
 @section('scripts')
+<script type="text/javascript">
+    $("ul#setting").siblings('a').attr('aria-expanded','true');
+    $("ul#setting").addClass("show");
+    $("ul#setting #testing-guide-menu").addClass("active");
+</script>
 <style>
     .tg-progress { background: #033d2e; color: #fff; font-size: 13px; padding: 7px 12px; }
     .tg-doc { max-width: 900px; line-height: 1.7; color: #23324d; }

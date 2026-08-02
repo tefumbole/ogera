@@ -3339,13 +3339,44 @@
               }
 
               function buildModuleTabs() {
+                  // Prefer an explicitly marked active child. If a page forgot to
+                  // mark one, fall back to a submenu that is already open, then to
+                  // a link whose href matches the current URL — otherwise Settings
+                  // (and similar modules) show no tabs at all.
                   var $activeItem = $('#side-main-menu ul.collapse li.active').first();
-                  if (!$activeItem.length) {
+                  var $submenu = $();
+
+                  if ($activeItem.length) {
+                      $submenu = $activeItem.closest('ul.collapse');
+                  } else {
+                      var path = window.location.pathname.replace(/\/+$/, '');
+                      $('#side-main-menu ul.collapse > li > a[href]').each(function () {
+                          var href = ($(this).attr('href') || '').split('?')[0].replace(/\/+$/, '');
+                          if (!href || href === '#' || href.indexOf('javascript') === 0) {
+                              return;
+                          }
+                          try {
+                              var linkPath = href.indexOf('http') === 0 ? (new URL(href)).pathname.replace(/\/+$/, '') : href;
+                              if (linkPath === path || (linkPath && path.indexOf(linkPath) === 0)) {
+                                  $activeItem = $(this).closest('li');
+                                  $activeItem.addClass('active');
+                                  $submenu = $activeItem.closest('ul.collapse');
+                                  $submenu.addClass('show');
+                                  return false;
+                              }
+                          } catch (e) {}
+                      });
+                  }
+
+                  if (!$submenu.length) {
+                      $submenu = $('#side-main-menu ul.collapse.show').first();
+                  }
+
+                  if (!$submenu.length) {
                       $('#beyond-module-tabs').removeClass('is-visible');
                       return;
                   }
 
-                  var $submenu = $activeItem.closest('ul.collapse');
                   var $parentLink = $submenu.siblings('a').first();
                   var $parentLi = $submenu.closest('li');
                   var parentLabel = $.trim($parentLink.find('span').first().text()) || $.trim($parentLink.text());
