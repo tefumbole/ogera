@@ -14,7 +14,9 @@ class AddColumnInOrder2 extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->tinyInteger('is_donation')->default(0);
+            if (! Schema::hasColumn('orders', 'is_donation')) {
+                $table->tinyInteger('is_donation')->default(0);
+            }
         });
     }
 

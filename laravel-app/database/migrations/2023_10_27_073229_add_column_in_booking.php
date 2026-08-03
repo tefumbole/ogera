@@ -14,8 +14,12 @@ class AddColumnInBooking extends Migration
     public function up()
     {
         Schema::table('bookings', function (Blueprint $table) {
-            $table->integer('is_frontend')->default(0);
-            $table->string('payment_method')->nullable();
+            if (! Schema::hasColumn('bookings', 'is_frontend')) {
+                $table->integer('is_frontend')->default(0);
+            }
+            if (! Schema::hasColumn('bookings', 'payment_method')) {
+                $table->string('payment_method')->nullable();
+            }
         });
     }
 

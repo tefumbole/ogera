@@ -14,8 +14,12 @@ class AddColumnInOrderTable1 extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->date('delivery_date')->nullable();
-            $table->tinyInteger('order_received')->default(0);
+            if (! Schema::hasColumn('orders', 'delivery_date')) {
+                $table->date('delivery_date')->nullable();
+            }
+            if (! Schema::hasColumn('orders', 'order_received')) {
+                $table->tinyInteger('order_received')->default(0);
+            }
         });
     }
 

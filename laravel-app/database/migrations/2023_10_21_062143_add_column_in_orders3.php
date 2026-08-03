@@ -14,7 +14,9 @@ class AddColumnInOrders3 extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->string('mtn_phone')->nullable();
+            if (! Schema::hasColumn('orders', 'mtn_phone')) {
+                $table->string('mtn_phone')->nullable();
+            }
         });
     }
 
