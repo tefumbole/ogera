@@ -3,6 +3,44 @@
 @section('title', 'Gallery | OGERA Agency')
 @section('meta_description', 'Explore events, projects, and highlights from OGERA Agency — photos and videos from our work in Kigali.')
 
+@push('head')
+<style>
+    /* Uniform media tiles: every card's media area is a fixed aspect ratio and
+       the underlying image / video / iframe fills it via object-cover. This
+       is what the admin gallery already does — the public gallery now matches. */
+    .og-gallery-media {
+        position: relative;
+        width: 100%;
+        background: #f4f7fb;
+    }
+    .og-gallery-media::before {
+        content: "";
+        display: block;
+    }
+    .og-media--landscape::before { padding-top: 75%; }  /* 4:3 */
+    .og-media--portrait::before  { padding-top: 133.333%; } /* 3:4 for TikTok / Reels */
+
+    .og-media-fill {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border: 0;
+    }
+    /* Video files and iframes shouldn't crop the actual player controls out;
+       object-cover on <video> keeps behaviour identical to <img>. */
+    video.og-media-fill,
+    iframe.og-media-fill {
+        object-fit: cover;
+        background: #000;
+    }
+    /* Embed blockquotes (TikTok / Instagram) need to scroll inside the tile
+       rather than stretch the card. */
+    .og-media-fill blockquote { max-height: 100%; }
+</style>
+@endpush
+
 @section('content')
 
 @include('beyond.partials.hero', [
