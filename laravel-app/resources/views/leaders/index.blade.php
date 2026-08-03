@@ -2,7 +2,7 @@
 
 @section('content')
 @php
-    $countryFlags = $countryFlags ?? \App\Leader::countryFlags();
+    $countryFlags = $countryFlags ?? \App\Support\CountryFlag::urlMap();
 @endphp
 <section class="forms">
     <div class="container-fluid">
@@ -47,6 +47,7 @@
                             <label class="font-weight-bold">Country</label>
                             <div class="leader-country-picker" data-leader-country>
                                 <input type="hidden" name="country" class="leader-country-value" value="{{ old('country') }}">
+                                <img src="" alt="" class="leader-country-flag" hidden>
                                 <input type="text" class="form-control leader-country-search" value="{{ old('country') }}"
                                        placeholder="Search or type a country…" autocomplete="off" data-wa-phone="off">
                                 <div class="leader-country-menu" hidden></div>
@@ -109,7 +110,12 @@
                                     <div class="p-3 leaders-card-body">
                                         <div class="font-weight-bold">{{ $leader->name }}</div>
                                         @if($leader->country)
-                                            <div class="small text-muted mb-1">{{ $leader->countryLabel() }}</div>
+                                            <div class="small text-muted mb-1">
+                                                @if($leader->countryFlagUrl())
+                                                    <img src="{{ $leader->countryFlagUrl() }}" alt="" class="country-flag-img">
+                                                @endif
+                                                {{ $leader->country }}
+                                            </div>
                                         @endif
                                         <div class="text-uppercase small" style="color:#c6ab47;letter-spacing:.04em;">{{ $leader->title }}</div>
                                         @if($leader->description)
@@ -140,6 +146,7 @@
                                                 <label class="small font-weight-bold mb-1">Country</label>
                                                 <div class="leader-country-picker" data-leader-country>
                                                     <input type="hidden" class="leader-country-value edit-country" value="{{ $leader->country }}">
+                                                    <img src="" alt="" class="leader-country-flag" hidden>
                                                     <input type="text" class="form-control form-control-sm leader-country-search" value="{{ $leader->country }}"
                                                            placeholder="Search or type a country…" autocomplete="off" data-wa-phone="off">
                                                     <div class="leader-country-menu" hidden></div>
@@ -242,6 +249,19 @@
     .leader-country-menu .leader-country-empty {
         padding: 10px 12px; font-size: 12px; color: #64748b;
     }
+    /* Flags are images, not emoji: Windows has no flag glyphs and would draw
+       the country's two letters instead. */
+    .country-flag-img,
+    .leader-country-menu img {
+        width: 18px; height: 13px; object-fit: cover; border-radius: 2px;
+        box-shadow: 0 0 0 1px rgba(15,23,42,.15); vertical-align: -1px; margin-right: 6px;
+    }
+    .leader-country-flag {
+        position: absolute; left: 10px; top: 50%; transform: translateY(-50%); z-index: 2;
+        width: 20px; height: 14px; object-fit: cover; border-radius: 2px;
+        box-shadow: 0 0 0 1px rgba(15,23,42,.15); pointer-events: none;
+    }
+    .leader-country-picker.has-flag .leader-country-search { padding-left: 38px; }
 </style>
 @endsection
 
@@ -249,10 +269,17 @@
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <script>
 (function () {
+    // name => flag image URL. Images, not emoji: Windows renders flag emoji as
+    // the country's two letters.
     var COUNTRY_FLAGS = @json($countryFlags);
     var COUNTRY_LIST = Object.keys(COUNTRY_FLAGS).map(function (name) {
         return { name: name, flag: COUNTRY_FLAGS[name] || '' };
     });
+    var FLAG_BY_LOWER = {};
+    COUNTRY_LIST.forEach(function (c) { FLAG_BY_LOWER[c.name.toLowerCase()] = c.flag; });
+    // Strips a leading flag emoji from values typed or pasted by hand, and from
+    // anything left over from when the picker prefixed the field with one.
+    var LEADING_FLAG = /^(?:\uD83C[\uDDE6-\uDDFF]){2}\s*/;
 
     function autoGrow(el) {
         if (!el) return;
@@ -265,16 +292,7 @@
     });
 
     function stripLeadingFlag(value) {
-        var s = String(value || '').trim();
-        for (var name in COUNTRY_FLAGS) {
-            if (!Object.prototype.hasOwnProperty.call(COUNTRY_FLAGS, name)) continue;
-            var flag = COUNTRY_FLAGS[name];
-            if (flag && s.indexOf(flag + ' ') === 0) {
-                return s.slice(flag.length).trim();
-            }
-            if (flag && s === flag) return name;
-        }
-        return s;
+        return String(value || '').replace(LEADING_FLAG, '').trim();
     }
 
     function closeAllMenus(except) {
@@ -297,7 +315,7 @@
         }
         matches.forEach(function (c) {
             html += '<button type="button" data-country="' + c.name.replace(/"/g, '&quot;') + '">' +
-                (c.flag ? c.flag + ' ' : '') + c.name + '</button>';
+                (c.flag ? '<img src="' + c.flag + '" alt="">' : '') + c.name + '</button>';
         });
         if (q) {
             var exact = matches.some(function (c) { return c.name.toLowerCase() === q; });
@@ -313,15 +331,33 @@
         menu.hidden = false;
     }
 
+    function flagUrl(name) {
+        var key = String(name || '').trim().toLowerCase();
+        return FLAG_BY_LOWER[key] || '';
+    }
+
+    function showFlag(picker, name) {
+        var img = picker.querySelector('.leader-country-flag');
+        if (!img) return;
+        var url = flagUrl(name);
+        if (url) {
+            img.src = url;
+            img.hidden = false;
+            picker.classList.add('has-flag');
+        } else {
+            img.removeAttribute('src');
+            img.hidden = true;
+            picker.classList.remove('has-flag');
+        }
+    }
+
     function setCountry(picker, name) {
-        var value = String(name || '').trim();
+        var value = stripLeadingFlag(name);
         var hidden = picker.querySelector('.leader-country-value');
         var search = picker.querySelector('.leader-country-search');
         if (hidden) hidden.value = value;
-        if (search) {
-            var flag = COUNTRY_FLAGS[value] || '';
-            search.value = value ? ((flag ? flag + ' ' : '') + value) : '';
-        }
+        if (search) search.value = value;
+        showFlag(picker, value);
         closeAllMenus();
     }
 
@@ -343,6 +379,7 @@
         search.addEventListener('input', function () {
             var typed = stripLeadingFlag(search.value);
             hidden.value = typed;
+            showFlag(picker, typed);
             renderMenu(picker, typed);
         });
         search.addEventListener('keydown', function (e) {

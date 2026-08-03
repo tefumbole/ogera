@@ -4,6 +4,9 @@
 /public/images/**
 !/public/images/leaders/
 !/public/images/leaders/.gitignore
+# Country flag artwork ships with the app; it is not user-uploaded content.
+!/public/images/flags/
+!/public/images/flags/*.svg
 /public/logo
 /public/letter
 /public/announcement

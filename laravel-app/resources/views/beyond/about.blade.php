@@ -82,8 +82,9 @@
                         </div>
                         <h3 class="text-2xl font-bold text-white">
                             {{ $leader->name }}
-                            @if($leader->country)
-                                <span class="ml-1" title="{{ $leader->country }}">{{ $leader->countryFlag() ?: '' }}</span>
+                            @if($leader->countryFlagUrl())
+                                <img src="{{ $leader->countryFlagUrl() }}" alt="{{ $leader->country }}" title="{{ $leader->country }}"
+                                     class="ogera-flag ml-1" loading="lazy">
                             @endif
                         </h3>
                         <p class="mt-1 text-sm font-semibold uppercase tracking-wide text-brand-gold">{{ $leader->title }}</p>

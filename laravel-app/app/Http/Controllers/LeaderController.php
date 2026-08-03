@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Leader;
+use App\Support\CountryFlag;
 use App\Support\RoleAccess;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,7 +25,7 @@ class LeaderController extends Controller
 
         return view('leaders.index', [
             'leaders' => Leader::ordered()->get(),
-            'countryFlags' => Leader::countryFlags(),
+            'countryFlags' => CountryFlag::urlMap(),
         ]);
     }
 

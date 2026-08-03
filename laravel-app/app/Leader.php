@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Support\CountryFlag;
 use App\Traits\NormalizesWhatsAppPhones;
 use Illuminate\Database\Eloquent\Model;
 
@@ -55,120 +56,10 @@ class Leader extends Model
         return url('public/'.ltrim($path, '/'));
     }
 
-    public function countryFlag()
+    /** Public URL of the country flag image, or '' when the country is unknown. */
+    public function countryFlagUrl()
     {
-        $name = trim((string) $this->country);
-        if ($name === '') {
-            return '';
-        }
-
-        $map = self::countryFlags();
-        if (isset($map[$name])) {
-            return $map[$name];
-        }
-
-        foreach ($map as $key => $flag) {
-            if (strcasecmp($key, $name) === 0) {
-                return $flag;
-            }
-        }
-
-        return '';
+        return CountryFlag::url($this->country);
     }
 
-    public function countryLabel()
-    {
-        $name = trim((string) $this->country);
-        if ($name === '') {
-            return '';
-        }
-        $flag = $this->countryFlag();
-
-        return trim(($flag ? $flag.' ' : '').$name);
-    }
-
-    /** name => flag emoji (empty string allowed). */
-    public static function countryFlags()
-    {
-        return [
-            'Cameroon' => '🇨🇲',
-            'Rwanda' => '🇷🇼',
-            'Uganda' => '🇺🇬',
-            'Kenya' => '🇰🇪',
-            'Tanzania' => '🇹🇿',
-            'Nigeria' => '🇳🇬',
-            'Ghana' => '🇬🇭',
-            'South Africa' => '🇿🇦',
-            'Ethiopia' => '🇪🇹',
-            'Egypt' => '🇪🇬',
-            'Morocco' => '🇲🇦',
-            'Algeria' => '🇩🇿',
-            'Tunisia' => '🇹🇳',
-            'Senegal' => '🇸🇳',
-            "Côte d'Ivoire" => '🇨🇮',
-            'Democratic Republic of the Congo' => '🇨🇩',
-            'Republic of the Congo' => '🇨🇬',
-            'Gabon' => '🇬🇦',
-            'Chad' => '🇹🇩',
-            'Central African Republic' => '🇨🇫',
-            'Equatorial Guinea' => '🇬🇶',
-            'Angola' => '🇦🇴',
-            'Zambia' => '🇿🇲',
-            'Zimbabwe' => '🇿🇼',
-            'Mozambique' => '🇲🇿',
-            'Botswana' => '🇧🇼',
-            'Namibia' => '🇳🇦',
-            'Burundi' => '🇧🇮',
-            'Malawi' => '🇲🇼',
-            'Mali' => '🇲🇱',
-            'Burkina Faso' => '🇧🇫',
-            'Niger' => '🇳🇪',
-            'Guinea' => '🇬🇳',
-            'Benin' => '🇧🇯',
-            'Togo' => '🇹🇬',
-            'Sierra Leone' => '🇸🇱',
-            'Liberia' => '🇱🇷',
-            'Sudan' => '🇸🇩',
-            'South Sudan' => '🇸🇸',
-            'Somalia' => '🇸🇴',
-            'Libya' => '🇱🇾',
-            'United States' => '🇺🇸',
-            'Canada' => '🇨🇦',
-            'United Kingdom' => '🇬🇧',
-            'Ireland' => '🇮🇪',
-            'France' => '🇫🇷',
-            'Germany' => '🇩🇪',
-            'Spain' => '🇪🇸',
-            'Portugal' => '🇵🇹',
-            'Italy' => '🇮🇹',
-            'Malta' => '🇲🇹',
-            'Netherlands' => '🇳🇱',
-            'Belgium' => '🇧🇪',
-            'Switzerland' => '🇨🇭',
-            'Sweden' => '🇸🇪',
-            'Norway' => '🇳🇴',
-            'Denmark' => '🇩🇰',
-            'Finland' => '🇫🇮',
-            'Poland' => '🇵🇱',
-            'Russia' => '🇷🇺',
-            'Turkey' => '🇹🇷',
-            'United Arab Emirates' => '🇦🇪',
-            'Saudi Arabia' => '🇸🇦',
-            'Qatar' => '🇶🇦',
-            'India' => '🇮🇳',
-            'Pakistan' => '🇵🇰',
-            'China' => '🇨🇳',
-            'Japan' => '🇯🇵',
-            'South Korea' => '🇰🇷',
-            'Indonesia' => '🇮🇩',
-            'Malaysia' => '🇲🇾',
-            'Singapore' => '🇸🇬',
-            'Philippines' => '🇵🇭',
-            'Australia' => '🇦🇺',
-            'New Zealand' => '🇳🇿',
-            'Brazil' => '🇧🇷',
-            'Argentina' => '🇦🇷',
-            'Mexico' => '🇲🇽',
-        ];
-    }
 }

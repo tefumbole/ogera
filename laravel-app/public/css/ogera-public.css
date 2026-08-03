@@ -1073,6 +1073,18 @@ html {
   color: var(--og-gold-light);
 }
 
+/* Country flags. Drawn as images because flag emoji have no glyphs on Windows,
+   where the browser falls back to the two regional-indicator letters. */
+.ogera-flag {
+  display: inline-block;
+  width: 1.15em;
+  height: 0.82em;
+  vertical-align: baseline;
+  object-fit: cover;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35);
+}
+
 /* Contact form brand overrides inside ogera-public */
 .ogera-public #contact .text-brand-blue,
 .ogera-public .text-brand-blue {
