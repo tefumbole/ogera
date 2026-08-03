@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\BookingProduct;
 use App\GeneralSetting;
 use App\Http\Controllers\Controller;
+use App\Support\ScheduleWindow;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
@@ -53,11 +54,30 @@ class RentalReturnReminderCron extends Command
             }
         }
 
+        // Retire late notices that are far past their return date. Without
+        // this, the first run after any cron outage messages every customer
+        // whose rental ever ran late, however long ago.
+        $staleLate = BookingProduct::where('is_return', false)
+            ->whereNull('late_notice_sent_at')
+            ->whereNotNull('end')
+            ->where('end', '<', ScheduleWindow::cutoff())
+            ->get();
+
+        if ($staleLate->count()) {
+            ScheduleWindow::logRetired('rental late notices', $staleLate->count(), [
+                'oldest_end' => (string) $staleLate->min('end'),
+            ]);
+            foreach ($staleLate as $line) {
+                $line->update(['late_notice_sent_at' => $now]);
+            }
+        }
+
         $lateLines = BookingProduct::with(['booking.customer', 'product'])
             ->where('is_return', false)
             ->whereNull('late_notice_sent_at')
             ->whereNotNull('end')
             ->where('end', '<', $now)
+            ->where('end', '>=', ScheduleWindow::cutoff())
             ->get();
 
         foreach ($lateLines as $line) {

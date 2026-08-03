@@ -66,9 +66,25 @@ class BookingReminderController extends Controller
     public static function sendDueReminders()
     {
         $controller = app(self::class);
+        $cutoff = \App\Support\ScheduleWindow::cutoff();
+
+        // Reminders that are long overdue are closed out rather than sent, so
+        // the first run after a cron outage does not message every customer
+        // about bookings that have already come and gone.
+        $staleCount = BookingReminder::whereNull('sent_at')
+            ->where('remind_at', '<', $cutoff)
+            ->count();
+        if ($staleCount) {
+            \App\Support\ScheduleWindow::logRetired('booking reminders', $staleCount);
+            BookingReminder::whereNull('sent_at')
+                ->where('remind_at', '<', $cutoff)
+                ->update(['sent_at' => now()]);
+        }
+
         $due = BookingReminder::with(['booking.customer', 'booking.biller'])
             ->whereNull('sent_at')
             ->where('remind_at', '<=', now())
+            ->where('remind_at', '>=', $cutoff)
             ->get();
 
         foreach ($due as $reminder) {

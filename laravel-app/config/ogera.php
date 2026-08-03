@@ -9,6 +9,21 @@ return [
      */
     'scheduler' => [
         'auto' => (bool) env('OGERA_SCHEDULER_AUTO', true),
+
+        /*
+         * How late a scheduled message may be and still be worth delivering.
+         *
+         * Every sender picks up work with "due_at <= now()". With no lower
+         * bound, the first run after cron has been down delivers the entire
+         * backlog at once — customers get reminders for bookings that ended
+         * months ago. Anything overdue by more than this many minutes is
+         * retired instead of sent: it is marked as handled so it stops being
+         * picked up, but no message goes out.
+         *
+         * The window still absorbs normal interruptions (a deploy, a reboot,
+         * an hour of downtime) — that work is delivered as usual.
+         */
+        'grace_minutes' => (int) env('OGERA_SCHEDULE_GRACE_MINUTES', 360),
     ],
 
     'backup' => [

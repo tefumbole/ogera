@@ -6,6 +6,7 @@ use App\Announcement;
 use App\Http\Controllers\AnnouncementController;
 use App\Customer;
 use App\Employee;
+use App\Support\ScheduleWindow;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -34,10 +35,26 @@ class SendScheduledAnnouncements extends Command
     {
         // Use app timezone; date_time stored as app-local time
         $now = now();
+
+        // Announcements whose moment has long passed are marked sent without
+        // going out, so a cron outage does not broadcast stale notices.
+        $stale = Announcement::where('is_active', true)
+            ->where('is_sent', false)
+            ->whereNotNull('date_time')
+            ->where('date_time', '<', ScheduleWindow::cutoff())
+            ->get();
+        if ($stale->count()) {
+            ScheduleWindow::logRetired('scheduled announcements', $stale->count(), [
+                'ids' => $stale->pluck('id')->all(),
+            ]);
+            Announcement::whereIn('id', $stale->pluck('id'))->update(['is_sent' => true]);
+        }
+
         $dueAnnouncements = Announcement::where('is_active', true)
             ->where('is_sent', false)
             ->whereNotNull('date_time')
             ->where('date_time', '<=', $now)
+            ->where('date_time', '>=', ScheduleWindow::cutoff())
             ->get();
 
         if ($dueAnnouncements->isEmpty()) {

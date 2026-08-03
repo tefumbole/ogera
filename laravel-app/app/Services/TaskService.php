@@ -9,6 +9,7 @@ use App\TaskAttachment;
 use App\TaskCategory;
 use App\TaskCc;
 use App\TaskReminder;
+use App\Support\ScheduleWindow;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -224,10 +225,29 @@ class TaskService
     public function processScheduledSends()
     {
         $notifier = app(TaskNotificationService::class);
+        $cutoff = ScheduleWindow::cutoff();
+
+        // Tasks whose send time has long passed are closed out silently, so a
+        // cron outage does not notify everyone about work scheduled weeks ago.
+        $staleCount = Task::where('is_scheduled', true)
+            ->where('notifications_sent', false)
+            ->whereNotNull('scheduled_for')
+            ->where('scheduled_for', '<', $cutoff)
+            ->count();
+        if ($staleCount) {
+            ScheduleWindow::logRetired('scheduled task notifications', $staleCount);
+            Task::where('is_scheduled', true)
+                ->where('notifications_sent', false)
+                ->whereNotNull('scheduled_for')
+                ->where('scheduled_for', '<', $cutoff)
+                ->update(['notifications_sent' => true]);
+        }
+
         $due = Task::where('is_scheduled', true)
             ->where('notifications_sent', false)
             ->whereNotNull('scheduled_for')
             ->where('scheduled_for', '<=', now())
+            ->where('scheduled_for', '>=', $cutoff)
             ->get();
 
         $count = 0;
@@ -242,9 +262,22 @@ class TaskService
     public function processReminders()
     {
         $notifier = app(TaskNotificationService::class);
+        $cutoff = ScheduleWindow::cutoff();
+
+        $staleCount = TaskReminder::where('is_sent', false)
+            ->where('reminder_time', '<', $cutoff)
+            ->count();
+        if ($staleCount) {
+            ScheduleWindow::logRetired('task reminders', $staleCount);
+            TaskReminder::where('is_sent', false)
+                ->where('reminder_time', '<', $cutoff)
+                ->update(['is_sent' => true]);
+        }
+
         $due = TaskReminder::with('task')
             ->where('is_sent', false)
             ->where('reminder_time', '<=', now())
+            ->where('reminder_time', '>=', $cutoff)
             ->get();
 
         $count = 0;

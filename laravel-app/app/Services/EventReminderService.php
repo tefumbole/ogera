@@ -25,9 +25,24 @@ class EventReminderService
 
     public function processDueReminders()
     {
+        $cutoff = \App\Support\ScheduleWindow::cutoff();
+
+        // Long-overdue reminders are closed out instead of sent: an event
+        // reminder that arrives weeks after the event is noise.
+        $staleCount = EventReminder::whereNull('sent_at')
+            ->where('remind_at', '<', $cutoff)
+            ->count();
+        if ($staleCount) {
+            \App\Support\ScheduleWindow::logRetired('event reminders', $staleCount);
+            EventReminder::whereNull('sent_at')
+                ->where('remind_at', '<', $cutoff)
+                ->update(['sent_at' => now(), 'send_error' => 'Skipped: overdue beyond the delivery window.']);
+        }
+
         $due = EventReminder::with(['event.assignments.workerProfile.customer'])
             ->whereNull('sent_at')
             ->where('remind_at', '<=', now())
+            ->where('remind_at', '>=', $cutoff)
             ->get();
 
         $controller = app(\App\Http\Controllers\EventReminderController::class);

@@ -7,6 +7,7 @@ use App\WaAnnouncementCategory;
 use App\WaAnnouncementReminder;
 use App\WaAnnouncementSetting;
 use App\WaAnnouncementTemplate;
+use App\Support\ScheduleWindow;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -233,10 +234,32 @@ class AnnouncementService
     public function processScheduledSends()
     {
         $now = Carbon::now();
+        $cutoff = ScheduleWindow::cutoff();
+
+        // An announcement whose moment has long passed is closed out rather
+        // than broadcast, so returning cron does not blast a stale backlog.
+        $stale = WaAnnouncement::query()
+            ->where('status', 'scheduled')
+            ->where('is_scheduled', true)
+            ->where('scheduled_for', '<', $cutoff)
+            ->get();
+        if ($stale->count()) {
+            ScheduleWindow::logRetired('scheduled WhatsApp announcements', $stale->count(), [
+                'ids' => $stale->pluck('id')->all(),
+            ]);
+            foreach ($stale as $a) {
+                $a->status = 'skipped';
+                $a->whatsapp_status = 'skipped_stale';
+                $a->is_scheduled = false;
+                $a->save();
+            }
+        }
+
         $due = WaAnnouncement::query()
             ->where('status', 'scheduled')
             ->where('is_scheduled', true)
             ->where('scheduled_for', '<=', $now)
+            ->where('scheduled_for', '>=', $cutoff)
             ->get();
 
         $count = 0;
@@ -259,9 +282,24 @@ class AnnouncementService
     public function processReminders()
     {
         $now = Carbon::now();
+        $cutoff = ScheduleWindow::cutoff();
+
+        $staleCount = WaAnnouncementReminder::query()
+            ->where('is_sent', false)
+            ->where('reminder_time', '<', $cutoff)
+            ->count();
+        if ($staleCount) {
+            ScheduleWindow::logRetired('WhatsApp announcement reminders', $staleCount);
+            WaAnnouncementReminder::query()
+                ->where('is_sent', false)
+                ->where('reminder_time', '<', $cutoff)
+                ->update(['is_sent' => true]);
+        }
+
         $due = WaAnnouncementReminder::query()
             ->where('is_sent', false)
             ->where('reminder_time', '<=', $now)
+            ->where('reminder_time', '>=', $cutoff)
             ->with('announcement')
             ->get();
 

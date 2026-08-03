@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\ContractReminder;
 use App\Services\Messaging\NotificationRouter;
+use App\Support\ScheduleWindow;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 
@@ -15,9 +16,25 @@ class ProcessContractReminders extends Command
 
     public function handle(NotificationRouter $notify)
     {
+        $cutoff = ScheduleWindow::cutoff();
+
+        // Long-overdue reminders are closed out rather than sent. The 100-row
+        // limit alone only spread a backlog over many runs; it still delivered
+        // every stale message eventually.
+        $staleCount = ContractReminder::where('is_sent', false)
+            ->where('reminder_time', '<', $cutoff)
+            ->count();
+        if ($staleCount) {
+            ScheduleWindow::logRetired('contract reminders', $staleCount);
+            ContractReminder::where('is_sent', false)
+                ->where('reminder_time', '<', $cutoff)
+                ->update(['is_sent' => true, 'sent_at' => now()]);
+        }
+
         $due = ContractReminder::with(['contract.signatories', 'contract.partyA', 'contract.partyB'])
             ->where('is_sent', false)
             ->where('reminder_time', '<=', now())
+            ->where('reminder_time', '>=', $cutoff)
             ->orderBy('reminder_time')
             ->limit(100)
             ->get();

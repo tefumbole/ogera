@@ -6,6 +6,7 @@ use App\Letter;
 use App\Http\Controllers\LetterController;
 use App\Customer;
 use App\Employee;
+use App\Support\ScheduleWindow;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -17,15 +18,30 @@ class SendScheduledLetters extends Command
     public function handle()
     {
         $now = now();
-        $dueLetters = Letter::where('is_active', 1)
-            ->where('is_sent', 0)
-            ->where('is_approve', 1)
-            ->where('is_sign', 1)
-            ->where('is_rejected', 0)
-            ->whereNotNull('date_time')
-            ->where('date_time', '<=', $now)
-            ->get();
 
+        $baseQuery = function () {
+            return Letter::where('is_active', 1)
+                ->where('is_sent', 0)
+                ->where('is_approve', 1)
+                ->where('is_sign', 1)
+                ->where('is_rejected', 0)
+                ->whereNotNull('date_time');
+        };
+
+        // Letters whose send time has long passed are marked sent without
+        // going out, so a cron outage does not deliver stale correspondence.
+        $stale = $baseQuery()->where('date_time', '<', ScheduleWindow::cutoff())->get();
+        if ($stale->count()) {
+            ScheduleWindow::logRetired('scheduled letters', $stale->count(), [
+                'ids' => $stale->pluck('id')->all(),
+            ]);
+            Letter::whereIn('id', $stale->pluck('id'))->update(['is_sent' => 1]);
+        }
+
+        $dueLetters = $baseQuery()
+            ->where('date_time', '<=', $now)
+            ->where('date_time', '>=', ScheduleWindow::cutoff())
+            ->get();
 
         if ($dueLetters->isEmpty()) {
             return 0;
