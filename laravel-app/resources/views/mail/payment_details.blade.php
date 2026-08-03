@@ -6,3 +6,5 @@
 <p><strong>Paid Amount: </strong>{{number_format($paid_amount, 2)}} {{$currency->code}}</p>
 <p><strong>Due: </strong>{{number_format((float)($grand_total - $paid_amount), 2)}} {{$currency->code}}</p>
 <p>Thank You</p>
+
+{!! \App\Support\Reviews::htmlBlock() !!}

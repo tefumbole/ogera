@@ -79,6 +79,13 @@
                         'settings-menu' => ['label' => 'Settings Menu', 'tone' => 'tone-orange', 'icon' => 'dripicons-gear'],
                         'content-tabs'  => ['label' => 'Settings', 'tone' => 'tone-teal', 'icon' => 'dripicons-toggles'],
                     ];
+                    // Reviews is its own tab with a small pending-count badge.
+                    $pendingReviewsBadge = \App\Support\Reviews::pendingCount();
+                    $menuTabs['reviews'] = [
+                        'label' => 'Reviews' . ($pendingReviewsBadge > 0 ? ' ('.$pendingReviewsBadge.')' : ''),
+                        'tone' => 'tone-gold',
+                        'icon' => 'dripicons-star',
+                    ];
                     $pageTones = [
                         'home'     => 'tone-green',
                         'about'    => 'tone-teal',
@@ -107,7 +114,10 @@
                     @endforeach
                 </div>
 
-                @if(in_array($tab, ['landing-menu', 'side-menu', 'settings-menu', 'content-tabs'], true))
+                @if($tab === 'reviews')
+                    @include('site_content.reviews_tab')
+
+                @elseif(in_array($tab, ['landing-menu', 'side-menu', 'settings-menu', 'content-tabs'], true))
                     @php
                         if ($tab == 'side-menu') {
                             $items = $side;

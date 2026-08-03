@@ -81,3 +81,5 @@
 </table>
 
 <p>Thank You</p>
+
+{!! \App\Support\Reviews::htmlBlock() !!}

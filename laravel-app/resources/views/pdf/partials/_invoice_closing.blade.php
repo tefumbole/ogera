@@ -83,3 +83,10 @@
     @endif
 </div>
 @endif
+
+@if(\App\Support\Reviews::outboundCtaEnabled())
+    <p style="text-align:center; margin: 8px 0 0; font-size: 10px; color:#4b5563;">
+        Enjoyed our service? Share a quick review at
+        <span style="color:#033d2e; font-weight:600;">{{ \App\Support\Reviews::publicUrl() }}</span>
+    </p>
+@endif

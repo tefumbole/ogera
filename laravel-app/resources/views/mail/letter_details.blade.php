@@ -93,6 +93,8 @@
                     <br><br><br><br><br>
                     {!! isset($rendered_footer) ? $rendered_footer : $data->footer !!}
 
+                    {!! \App\Support\Reviews::htmlBlock() !!}
+
                 </div>
             </div>
     </div>

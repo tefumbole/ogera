@@ -3,6 +3,7 @@
 namespace App\Support;
 
 use App\GeneralSetting;
+use App\Support\Reviews;
 
 class WhatsAppMessage
 {
@@ -40,7 +41,7 @@ class WhatsAppMessage
 
     public static function footer()
     {
-        return "\n_" . self::companyName() . '_';
+        return Reviews::whatsappFooter()."\n_" . self::companyName() . '_';
     }
 
     /**

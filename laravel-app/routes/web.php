@@ -84,6 +84,10 @@ Route::get('/rentals', 'PublicRentalController@index')->name('beyond.rentals');
 Route::post('/rentals', 'PublicRentalController@store')->name('beyond.rentals.store');
 Route::get('/rentals/confirmation/{reference}', 'PublicRentalController@confirmation')->name('beyond.rentals.confirmation');
 
+// Reviews — public list + submit form
+Route::get('/reviews', 'PublicReviewController@index')->name('beyond.reviews');
+Route::post('/reviews', 'PublicReviewController@store')->name('beyond.reviews.store');
+
 // Permissions (public) — disabled for Ogera
 Route::get('/permissions', 'DisabledFeatureController')->name('beyond.permissions');
 Route::get('/permissions/name-search', 'DisabledFeatureController')->name('beyond.permissions.search');
@@ -294,6 +298,17 @@ Route::group(['middleware' => ['auth', 'active']], function() {
     Route::post('/admin/leaders/reorder', 'LeaderController@reorder')->name('leaders.reorder');
     Route::post('/admin/leaders/{id}', 'LeaderController@update')->name('leaders.update');
     Route::post('/admin/leaders/{id}/delete', 'LeaderController@destroy')->name('leaders.destroy');
+
+    // Reviews (admin) — moderation, edit and settings; UI lives under the
+    // "Reviews" tab of Site Content so `/admin/reviews` redirects there.
+    Route::get('/admin/reviews', 'ReviewController@index')->name('reviews.index');
+    Route::post('/admin/reviews', 'ReviewController@store')->name('reviews.store');
+    Route::post('/admin/reviews/settings', 'ReviewController@saveSettings')->name('reviews.settings');
+    Route::post('/admin/reviews/reorder', 'ReviewController@reorder')->name('reviews.reorder');
+    Route::post('/admin/reviews/{id}', 'ReviewController@update')->name('reviews.update');
+    Route::post('/admin/reviews/{id}/publish', 'ReviewController@togglePublic')->name('reviews.publish');
+    Route::post('/admin/reviews/{id}/pin', 'ReviewController@togglePinned')->name('reviews.pin');
+    Route::post('/admin/reviews/{id}/delete', 'ReviewController@destroy')->name('reviews.destroy');
 
     // Task Manager (admin)
     Route::get('/admin/tasks', 'TaskManagerController@dashboard')->name('tasks.dashboard');

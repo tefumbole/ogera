@@ -53,4 +53,7 @@
 </table>
 
 <p>Thank You</p>
+
+{!! \App\Support\Reviews::htmlBlock() !!}
+
 <img src="{{url('public/logo', $footer)}}" style=" width: 100%;">

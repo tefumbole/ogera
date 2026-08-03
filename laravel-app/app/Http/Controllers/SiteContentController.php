@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\GalleryItem;
+use App\SiteReview;
 use App\SiteSetting;
 use App\Support\GalleryEmbed;
+use App\Support\Reviews;
 use App\Support\RoleAccess;
 use App\Support\SiteContent;
 use App\Support\SiteMenu;
@@ -40,6 +42,20 @@ class SiteContentController extends Controller
             'galleryItems' => $tab === 'gallery' ? GalleryItem::ordered()->get() : collect(),
             'galleryTypes' => GalleryEmbed::types(),
         ];
+
+        if ($tab === 'reviews') {
+            $reviews = SiteReview::ordered()->get();
+            $data['reviewsPending'] = $reviews->where('is_public', false)->values();
+            $data['reviewsPublic'] = $reviews->where('is_public', true)->values();
+            $data['reviewsSettings'] = [
+                'enabled' => Reviews::isEnabled(),
+                'outbound_cta' => Reviews::outboundCtaEnabled(),
+                'hold_below' => Reviews::holdBelow(),
+                'headline' => SiteContent::text('reviews.headline', 'Client Reviews'),
+                'subtext' => SiteContent::text('reviews.subtext', 'Real words from the people we have worked with.'),
+                'public_url' => Reviews::publicUrl(),
+            ];
+        }
 
         return view('site_content.index', $data);
     }

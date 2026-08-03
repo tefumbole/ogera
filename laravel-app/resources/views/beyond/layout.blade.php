@@ -68,6 +68,9 @@
         ['label' => 'Gallery', 'url' => url('/gallery'), 'match' => 'path'],
         ['label' => 'Contact', 'url' => url('/contact'), 'match' => 'path'],
     ];
+    if (\App\Support\Reviews::isEnabled()) {
+        $navLinks[] = ['label' => 'Reviews', 'url' => url('/reviews'), 'match' => 'path'];
+    }
     $currentUrl = rtrim(url()->current(), '/');
     $homeUrl = rtrim(url('/'), '/');
 @endphp
