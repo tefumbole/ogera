@@ -139,31 +139,45 @@
 
     var lims_productcodeSearch = $('#lims_productcodeSearch');
 
-    lims_productcodeSearch.autocomplete({
-    source: function(request, response) {
-        var matcher = new RegExp(".?" + $.ui.autocomplete.escapeRegex(request.term), "i");
-        response($.grep(lims_product_code, function(item) {
-            return matcher.test(item);
-        }));
-    },
-    select: function(event, ui) {
-        var data = ui.item.value;
+    // "CODE (Product name)" -> "CODE". A barcode scanner types the bare code,
+    // which passes through unchanged.
+    function barcodeCodeFromLabel(label) {
+        var raw = $.trim(String(label == null ? '' : label));
+        if (!raw) return '';
+        var idx = raw.indexOf(' (');
+        return idx >= 0 ? $.trim(raw.slice(0, idx)) : raw;
+    }
+
+    function addBarcodeRow(term) {
+        term = barcodeCodeFromLabel(term);
+        if (!term) return;
+
         $.ajax({
             type: 'GET',
             url: 'lims_product_search',
             data: {
-                data: data
+                data: term
             },
             success: function(data) {
+                if (!data || !data.length) {
+                    alert('No product found for "' + term + '".');
+                    return;
+                }
                 var flag = 1;
                 $(".product-code").each(function() {
                     if ($(this).text() == data[1]) {
-                        alert('duplicate input is not allowed!')
+                        // Scanning the same item again just bumps its quantity.
+                        var qtyInput = $(this).closest('tr').find('input.qty');
+                        qtyInput.val((parseInt(qtyInput.val(), 10) || 0) + 1);
                         flag = 0;
                     }
                 });
                 $("input[name='product_code_name']").val('');
                 if(flag){
+                    if (!data[3]) {
+                        alert('A barcode could not be generated for "' + data[1] + '". Check the product\'s barcode symbology.');
+                        return;
+                    }
                     var newRow = $('<tr data-imagedata="'+data[3]+'" data-price="'+data[2]+'" data-promo-price="'+data[4]+'" data-currency="'+data[5]+'" data-currency-position="'+data[6]+'">');
                     var cols = '';
                     cols += '<td>' + data[0] + '</td>';
@@ -174,10 +188,43 @@
                     newRow.append(cols);
                     $("table.order-list tbody").append(newRow);
                 }
+            },
+            error: function(xhr) {
+                if (xhr.status === 404) {
+                    alert('No product found for "' + term + '".');
+                } else {
+                    alert('Could not load that product (error ' + xhr.status + '). Please try again.');
+                }
             }
         });
     }
+
+    lims_productcodeSearch.autocomplete({
+    source: function(request, response) {
+        var matcher = new RegExp(".?" + $.ui.autocomplete.escapeRegex(request.term), "i");
+        response($.grep(lims_product_code, function(item) {
+            return matcher.test(item);
+        }));
+    },
+    select: function(event, ui) {
+        event.preventDefault();
+        $(this).val('');
+        addBarcodeRow(ui.item.value);
+    }
 });
+
+    // Barcode scanners type the code then send Enter. Look it up directly
+    // instead of waiting for a dropdown selection.
+    lims_productcodeSearch.on('keydown', function(e) {
+        if (e.which === 13) {
+            e.preventDefault();
+            e.stopPropagation();
+            var term = $.trim($(this).val());
+            if (!term) return;
+            $(this).autocomplete('close');
+            addBarcodeRow(term);
+        }
+    });
 
     //Delete product
     $("table.order-list tbody").on("click", ".ibtnDel", function(event) {

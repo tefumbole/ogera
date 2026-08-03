@@ -2186,17 +2186,32 @@ class BookingController extends Controller
 //                ['product_warehouse.qty', '>', 0]
             ])->whereNotNull('product_warehouse.variant_id')->select('product_warehouse.*')->get();
 
+        // Every one of these is returned as a parallel array, so each loop has
+        // to push to all of them or the client reads mismatched indexes.
         $product_code = [];
         $product_name = [];
         $product_qty = [];
         $product_price = [];
-        $product_data = [];
+        $product_type = [];
+        $product_id = [];
+        $product_list = [];
+        $qty_list = [];
+        $batch_no = [];
+        $product_batch_id = [];
+        $product_expired_date = [];
+        $seen_codes = [];
+
         //product without variant
         foreach ($lims_product_warehouse_data as $product_warehouse)
         {
+            $lims_product_data = Product::find($product_warehouse->product_id);
+            // Orphan product_warehouse rows (product deleted) used to blow up
+            // this whole endpoint, which left the search box with no list.
+            if(! $lims_product_data)
+                continue;
+
             $product_qty[] = $product_warehouse->qty;
             $product_price[] = $product_warehouse->price;
-            $lims_product_data = Product::find($product_warehouse->product_id);
             $product_code[] =  $lims_product_data->code;
             $product_name[] = htmlspecialchars($lims_product_data->name);
             $product_type[] = $lims_product_data->type;
@@ -2206,30 +2221,43 @@ class BookingController extends Controller
             $batch_no[] = null;
             $product_batch_id[] = null;
             $product_expired_date[] = null;
+            $seen_codes[$lims_product_data->code] = true;
         }
         //product with batches
         foreach ($lims_product_with_batch_warehouse_data as $product_warehouse)
         {
+            $lims_product_data = Product::find($product_warehouse->product_id);
+            if(! $lims_product_data)
+                continue;
+            $product_batch_data = ProductBatch::select('id', 'batch_no', 'expired_date')->find($product_warehouse->product_batch_id);
+            if(! $product_batch_data)
+                continue;
+
             $product_qty[] = $product_warehouse->qty;
             $product_price[] = $product_warehouse->price;
-            $lims_product_data = Product::find($product_warehouse->product_id);
             $product_code[] =  $lims_product_data->code;
             $product_name[] = htmlspecialchars($lims_product_data->name);
             $product_type[] = $lims_product_data->type;
             $product_id[] = $lims_product_data->id;
             $product_list[] = $lims_product_data->product_list;
             $qty_list[] = $lims_product_data->qty_list;
-            $product_batch_data = ProductBatch::select('id', 'batch_no', 'expired_date')->find($product_warehouse->product_batch_id);
             $batch_no[] = $product_batch_data->batch_no;
             $product_batch_id[] = $product_batch_data->id;
             $product_expired_date[] = $product_batch_data->expired_date;
+            $seen_codes[$lims_product_data->code] = true;
         }
         //product with variant
         foreach ($lims_product_with_variant_warehouse_data as $product_warehouse)
         {
-            $product_qty[] = $product_warehouse->qty;
             $lims_product_data = Product::find($product_warehouse->product_id);
+            if(! $lims_product_data)
+                continue;
             $lims_product_variant_data = ProductVariant::select('item_code')->FindExactProduct($product_warehouse->product_id, $product_warehouse->variant_id)->first();
+            if(! $lims_product_variant_data)
+                continue;
+
+            $product_qty[] = $product_warehouse->qty;
+            $product_price[] = $product_warehouse->price;
             $product_code[] =  $lims_product_variant_data->item_code;
             $product_name[] = htmlspecialchars($lims_product_data->name);
             $product_type[] = $lims_product_data->type;
@@ -2239,14 +2267,20 @@ class BookingController extends Controller
             $batch_no[] = null;
             $product_batch_id[] = null;
             $product_expired_date[] = null;
+            $seen_codes[$lims_product_variant_data->item_code] = true;
         }
-        //retrieve product with type of digital and combo
+        //digital, combo and service products are not stocked per warehouse,
+        //so they are appended for every warehouse
         $lims_product_data = Product::whereNotIn('type', ['standard'])->where('is_active', true)->get();
         foreach ($lims_product_data as $product)
         {
+            if(isset($seen_codes[$product->code]))
+                continue;
+
             $product_qty[] = $product->qty;
+            $product_price[] = $product->price;
             $product_code[] =  $product->code;
-            $product_name[] = $product->name;
+            $product_name[] = htmlspecialchars($product->name);
             $product_type[] = $product->type;
             $product_id[] = $product->id;
             $product_list[] = $product->product_list;
@@ -2254,9 +2288,60 @@ class BookingController extends Controller
             $batch_no[] = null;
             $product_batch_id[] = null;
             $product_expired_date[] = null;
+            $seen_codes[$product->code] = true;
         }
         $product_data = [$product_code, $product_name, $product_qty, $product_type, $product_id, $product_list, $qty_list, $product_price, $batch_no, $product_batch_id, $product_expired_date];
         return $product_data;
+    }
+
+    /**
+     * Server-side product suggestions for the booking search box, matching by
+     * name or code so the picker is not limited to what the warehouse cache
+     * happened to load. Mirrors SaleController@posProductSuggest.
+     */
+    public function productSuggest(Request $request)
+    {
+        $term = trim((string) $request->get('q', ''));
+        if ($term === '') {
+            return response()->json([]);
+        }
+
+        $like = '%'.$term.'%';
+
+        $rows = Product::query()
+            ->where('is_active', true)
+            ->whereIn('type', Product::sellableTypes())
+            ->whereNull('is_variant')
+            ->where(function ($q) use ($like) {
+                $q->where('code', 'like', $like)
+                    ->orWhere('name', 'like', $like);
+            })
+            ->select('code', 'name')
+            ->orderBy('name')
+            ->limit(25)
+            ->get();
+
+        $variants = Product::join('product_variants', 'products.id', '=', 'product_variants.product_id')
+            ->where('products.is_active', true)
+            ->whereIn('products.type', Product::sellableTypes())
+            ->where(function ($q) use ($like) {
+                $q->where('product_variants.item_code', 'like', $like)
+                    ->orWhere('products.name', 'like', $like);
+            })
+            ->select('product_variants.item_code as code', 'products.name')
+            ->orderBy('products.name')
+            ->limit(25)
+            ->get();
+
+        $labels = [];
+        foreach ($rows->concat($variants) as $row) {
+            $label = $row->code.' ('.$row->name.')';
+            if (! in_array($label, $labels, true)) {
+                $labels[] = $label;
+            }
+        }
+
+        return response()->json(array_slice($labels, 0, 25));
     }
 
     public function posSale()
@@ -2448,16 +2533,26 @@ class BookingController extends Controller
             ['is_active', true]
         ])->first();
         if(!$lims_product_data) {
-            $lims_product_data = Product::join('product_variants', 'products.id', 'product_variants.product_id')
+            $variant_match = Product::join('product_variants', 'products.id', 'product_variants.product_id')
                 ->select('products.*', 'product_variants.id as product_variant_id', 'product_variants.item_code', 'product_variants.additional_price')
                 ->where([
                     ['product_variants.item_code', $product_code[0]],
                     ['products.is_active', true]
                 ])->first();
-            if (! $lims_product_data) {
-                return response()->json(['error' => 'Product not found'], 404);
+            if ($variant_match) {
+                $lims_product_data = $variant_match;
+                $product_variant_id = $variant_match->product_variant_id;
             }
-            $product_variant_id = $lims_product_data->product_variant_id;
+        }
+        // Typing a product name (rather than scanning its code) should still
+        // resolve, so fall back to a name match before giving up.
+        if(!$lims_product_data && $product_code[0] !== '') {
+            $lims_product_data = Product::ActiveSellable()
+                ->where('name', 'LIKE', '%'.$product_code[0].'%')
+                ->first();
+        }
+        if (! $lims_product_data) {
+            return response()->json(['error' => 'Product not found'], 404);
         }
 
         $qty = Product_Warehouse::where('product_id', $lims_product_data->id)->select('qty')->first();

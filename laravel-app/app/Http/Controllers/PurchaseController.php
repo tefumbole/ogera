@@ -281,14 +281,14 @@ class PurchaseController extends Controller
 
     public function productWithoutVariant()
     {
-        return Product::ActiveStandard()->select('id', 'name', 'code')
-                ->whereNull('is_variant')->get();
+        return Product::ActiveSellable()->select('id', 'name', 'code')
+                ->whereNull('is_variant')->orderBy('name')->get();
     }
 
     public function productWithVariant()
     {
         return Product::join('product_variants', 'products.id', 'product_variants.product_id')
-                ->ActiveStandard()
+                ->ActiveSellable()
                 ->whereNotNull('is_variant')
                 ->select('products.id', 'products.name', 'product_variants.item_code')
                 ->orderBy('position')->get();
@@ -311,11 +311,12 @@ class PurchaseController extends Controller
                 ])->first();
         }
         if(!$lims_product_data) {
-            $lims_product_data = Product::where([
-                ['name', "LIKE", "%".$product_code[0]."%"],
-                ['is_active', true],
-                ['type', 'standard']
-            ])->first();
+            $lims_product_data = Product::ActiveSellable()
+                ->where('name', "LIKE", "%".$product_code[0]."%")
+                ->first();
+        }
+        if(!$lims_product_data) {
+            return response()->json(['error' => 'Product not found'], 404);
         }
 
         $product[] = $lims_product_data->name;

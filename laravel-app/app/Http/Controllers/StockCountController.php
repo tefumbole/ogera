@@ -57,15 +57,23 @@ class StockCountController extends Controller
             $lims_product_list = DB::table('products')->join('product_warehouse', 'products.id', '=', 'product_warehouse.product_id')->where([ ['products.is_active', true], ['product_warehouse.warehouse_id', $data['warehouse_id']] ])->select('products.name', 'products.code', 'product_warehouse.qty')->get();
         }
         if( count($lims_product_list) ){
-            $csvData=array('Product Name, Product Code, Expected, Counted');
+            // Build each row as an array and let fputcsv quote it. The old
+            // code joined the fields with commas then split on commas again,
+            // which shredded any product name containing a comma into extra
+            // columns — and the re-upload then read the wrong column as the
+            // product code.
+            $csvData = [['Product Name', 'Product Code', 'Expected', 'Counted']];
             foreach ($lims_product_list as $product) {
-                $csvData[]=$product->name.','.$product->code.','.$product->qty.','.'';
+                $csvData[] = [$product->name, $product->code, $product->qty, ''];
             }
             $filename= date('Ymd').'-'.date('his'). ".csv";
-            $file_path= public_path().'/stock_count/'.$filename;
-            $file = fopen($file_path, "w+");
-            foreach ($csvData as $cellData){
-              fputcsv($file, explode(',', $cellData));
+            $file_path= $this->stockCountPath($filename);
+            $file = @fopen($file_path, "w+");
+            if($file === false){
+                return redirect()->back()->with('not_permitted', 'Could not write the stock count file. Please check that public/stock_count is writable.');
+            }
+            foreach ($csvData as $row){
+              fputcsv($file, $row);
             }
             fclose($file);
 
@@ -80,6 +88,21 @@ class StockCountController extends Controller
             return redirect()->back()->with('not_permitted', 'No product found!');
     }
 
+    /**
+     * Absolute path inside public/stock_count, creating the directory the
+     * first time it is needed. The folder is gitignored, so a fresh checkout
+     * or deploy would otherwise have no place to write the CSV.
+     */
+    protected function stockCountPath($filename = '')
+    {
+        $dir = public_path('stock_count');
+        if (! is_dir($dir)) {
+            @mkdir($dir, 0755, true);
+        }
+
+        return $filename === '' ? $dir : $dir.'/'.$filename;
+    }
+
     public function finalize(Request $request)
     {
         $ext = pathinfo($request->final_file->getClientOriginalName(), PATHINFO_EXTENSION);
@@ -90,7 +113,7 @@ class StockCountController extends Controller
         $data = $request->all();
         $document = $request->final_file;
         $documentName = date('Ymd').'-'.date('his'). ".csv";
-        $document->move('public/stock_count/', $documentName);
+        $document->move($this->stockCountPath(), $documentName);
         $data['final_file'] = $documentName;
         $lims_stock_count_data = StockCount::find($data['stock_count_id']);
         $lims_stock_count_data->update($data);
@@ -100,18 +123,33 @@ class StockCountController extends Controller
     public function stockDif($id)
     {
         $lims_stock_count_data = StockCount::find($id);
-        $file_handle = fopen('public/stock_count/'.$lims_stock_count_data->final_file, 'r');
+        if(! $lims_stock_count_data || ! $lims_stock_count_data->final_file){
+            return [];
+        }
+
+        $file_path = $this->stockCountPath($lims_stock_count_data->final_file);
+        $file_handle = is_file($file_path) ? @fopen($file_path, 'r') : false;
+        if($file_handle === false){
+            return [];
+        }
+
         $i = 0;
         $temp_dif = -1000000;
         $data = [];
         $product = [];
+        $expected = [];
+        $counted = [];
+        $difference = [];
+        $cost = [];
         while( !feof($file_handle) ) {
             $current_line = fgetcsv($file_handle);
-            if( $current_line && $i > 0 && ($current_line[2] != $current_line[3]) ){
+            // Rows edited outside the app can be short; skip anything that
+            // does not carry both an expected and a counted column.
+            if( $current_line && $i > 0 && count($current_line) >= 4 && ($current_line[2] != $current_line[3]) ){
                 $product[] = $current_line[0].' ['.$current_line[1].']';
                 $expected[] = $current_line[2];
                 $product_data = Product::where('code', $current_line[1])->first();
-                
+
                 if($current_line[3]){
                     $difference[] = $temp_dif = $current_line[3] - $current_line[2];
                     $counted[] = $current_line[3];
@@ -120,10 +158,13 @@ class StockCountController extends Controller
                     $difference[] = $temp_dif = $current_line[2] * (-1);
                     $counted[] = 0;
                 }
-                $cost[] = $product_data->cost * $temp_dif;
+                // A code in the CSV may no longer exist as a product.
+                $cost[] = $product_data ? $product_data->cost * $temp_dif : 0;
             }
             $i++;
         }
+        fclose($file_handle);
+
         if($temp_dif == -1000000){
             $lims_stock_count_data->is_adjusted = true;
             $lims_stock_count_data->save();
@@ -143,14 +184,36 @@ class StockCountController extends Controller
     {
         $lims_warehouse_list = Warehouse::where('is_active', true)->get();
         $lims_stock_count_data = StockCount::find($id);
+        if(! $lims_stock_count_data){
+            return redirect()->back()->with('not_permitted', 'Stock count not found.');
+        }
+
         $warehouse_id = $lims_stock_count_data->warehouse_id;
-        $file_handle = fopen('public/stock_count/'.$lims_stock_count_data->final_file, 'r');
-        $i = 0;
         $product_id = [];
+        $names = [];
+        $code = [];
+        $qty = [];
+        $action = [];
+
+        $file_path = $lims_stock_count_data->final_file
+            ? $this->stockCountPath($lims_stock_count_data->final_file)
+            : null;
+        $file_handle = ($file_path && is_file($file_path)) ? @fopen($file_path, 'r') : false;
+        if($file_handle === false){
+            return redirect()->back()->with('not_permitted', 'The finalized stock count file is missing. Please upload it again.');
+        }
+
+        $i = 0;
         while( !feof($file_handle) ) {
             $current_line = fgetcsv($file_handle);
-            if( $current_line && $i > 0 && ($current_line[2] != $current_line[3]) ){
+            if( $current_line && $i > 0 && count($current_line) >= 4 && ($current_line[2] != $current_line[3]) ){
                 $product_data = Product::where('code', $current_line[1])->first();
+                // Skip rows whose product code no longer resolves rather than
+                // blowing up the whole adjustment screen.
+                if(! $product_data){
+                    $i++;
+                    continue;
+                }
                 $product_id[] = $product_data->id;
                 $names[] = $current_line[0];
                 $code[] = $current_line[1];
@@ -171,6 +234,8 @@ class StockCountController extends Controller
             }
             $i++;
         }
+        fclose($file_handle);
+
         return view('stock_count.qty_adjustment', compact('lims_warehouse_list', 'warehouse_id', 'id', 'product_id', 'names', 'code', 'qty', 'action'));
     }
     public function destroy($id)

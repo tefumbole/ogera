@@ -76,6 +76,22 @@ class Product extends Model
         ]);
     }
 
+    /**
+     * Every active product a user can pick from a search box or print a
+     * barcode for, whatever its type. ActiveStandard() stays as-is for the
+     * stock-movement code that genuinely only applies to physical stock.
+     */
+    public function scopeActiveSellable($query)
+    {
+        return $query->where('is_active', true)
+            ->whereIn('type', self::sellableTypes());
+    }
+
+    public static function sellableTypes()
+    {
+        return ['standard', 'digital', 'combo', 'service'];
+    }
+
     public function scopeActiveFeatured($query)
     {
         return $query->where([

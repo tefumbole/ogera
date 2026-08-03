@@ -1362,14 +1362,14 @@ class QuotationController extends Controller
 
     public function productWithoutVariant()
     {
-        return Product::ActiveStandard()->select('id', 'name', 'code')
-                ->whereNull('is_variant')->get();
+        return Product::ActiveSellable()->select('id', 'name', 'code')
+                ->whereNull('is_variant')->orderBy('name')->get();
     }
 
     public function productWithVariant()
     {
         return Product::join('product_variants', 'products.id', 'product_variants.product_id')
-                ->ActiveStandard()
+                ->ActiveSellable()
                 ->whereNotNull('is_variant')
                 ->select('products.id', 'products.name', 'product_variants.item_code')
                 ->orderBy('position')->get();

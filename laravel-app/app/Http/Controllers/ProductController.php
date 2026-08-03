@@ -14,6 +14,7 @@ use App\Product;
 use App\ProductBatch;
 use App\Product_Warehouse;
 use App\Product_Supplier;
+use App\Support\BarcodeImage;
 use Auth;
 use DNS1D;
 use Spatie\Permission\Models\Role;
@@ -960,14 +961,14 @@ class ProductController extends Controller
 
     public function productWithoutVariant()
     {
-        return Product::ActiveStandard()->select('id', 'name', 'code')
-            ->whereNull('is_variant')->get();
+        return Product::ActiveSellable()->select('id', 'name', 'code')
+            ->whereNull('is_variant')->orderBy('name')->get();
     }
 
     public function productWithVariant()
     {
         return Product::join('product_variants', 'products.id', 'product_variants.product_id')
-            ->ActiveStandard()
+            ->ActiveSellable()
             ->whereNotNull('is_variant')
             ->select('products.id', 'products.name', 'product_variants.item_code')
             ->orderBy('position')->get();
@@ -977,24 +978,37 @@ class ProductController extends Controller
     {
         $product_code = explode("(", (string) $request['data']);
         $product_code[0] = rtrim($product_code[0], " ");
+        $term = $product_code[0];
 
-        $lims_product_data = Product::where('code', $product_code[0])->first();
+        $lims_product_data = Product::where('code', $term)->first();
         if(!$lims_product_data) {
             $lims_product_data = Product::join('product_variants', 'products.id', 'product_variants.product_id')
                 ->select('products.*', 'product_variants.item_code')
-                ->where('product_variants.item_code', $product_code[0])
+                ->where('product_variants.item_code', $term)
+                ->first();
+        }
+        // Fall back to a name match so typing a product name (not just its
+        // code) still resolves to a printable label.
+        if(!$lims_product_data && $term !== '') {
+            $lims_product_data = Product::ActiveSellable()
+                ->where('name', 'LIKE', '%'.$term.'%')
                 ->first();
         }
         if (! $lims_product_data) {
             return response()->json([], 404);
         }
+
+        $barcodeValue = ($lims_product_data->is_variant && $lims_product_data->item_code)
+            ? $lims_product_data->item_code
+            : $lims_product_data->code;
+
         $product[] = $lims_product_data->name;
         if($lims_product_data->is_variant)
             $product[] = $lims_product_data->item_code;
         else
             $product[] = $lims_product_data->code;
         $product[] = $lims_product_data->price;
-        $product[] = DNS1D::getBarcodePNG($lims_product_data->code, $lims_product_data->barcode_symbology);
+        $product[] = BarcodeImage::png($barcodeValue, $lims_product_data->barcode_symbology);
         $product[] = $lims_product_data->promotion_price;
         $product[] = config('currency');
         $product[] = config('currency_position');

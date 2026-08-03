@@ -15,7 +15,9 @@
 /public/quotation
 /public/sale
 /public/sample_file
-/public/stock_count
+# Keep the stock_count folder itself — the CSV writer needs it to exist.
+/public/stock_count/*
+!/public/stock_count/.gitignore
 /public/product
 /public/purchase
 /public/transfer

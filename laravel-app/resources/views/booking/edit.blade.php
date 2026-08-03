@@ -940,24 +940,97 @@ $('select[name="warehouse_id"]').on('change', function() {
 });
 
 var lims_productcodeSearch = $('#lims_productcodeSearch');
+// "CODE (Product name)" -> "CODE". A barcode scanner types the bare code, so
+// that passes through untouched.
+function bookingCodeFromLabel(label) {
+    var raw = $.trim(String(label == null ? '' : label));
+    if (!raw) return '';
+    var idx = raw.indexOf(' (');
+    return idx >= 0 ? $.trim(raw.slice(0, idx)) : raw;
+}
+
+// Suggestions come from the warehouse cache first, then the server so that
+// products outside this warehouse (and digital / service items) are still
+// findable by name or code.
+function bookingSuggest(term, done) {
+    term = $.trim(String(term == null ? '' : term));
+    var matcher = new RegExp('.?' + $.ui.autocomplete.escapeRegex(term), 'i');
+    var local = $.grep(lims_product_array || [], function(item) {
+        return matcher.test(item);
+    });
+    if (!term || term.length < 2 || local.length >= 10) {
+        done(local.slice(0, 25));
+        return;
+    }
+    $.getJSON('{{ url("bookings/product_suggest") }}', { q: term })
+        .done(function(rows) {
+            var merged = local.slice();
+            $.each(rows || [], function(_, label) {
+                if (merged.indexOf(label) === -1) merged.push(label);
+            });
+            done(merged.slice(0, 25));
+        })
+        .fail(function() {
+            done(local.slice(0, 25));
+        });
+}
+
 lims_productcodeSearch.autocomplete({
     source: function(request, response) {
-        var matcher = new RegExp(".?" + $.ui.autocomplete.escapeRegex(request.term), "i");
-        response($.grep(lims_product_array, function(item) {
-            return matcher.test(item);
-        }));
+        bookingSuggest(request.term, response);
     },
     response: function(event, ui) {
         if (ui.content.length == 1) {
             var data = ui.content[0].value;
             $(this).autocomplete( "close" );
-            productSearch(data);
+            $(this).val('');
+            productSearch(bookingCodeFromLabel(data));
         };
     },
     select: function(event, ui) {
-        var data = ui.item.value;
-        productSearch(data);
+        event.preventDefault();
+        $(this).val('');
+        productSearch(bookingCodeFromLabel(ui.item.value));
     }
+});
+
+// A barcode scanner types the code then sends Enter. Resolve it straight away
+// instead of waiting for the user to pick from the dropdown.
+lims_productcodeSearch.on('keydown', function(e) {
+    if (e.which !== 13) return;
+    e.preventDefault();
+    e.stopPropagation();
+
+    var term = $.trim($(this).val());
+    if (!term) return;
+
+    var self = $(this);
+    self.autocomplete('close');
+
+    var exact = $.grep(lims_product_array || [], function(item) {
+        return bookingCodeFromLabel(item).toLowerCase() === term.toLowerCase();
+    });
+    if (exact.length) {
+        self.val('');
+        productSearch(bookingCodeFromLabel(exact[0]));
+        return;
+    }
+
+    bookingSuggest(term, function(results) {
+        if (!results || !results.length) {
+            alert('No product found for "' + term + '".');
+            return;
+        }
+        var match = results[0];
+        for (var i = 0; i < results.length; i++) {
+            if (bookingCodeFromLabel(results[i]).toLowerCase() === term.toLowerCase()) {
+                match = results[i];
+                break;
+            }
+        }
+        self.val('');
+        productSearch(bookingCodeFromLabel(match));
+    });
 });
 
 //Change quantity
@@ -1442,6 +1515,11 @@ $('select[name="order_tax_rate"]').on("change", function() {
 $(window).keydown(function(e){
     if (e.which == 13) {
         var $targ = $(e.target);
+        // The product search box handles Enter itself (barcode scanners send
+        // it after the code), so don't steal focus away from it.
+        if ($targ.is('#lims_productcodeSearch')) {
+            return;
+        }
         if (!$targ.is("textarea") && !$targ.is(":button,:submit")) {
             var focusNext = false;
             $(this).find(":input:visible:not([disabled],[readonly]), a").each(function(){

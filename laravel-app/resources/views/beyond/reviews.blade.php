@@ -150,7 +150,7 @@
 
         <div class="ogera-review-form" id="form">
             <h2>Share your experience</h2>
-            <p class="lead">All fields except phone and country are needed. Reviews of {{ $holdBelow }} stars or below are held for review before appearing on the site.</p>
+            <p class="lead">Country and headline are optional. Reviews of {{ $holdBelow }} stars or below are held for review before appearing on the site.</p>
 
             <form method="POST" action="{{ route('beyond.reviews.store') }}" novalidate>
                 @csrf
@@ -176,17 +176,6 @@
                     <div>
                         <label for="rv_country">Country <span class="hint">(optional)</span></label>
                         <input type="text" name="country" id="rv_country" value="{{ old('country', request('country')) }}">
-                    </div>
-                </div>
-
-                <div class="grid">
-                    <div>
-                        <label for="rv_email">Email <span class="hint">(optional, kept private)</span></label>
-                        <input type="email" name="email" id="rv_email" value="{{ old('email', request('email')) }}">
-                    </div>
-                    <div>
-                        <label for="rv_phone">Phone <span class="hint">(optional)</span></label>
-                        <input type="tel" name="phone" id="rv_phone" value="{{ old('phone', request('phone')) }}">
                     </div>
                 </div>
 
@@ -244,7 +233,7 @@
     var qIdx = hash.indexOf('?');
     if (qIdx !== -1) {
         var params = new URLSearchParams(hash.substring(qIdx + 1));
-        ['name', 'email', 'phone', 'country', 'reference'].forEach(function (key) {
+        ['name', 'country', 'reference'].forEach(function (key) {
             var val = params.get(key);
             if (!val) return;
             var field = document.querySelector('[name="' + key + '"]');
