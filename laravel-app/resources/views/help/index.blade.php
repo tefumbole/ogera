@@ -16,6 +16,34 @@
             </a>
         </div>
 
+        @php $overviewVideo = url('/public/help/videos/ogera-overview.mp4'); @endphp
+        @if(is_file(public_path('help/videos/ogera-overview.mp4')))
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap mb-2" style="gap:8px;">
+                        <h4 class="mb-0" style="color:#033d2e;font-weight:800;font-size:18px;">
+                            <i class="dripicons-media-play"></i> Overview video
+                        </h4>
+                        <span class="text-muted" style="font-size:13px;">About 2 minutes · with voiceover</span>
+                    </div>
+                    <p class="text-muted mb-3" style="font-size:14px;">
+                        A short tour of login, the sidebar, Products, POS, Rentals, People, Announcements, and Settings.
+                    </p>
+                    <video
+                        class="help-overview-video"
+                        controls
+                        preload="metadata"
+                        playsinline
+                        poster="{{ url('/public/help/screenshots/02-dashboard.png') }}"
+                        src="{{ $overviewVideo }}"
+                    >
+                        Your browser does not support embedded video.
+                        <a href="{{ $overviewVideo }}">Download the overview</a>
+                    </video>
+                </div>
+            </div>
+        @endif
+
         <div class="row">
             @foreach($chapters as $slug => $chapter)
                 <div class="col-md-6 col-lg-4 mb-3">
@@ -55,6 +83,10 @@
         margin: 0 0 4px; font-size: 16px; font-weight: 800; color: #033d2e;
     }
     .help-card p { margin: 0; color: #5b6880; font-size: 13.5px; line-height: 1.45; }
+    .help-overview-video {
+        display: block; width: 100%; max-width: 960px; height: auto;
+        border-radius: 10px; border: 1px solid #e3e9f2; background: #02261c;
+    }
 </style>
 <script>
     $("ul#side-main-menu #help-menu").addClass("active");

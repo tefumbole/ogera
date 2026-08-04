@@ -1,0 +1,19 @@
+Welcome to Ogera — your agency platform for sales, rentals, products, people, and WhatsApp messaging.
+
+To begin, open ogeragency.com and sign in with your username and password. If your role requires it, enter the six-digit code sent to your WhatsApp, then continue to the dashboard.
+
+On the left, the sidebar lists every module you can access. Click Help any time to open this user guide.
+
+Under Product, manage your catalogue — including digital items — print barcodes, and run a stock count. Search by name, or scan a barcode with a scanner.
+
+Sale includes the Point of Sale screen. Select a customer, add products by name or barcode, take payment, and print the invoice from the sale list.
+
+The Rental Module is where you create bookings. Choose the customer and warehouse, scan or search equipment, set start and end times, then submit. From the booking list you can send contracts, track signatures, and set reminders.
+
+People holds your customers and staff users. Keep phone numbers accurate so WhatsApp messages reach the right person. Users can add a signature for invoices and rental documents.
+
+Announcements lets you compose WhatsApp messages, schedule them, and send reminders. Scheduled messages use the company timezone from Settings.
+
+In Settings, set your company details, timezone, and messaging provider. Role permissions control who sees each menu.
+
+That is the Ogera overview. Open Help in the sidebar for step-by-step chapters with screenshots. Thank you for watching.

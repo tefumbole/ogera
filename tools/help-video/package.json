@@ -1,0 +1,8 @@
+{
+  "name": "ogera-help-video",
+  "private": true,
+  "description": "Build the in-app Help overview video with voiceover",
+  "dependencies": {
+    "playwright": "1.49"
+  }
+}

@@ -2,6 +2,8 @@
 
 Welcome to **Ogera**. This guide explains the day-to-day screens your team uses most. Open **Help** any time from the left sidebar.
 
+Prefer watching? Start with the **Overview video** on the [Help home page](/help) (about two minutes, with voiceover).
+
 ## Sign in
 
 1. Open [ogeragency.com](https://ogeragency.com) and go to **Login**.
