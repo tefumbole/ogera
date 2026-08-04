@@ -1057,6 +1057,7 @@
                         @if(Auth::user()->role_id != 7)
                             <li><a href="{{ url('/admin') }}"> <i class="dripicons-meter"></i><span>{{ __('file.dashboard') }}</span></a></li>
                         @endif
+                        <li id="help-menu"><a href="{{ route('help.index') }}"> <i class="dripicons-question"></i><span>Help</span></a></li>
                         @if($site_content_permission_active)
                             <li><a href="{{ url('/admin/site-content') }}"> <i class="dripicons-web"></i><span>Site Content</span></a></li>
                             <li><a href="{{ url('/admin/leaders') }}"> <i class="dripicons-user-group"></i><span>About Us Leaders</span></a></li>

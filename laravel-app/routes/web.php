@@ -754,6 +754,9 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 
 	Route::get('setting/testing-guide', 'TestingGuideController@index')->name('setting.testingGuide');
 
+	Route::get('help', 'UserHelpController@index')->name('help.index');
+	Route::get('help/{slug}', 'UserHelpController@show')->name('help.show');
+
 	Route::get('setting/activity-logs', 'ActivityLogController@index')->name('activity-logs.index');
 	Route::post('setting/activity-logs/clicks', 'ActivityLogController@storeClicks')->name('activity-logs.clicks');
 	Route::post('setting/activity-logs/delete', 'ActivityLogController@destroy')->name('activity-logs.destroy');
