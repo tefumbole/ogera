@@ -36,9 +36,9 @@
     $invoiceFooterCap = $invoiceCompact ? 64 : 78;
     $invoiceHeaderHeight = $invoiceHeaderHeight ? min($invoiceHeaderHeight, $invoiceHeaderCap) : 0;
     $invoiceFooterHeight = $invoiceFooterHeight ? min($invoiceFooterHeight, $invoiceFooterCap) : 0;
-    // Allow templates to set a wider content inset (quotations use ~40px).
-    if (! isset($invoiceContentPad) || $invoiceContentPad === 18 || ($invoiceCompact && $invoiceContentPad === 14)) {
-        $invoiceContentPad = $invoiceCompact ? 14 : 18;
+    // Compact default inset only when the template did not choose its own pad.
+    if ($invoiceCompact && (int) $invoiceContentPad === 18) {
+        $invoiceContentPad = 14;
     }
     $invoiceContentPad = (int) $invoiceContentPad;
 
