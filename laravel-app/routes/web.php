@@ -321,6 +321,7 @@ Route::group(['middleware' => ['auth', 'active']], function() {
     Route::post('/admin/tasks/reminders/bulk-delete', 'TaskManagerController@bulkDeleteReminders')->name('tasks.reminders.bulk_delete');
     Route::post('/admin/tasks/reminders/{id}/delete', 'TaskManagerController@deleteReminder')->name('tasks.reminders.delete');
     Route::get('/admin/tasks/pending-acceptances', 'TaskManagerController@pendingAcceptances')->name('tasks.pending');
+    Route::post('/admin/tasks/pending-acceptances/bulk-delete', 'TaskManagerController@bulkDeletePending')->name('tasks.pending.bulk_delete');
     Route::post('/admin/tasks/{id}/delete', 'TaskManagerController@destroy')->name('tasks.destroy');
     Route::get('/admin/tasks/settings', 'TaskManagerController@settings')->name('tasks.settings');
     Route::post('/admin/tasks/settings/categories', 'TaskManagerController@storeCategory')->name('tasks.settings.categories.store');

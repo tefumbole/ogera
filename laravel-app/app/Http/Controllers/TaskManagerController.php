@@ -209,6 +209,22 @@ class TaskManagerController extends Controller
         return view('task_manager.pending', compact('assignments', 'users'));
     }
 
+    /**
+     * Cancel pending assignments. Deletes the assignment rows so WhatsApp invite
+     * tokens no longer resolve (client sees "Invalid Invite").
+     */
+    public function bulkDeletePending(Request $request)
+    {
+        $this->authorizeTasks('tasks.update');
+        $ids = array_values(array_filter((array) $request->input('ids', [])));
+        if (! count($ids)) {
+            return back()->with('not_permitted', 'Select at least one pending acceptance.');
+        }
+        $deleted = $this->tasks->bulkDeletePendingAssignments($ids);
+
+        return back()->with('message', $deleted . ' pending acceptance(s) cancelled. Invite links are now invalid.');
+    }
+
     public function destroy($id)
     {
         $this->authorizeTasks('tasks.delete');

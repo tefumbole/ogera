@@ -95,6 +95,21 @@ class TaskService
     }
 
     /**
+     * Remove pending assignments so their invite tokens stop working.
+     */
+    public function bulkDeletePendingAssignments(array $ids)
+    {
+        $ids = array_values(array_filter($ids));
+        if (! count($ids)) {
+            return 0;
+        }
+
+        return TaskAssignment::whereIn('id', $ids)
+            ->where('status', 'Pending')
+            ->delete();
+    }
+
+    /**
      * Create one or more tasks from the Create Task form payload.
      *
      * @param  array  $rows  Each: subject, description, priority, color, start_date, start_time, end_date, end_time, assignee_ids[], cc_ids[], reminders[], send_mode (now|schedule), schedule_at, pdf

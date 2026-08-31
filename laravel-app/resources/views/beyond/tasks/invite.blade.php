@@ -9,7 +9,7 @@
         <div class="max-w-md w-full bg-white rounded-xl shadow-lg p-8 text-center">
             <i data-lucide="alert-triangle" class="w-12 h-12 text-amber-500 mx-auto mb-3"></i>
             <h1 class="text-xl font-bold text-gray-800 mb-2">Invalid Invite</h1>
-            <p class="text-gray-600">This task invite link is invalid or has expired.</p>
+            <p class="text-gray-600">This task invite link is invalid, expired, or was cancelled by the administrator.</p>
             <a href="{{ url('/') }}" class="inline-block mt-4 text-brand-blue font-semibold hover:underline">Return Home</a>
         </div>
     @else
