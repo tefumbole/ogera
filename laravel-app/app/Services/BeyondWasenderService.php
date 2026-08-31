@@ -23,17 +23,7 @@ class BeyondWasenderService
      */
     protected function throttleSend()
     {
-        $intervalMs = max(1000, (int) config('services.whatsapp.min_send_interval_ms', 6000));
-        $interval = $intervalMs / 1000;
-        $now = microtime(true);
-
-        if (self::$lastSendAt > 0) {
-            $wait = $interval - ($now - self::$lastSendAt);
-            if ($wait > 0) {
-                usleep((int) round($wait * 1000000));
-            }
-        }
-
+        \App\Support\WhatsAppThrottle::wait();
         self::$lastSendAt = microtime(true);
     }
 

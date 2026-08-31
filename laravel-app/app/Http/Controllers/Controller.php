@@ -256,31 +256,14 @@ class Controller extends BaseController
 
     private function throttleWhatsAppSend()
     {
-        $intervalMs = max(1000, (int) $this->whatsappConfig('min_send_interval_ms', 6000));
-        $interval = $intervalMs / 1000;
-        $now = microtime(true);
-
-        if (self::$lastWhatsAppSendAt > 0) {
-            $wait = $interval - ($now - self::$lastWhatsAppSendAt);
-            if ($wait > 0) {
-                usleep((int) round($wait * 1000000));
-            }
-        }
-
+        \App\Support\WhatsAppThrottle::wait();
         self::$lastWhatsAppSendAt = microtime(true);
     }
 
     private function delayWasenderTextToDocument()
     {
-        if (self::$lastWhatsAppSendType !== 'text') {
-            return;
-        }
-
-        $delayMs = max(0, (int) $this->whatsappConfig('text_to_document_delay_ms', 6000));
-        if ($delayMs > 0) {
-            usleep($delayMs * 1000);
-            self::$lastWhatsAppSendAt = microtime(true);
-        }
+        \App\Support\WhatsAppThrottle::waitForDocumentAfterText(self::$lastWhatsAppSendType);
+        self::$lastWhatsAppSendAt = microtime(true);
     }
 
     protected function normalizeWhatsAppPhone($number)

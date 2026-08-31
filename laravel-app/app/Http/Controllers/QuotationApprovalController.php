@@ -119,21 +119,20 @@ class QuotationApprovalController extends Controller
     }
 
     /**
-     * The client only received a link before signing; now that they have
-     * signed, hand over the full document and its verification QR code.
+     * Deliver the signed PDF (and QR) after approval.
      *
-     * Rendering the PDF and calling out to WhatsApp/SMTP takes seconds, so it
-     * runs once the thank-you page has already been flushed to the client.
+     * Runs in-request (not only on terminating): Hostinger often ends the PHP
+     * worker before long WhatsApp PDF bursts finish in a terminating callback,
+     * which left CC/client with approval texts but no documents.
      */
     protected function sendSignedCopy(Quotation $quotation)
     {
-        app()->terminating(function () use ($quotation) {
-            try {
-                app(QuotationController::class)->sendApprovedQuotationToClient($quotation);
-            } catch (\Throwable $e) {
-                Log::warning('Signed quotation delivery failed: '.$e->getMessage());
-            }
-        });
+        try {
+            @set_time_limit(300);
+            app(QuotationController::class)->sendApprovedQuotationToClient($quotation);
+        } catch (\Throwable $e) {
+            Log::warning('Signed quotation delivery failed: '.$e->getMessage());
+        }
     }
 
     protected function notifyStakeholders(Quotation $quotation, $event)

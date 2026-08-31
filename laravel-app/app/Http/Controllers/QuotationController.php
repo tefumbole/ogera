@@ -647,7 +647,13 @@ class QuotationController extends Controller
 
             if ($pdfPath) {
                 try {
-                    $this->wpPDFMessage($pdfPath, $customer, 'quotation_'.$slug.'.pdf');
+                    // Document only — avoid a second caption text that burns the rate limit
+                    // right after the approved-copy message above.
+                    $this->sendWhatsAppDocumentToPhone(
+                        $customer->phone_number,
+                        $pdfPath,
+                        'quotation_'.$slug.'.pdf'
+                    );
                 } catch (\Throwable $e) {
                     \Log::warning('Approved quotation PDF attach skipped: '.$e->getMessage());
                 }
@@ -698,13 +704,11 @@ class QuotationController extends Controller
     /**
      * WhatsApp the signed quotation PDF to the creator and each CC contact.
      */
-    protected function sendApprovedQuotationPdfToStakeholders(Quotation $quotation, $pdfPath, $slug, $customer = null)
+    public function sendApprovedQuotationPdfToStakeholders(Quotation $quotation, $pdfPath, $slug, $customer = null)
     {
         $customer = $customer ?: Customer::find($quotation->customer_id);
-        $clientName = $customer ? $customer->name : 'Client';
         $clientDigits = $customer ? preg_replace('/\D/', '', (string) $customer->phone_number) : '';
         $filename = 'quotation_'.$slug.'.pdf';
-        $company = WhatsAppMessage::companyName();
 
         $recipients = [];
         $creator = User::find($quotation->user_id);
@@ -732,12 +736,8 @@ class QuotationController extends Controller
             $seen[$digits] = true;
 
             try {
-                $caption = WhatsAppMessage::statusBlock('📄', 'CC — Signed Quotation PDF')
-                    .WhatsAppMessage::greeting($recipient['name'] ?: 'Team')
-                    ."From: *{$company}*\n\n"
-                    ."The signed quotation for *{$clientName}* (*{$quotation->reference_no}*) is attached — the same PDF sent to the client.\n"
-                    .WhatsAppMessage::footer();
-                $this->wpMessage($recipient['phone'], $caption);
+                // Document only (filename is the Wasender caption). Extra text
+                // messages after stakeholder "approved" notices trip rate limits.
                 $this->sendWhatsAppDocumentToPhone($recipient['phone'], $pdfPath, $filename);
             } catch (\Throwable $e) {
                 \Log::warning('Quotation CC PDF skipped: '.$e->getMessage());
