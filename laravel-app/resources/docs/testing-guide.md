@@ -55,6 +55,9 @@ Because cron handles this, the page-load fallback is off
 Times follow the zone in **Settings → General Setting** (currently
 `Africa/Kigali`), so a reminder set for 14:30 fires at 14:30 Kigali time.
 
+**Deep pass for letters / announcements / tasks / quotations:** use **sections
+7–10A** below. Plan ~45–90 minutes with two WhatsApp phones (client + CC).
+
 ---
 
 ## 1. Quick smoke test (about 15 minutes)
@@ -244,62 +247,200 @@ client half on a phone**.
 
 ---
 
-## 7. Quotations
+## 7. Quotations (full pass) 📱
 
-- [ ] **Quotation → Add Quotation**: build a quote and save it.
-- [ ] 📱 Send it to the client on WhatsApp.
-- [ ] Open the `/quotation-approval/...` link as the client, tick the agreement,
-      draw a signature and approve.
-- [ ] 📱 The client receives the signed quotation PDF with a verification QR.
-- [ ] The quotation shows as Approved in admin, and the link cannot be reused.
-- [ ] Repeat with **Reject** and a comment; confirm the comment reaches admin.
-- [ ] Convert an approved quotation into a sale.
-- [ ] **Pass:** the signed quotation stays on one page and shows the signature.
+**Prep:** two phones you control — **Client** and **CC**. Both must be customers
+(or users) with WhatsApp numbers in Ogera. Confirm **Settings → Messaging** is
+connected. Times are **Africa/Kigali**.
+
+### 7.1 Create and send for approval
+
+1. [ ] **Quotations → Add Quotation**. Add ~3–4 short line items, set status to
+      **Send for client approval (WhatsApp)**.
+2. [ ] Select a **CC** customer (not the same phone as the client).
+3. [ ] Check the **Note** default: it should be **3 bullet points** (not 4), and
+      company name should say **Ogera** (or your site title), not “Beyond Tech World”.
+4. [ ] Optional: paste or drop a PDF/image onto **Attach Document** — the dashed
+      paste zone appears under the file input.
+5. [ ] Save / send.
+6. [ ] **Pass — Client WhatsApp:** approval link message arrives; body includes
+      `From: *…*` branding.
+7. [ ] **Pass — CC WhatsApp:** CC receives a stakeholder “sent” text (not only the
+      client). Creator phone (if set) may also get a copy.
+8. [ ] Open **All Tasks / Quotations list** and confirm status is awaiting approval.
+
+### 7.2 Client approve + already-approved link + CC PDF
+
+1. [ ] On the **client phone**, open the approval link. On a narrow phone screen,
+      scroll the notes fully — sticky Approve/Reject bar must not cover the note;
+      action buttons stack.
+2. [ ] Items table scrolls horizontally if needed.
+3. [ ] Tick agreement, draw signature, **Approve**.
+4. [ ] **Pass — Client:** receives **signed PDF** (with QR if enabled).
+5. [ ] **Pass — CC / creator:** receive **signed PDF** as well (same document),
+      not only a text.
+6. [ ] Re-open the **same** approval URL.
+7. [ ] **Pass:** page says the quotation was **already approved** (not a generic
+      “expired” / Hostinger skateboard 404).
+8. [ ] Download / open the PDF: ~4 short lines + notes + signatures should fit on
+      **one page** with letterhead footer (no orphan footer-only page 2).
+
+### 7.3 Reject path
+
+1. [ ] Create another quotation, send for approval, **Reject** with a comment.
+2. [ ] **Pass:** admin/CC get reject notice with the comment; reopening the link
+      shows **already rejected**.
+
+### 7.4 Speed note (ops)
+
+If WhatsApp hops feel slow (~6s between recipients), lower **Messaging** min send
+interval to **2000–3000 ms** after this test. Do not set it below 1000 ms.
 
 ---
 
-## 8. Task Manager
+## 8. Task Manager (full pass) 📱
 
-- [ ] **Create Task**: title, description, priority, start and deadline, colour,
-      an optional PDF, and at least one assignee.
-- [ ] In the **Assign To** picker, people are listed by **name**, not by phone
-      number. (You will see some people listed twice, once as *Portal* and once
-      as *User* — that is a known duplication, not a name bug.)
-- [ ] Try to save with no assignee — it must refuse.
-- [ ] Save. 📱 The assignee receives a WhatsApp that greets them **by name** and
-      contains a `/task-invite/...` link.
-- [ ] Open the invite link as the assignee. Accept it with a signature.
-- [ ] The task appears in their list at `/user/tasks`; update the progress.
-- [ ] Decline a second task and confirm admin is notified.
-- [ ] **Pending Acceptances**, **Scheduled**, **Reminders** and **All Tasks**
-      pages all load and show the right tasks.
-- [ ] **Pass:** no phone numbers appear where a person's name should be.
+**Prep:** at least **3 assignees** with phones + **1 CC** person. Prefer real
+phones you can read. Admin: **Task Manager** menu.
+
+### 8.1 Pages load
+
+1. [ ] Open **Task Dashboard** — cards link to filtered All Tasks.
+2. [ ] **All Tasks** opens at `/admin/tasks/list` (HTTP 200, not a 404).
+3. [ ] **Scheduled**, **Reminders**, **My Tasks**, **Pending Acceptances**,
+      **Create Task**, **Task Settings** all load without errors.
+
+### 8.2 Create now — multi-assignee + CC
+
+1. [ ] **Create Task**: subject e.g. `QA TASK MULTI`, priority High, deadline
+      tomorrow, optional PDF.
+2. [ ] **Assign To:** pick **3+** people with phones. Filter Staff / Customers works.
+3. [ ] **CC:** pick **1+** other person with a phone.
+4. [ ] **Send now** (not schedule). Submit.
+5. [ ] **Pass — Assignees:** each gets WhatsApp assignment (spaced ~Wasender interval
+      apart — not all at once failing after the first).
+6. [ ] **Pass — CC:** gets `TASK CC NOTIFICATION` (not silent).
+7. [ ] If one number is invalid, admin logs show skip/partial; task can retry via
+      cron (`notifications_sent` stays false until all reachable phones succeed).
+
+### 8.3 Accept / pending cancel / invalid link
+
+1. [ ] Open **Pending Acceptances**. Cards show for unaccepted assignments.
+2. [ ] **Select all** (or multi-select) → **Cancel selected**.
+3. [ ] **Pass:** selected cards disappear.
+4. [ ] On an assignee phone, open the old `/task-invite/...` link.
+5. [ ] **Pass:** **Invalid Invite** — “invalid, expired, or was cancelled by the
+      administrator.”
+6. [ ] Create another task, accept via invite with signature; progress updates;
+      CC gets accept / progress / complete notices as you update.
+
+### 8.4 Schedule send
+
+1. [ ] Create a task with **Schedule** send time = **now + 3 minutes** (Kigali).
+2. [ ] Open **Scheduled** — task appears with the send-at time.
+3. [ ] Wait for cron (every minute). After the time passes:
+4. [ ] **Pass:** assignees + CC get WhatsApp; task **leaves** the Scheduled list.
+5. [ ] Optional cancel test: schedule another for +10 min, **Select** it on
+      Scheduled → **Cancel selected** → it leaves the list and **never** sends.
+
+### 8.5 Reminders (assignee + CC)
+
+1. [ ] Create a task with a **reminder** at **now + 3 minutes**.
+2. [ ] Open **Reminders** — only **Pending** rows show (no pile of “Sent”).
+3. [ ] When the time fires:
+4. [ ] **Pass — Assignee:** `TASK REMINDER` WhatsApp.
+5. [ ] **Pass — CC:** `TASK CC — REMINDER` WhatsApp.
+6. [ ] **Pass:** that reminder **disappears** from the Reminders list after send.
+7. [ ] Cancel test: add a reminder +10 min, multi-select → **Delete selected** →
+      it must **not** fire.
+
+### 8.6 Login UX (related)
+
+1. [ ] Log out. Open `/login`.
+2. [ ] **Pass:** no Sign in / Sign up **tab bar**; small **Sign up** link remains
+      under the form. `?tab=signup` still opens signup.
 
 ---
 
-## 9. Announcements and messaging 📱
+## 9. Announcements (manager + schedules) 📱
 
-- [ ] **Compose**: write a message, choose recipients, attach a file, send now.
-- [ ] The recipients receive it, with the attachment.
-- [ ] The announcement is listed with a serial number.
-- [ ] Schedule one for a few minutes ahead — this only arrives if cron is running.
-- [ ] **Templates** and **Categories** can be created and reused.
-- [ ] **Settings** (company name, header, footer) affect the message that goes out.
-- [ ] **Create SMS** works if an SMS gateway is configured; skip if not.
+Use **Announcements** (WhatsApp manager), not only the legacy list module.
+
+### 9.1 Send now + CC
+
+1. [ ] **Compose**: subject, body, recipients **+ CC**, optional attachment.
+2. [ ] Send now.
+3. [ ] **Pass:** every To and every CC with a phone gets the message (and
+      attachment if set). Partial failures are reflected in status if some fail.
+
+### 9.2 Schedule + cancel
+
+1. [ ] Compose another announcement; set **schedule** to **now + 3 minutes**.
+2. [ ] Open **Scheduled** — it is listed.
+3. [ ] Cancel path: select it → **Cancel selected** → leaves list, becomes draft,
+      **does not** send at the old time.
+4. [ ] Schedule a fresh one for +3 minutes and let it fire.
+5. [ ] **Pass:** To + CC receive it; item leaves Scheduled after send.
+
+### 9.3 Announcement reminders
+
+1. [ ] When composing a scheduled announcement, **Add reminder** at +2 minutes
+      (before send time).
+2. [ ] Open **Announcement Reminders** — pending only.
+3. [ ] **Pass:** To + CC get `ANNOUNCEMENT REMINDER`; row leaves the list after send.
+4. [ ] Delete-selected on a future reminder prevents it from firing.
+
+### 9.4 Legacy announcements (optional)
+
+1. [ ] If you still use the older **Announcements** CRUD with `date_time`, schedule
+      one a few minutes ahead with To + CC.
+2. [ ] **Pass:** cron `announcements:send-scheduled` delivers to To and CC.
 
 ---
 
-## 10. Letters
+## 10. Letters (workflow + scheduled send) 📱
 
-Letters move through stages, and each stage belongs to a different role.
+Letters move through stages; scheduled WhatsApp/PDF uses cron
+`letters:send-scheduled`.
 
-- [ ] **Letter Categories** and **Templates Letter** can be created.
-- [ ] **Create Letter** from a template, addressed to a customer or employee.
-- [ ] Walk it through: Awaiting Editing → Awaiting Approval → Awaiting Signature
-      → Ready To Send → Sent. Confirm it appears in the correct list at each step
-      and that a user without that stage's role cannot move it.
-- [ ] Print and download a sent letter; check the letterhead and serial number.
-- [ ] Reject a letter and confirm it lands in **Rejected Letters**.
+### 10.1 Happy path
+
+1. [ ] Create **Letter Categories** / **Templates** if needed.
+2. [ ] **Create Letter** to a customer (or employee) with a **CC** recipient.
+3. [ ] Walk stages: editing → approval → signature → ready to send.
+4. [ ] Send via WhatsApp (or queue).
+5. [ ] **Pass — Primary:** PDF (and attachments) on WhatsApp.
+6. [ ] **Pass — CC:** CC PDF path runs (`sendPDFToCC`) — CC phone gets the letter
+      copy.
+
+### 10.2 Scheduled letter
+
+1. [ ] Create/approve/sign a letter with **date_time** = **now + 3 minutes**
+      (Kigali), still `is_sent = 0`.
+2. [ ] Wait for cron.
+3. [ ] **Pass:** primary + CC receive around that time; letter marked sent.
+4. [ ] Print/download: letterhead and serial look correct.
+
+### 10.3 Reject
+
+1. [ ] Reject a letter in the right stage.
+2. [ ] **Pass:** it appears under **Rejected Letters**.
+
+---
+
+## 10A. Scheduler health check (do once per test day)
+
+1. [ ] Login footer / version shows the build you expect (e.g. `OGERA_ERP_V2.2.0`).
+2. [ ] Confirm timezone: Settings / app uses **Africa/Kigali** (CAT, UTC+2).
+3. [ ] On the server (ops only): `~/ogera-cron.log` updates every minute with
+      `exit=0` and lists at least:
+      - `letters:send-scheduled`
+      - `announcements:send-scheduled`
+      - `announcements:process`
+      - `tasks:process`
+4. [ ] **Pass:** timed tests in §7–10 fire within ~1–2 minutes of the scheduled
+      Kigali time (not hours late, and not a backlog dump from days ago — grace
+      window is 6 hours).
 
 ---
 
@@ -401,16 +542,16 @@ Only a Super Admin sees these. Change one thing at a time and confirm the effect
 
 ## 18. Regression checks for recent fixes
 
-These two were fixed in v1.7.5. Confirm they stayed fixed.
+### Row action menus (older)
 
-**Row action menus.** On Booking List, Sale List and Purchase List, open the
-**Action** menu on the **last row** of the table, on a laptop and on a phone.
+On Booking List, Sale List and Purchase List, open the **Action** menu on the
+**last row** of the table, on a laptop and on a phone.
 
 - [ ] **Pass:** the whole menu is visible. If it is taller than the screen it
       scrolls inside itself, or it opens upwards. Nothing is cut off by the
       bottom of the table or the bottom of the window.
 
-**Names instead of phone numbers.**
+### Names instead of phone numbers
 
 - [ ] Booking List **Customer** column shows names.
 - [ ] Task Manager **Assign To** picker shows names.
@@ -418,6 +559,17 @@ These two were fixed in v1.7.5. Confirm they stayed fixed.
 - [ ] **If you still see a bare number**, that person has no name saved anywhere.
       Open their customer record, type the real name, save, and confirm it now
       shows everywhere. It should not come back after that.
+
+### Messaging schedules & CC (v2.1.6 – v2.2.0)
+
+- [ ] Login has **no** Sign in/Sign up tab bar; small Sign up link remains.
+- [ ] Task with 3+ assignees + CC: all get WhatsApp (not only the first).
+- [ ] Task **reminder** WhatsApps **CC** as well as assignees; sent reminders
+      leave the Reminders list.
+- [ ] Pending Acceptances: multi-select **Cancel**; old invite link → Invalid.
+- [ ] Quotation approve: same link shows **already approved**; CC gets signed PDF.
+- [ ] New quotation default note has **3** points; PDF with ~4 lines stays one page.
+- [ ] Scheduled / Reminder lists: multi-select delete or cancel stops the send.
 
 ---
 
