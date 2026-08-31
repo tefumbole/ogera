@@ -316,7 +316,9 @@ Route::group(['middleware' => ['auth', 'active']], function() {
     Route::post('/admin/tasks', 'TaskManagerController@store')->name('tasks.store');
     Route::get('/admin/tasks/list', 'TaskManagerController@index')->name('tasks.index');
     Route::get('/admin/tasks/scheduled', 'TaskManagerController@scheduled')->name('tasks.scheduled');
+    Route::post('/admin/tasks/scheduled/bulk-cancel', 'TaskManagerController@bulkCancelScheduled')->name('tasks.scheduled.bulk_cancel');
     Route::get('/admin/tasks/reminders', 'TaskManagerController@reminders')->name('tasks.reminders');
+    Route::post('/admin/tasks/reminders/bulk-delete', 'TaskManagerController@bulkDeleteReminders')->name('tasks.reminders.bulk_delete');
     Route::post('/admin/tasks/reminders/{id}/delete', 'TaskManagerController@deleteReminder')->name('tasks.reminders.delete');
     Route::get('/admin/tasks/pending-acceptances', 'TaskManagerController@pendingAcceptances')->name('tasks.pending');
     Route::post('/admin/tasks/{id}/delete', 'TaskManagerController@destroy')->name('tasks.destroy');
@@ -403,7 +405,9 @@ Route::group(['middleware' => ['auth', 'active']], function() {
     Route::post('/admin/announcements', 'AnnouncementManagerController@store')->name('announcements.store');
     Route::get('/admin/announcements/list', 'AnnouncementManagerController@index')->name('announcements.index');
     Route::get('/admin/announcements/scheduled', 'AnnouncementManagerController@scheduled')->name('announcements.scheduled');
+    Route::post('/admin/announcements/scheduled/bulk-cancel', 'AnnouncementManagerController@bulkCancelScheduled')->name('announcements.scheduled.bulk_cancel');
     Route::get('/admin/announcements/reminders', 'AnnouncementManagerController@reminders')->name('announcements.reminders');
+    Route::post('/admin/announcements/reminders/bulk-delete', 'AnnouncementManagerController@bulkDeleteReminders')->name('announcements.reminders.bulk_delete');
     Route::post('/admin/announcements/reminders/{id}/delete', 'AnnouncementManagerController@deleteReminder')->name('announcements.reminders.delete');
     Route::post('/admin/announcements/{id}/delete', 'AnnouncementManagerController@destroy')->name('announcements.destroy');
     Route::get('/admin/announcements/templates', 'AnnouncementManagerController@templates')->name('announcements.templates');

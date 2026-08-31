@@ -149,7 +149,11 @@ class TaskManagerController extends Controller
     public function reminders()
     {
         $this->authorizeTasks('tasks.view');
-        $reminders = TaskReminder::with('task')->orderByDesc('reminder_time')->paginate(40);
+        // Only pending reminders — once sent they leave this list.
+        $reminders = TaskReminder::with('task')
+            ->where('is_sent', false)
+            ->orderBy('reminder_time')
+            ->paginate(40);
 
         return view('task_manager.reminders', compact('reminders'));
     }
@@ -157,9 +161,43 @@ class TaskManagerController extends Controller
     public function deleteReminder($id)
     {
         $this->authorizeTasks('tasks.update');
-        TaskReminder::where('id', $id)->delete();
+        TaskReminder::where('id', $id)->where('is_sent', false)->delete();
 
         return back()->with('message', 'Reminder deleted.');
+    }
+
+    public function bulkDeleteReminders(Request $request)
+    {
+        $this->authorizeTasks('tasks.update');
+        $ids = array_values(array_filter((array) $request->input('ids', [])));
+        if (! count($ids)) {
+            return back()->with('not_permitted', 'Select at least one reminder.');
+        }
+        $deleted = TaskReminder::whereIn('id', $ids)->where('is_sent', false)->delete();
+
+        return back()->with('message', $deleted . ' reminder(s) deleted. They will not fire.');
+    }
+
+    /**
+     * Cancel pending scheduled sends so selected tasks leave the queue and never WhatsApp.
+     */
+    public function bulkCancelScheduled(Request $request)
+    {
+        $this->authorizeTasks('tasks.update');
+        $ids = array_values(array_filter((array) $request->input('ids', [])));
+        if (! count($ids)) {
+            return back()->with('not_permitted', 'Select at least one scheduled task.');
+        }
+        $count = Task::whereIn('id', $ids)
+            ->where('is_scheduled', true)
+            ->where('notifications_sent', false)
+            ->update([
+                'is_scheduled' => false,
+                'notifications_sent' => true,
+                'scheduled_for' => null,
+            ]);
+
+        return back()->with('message', $count . ' scheduled send(s) cancelled. They will not fire.');
     }
 
     public function pendingAcceptances()

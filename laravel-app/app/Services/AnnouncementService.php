@@ -356,13 +356,45 @@ class AnnouncementService
 
     public function reminders()
     {
+        // Only pending — sent reminders leave this list.
         return WaAnnouncementReminder::with('announcement')
-            ->orderByDesc('reminder_time')
+            ->where('is_sent', false)
+            ->orderBy('reminder_time')
             ->paginate(40);
     }
 
     public function deleteReminder($id)
     {
-        return WaAnnouncementReminder::where('id', $id)->delete();
+        return WaAnnouncementReminder::where('id', $id)->where('is_sent', false)->delete();
+    }
+
+    public function bulkDeleteReminders(array $ids)
+    {
+        $ids = array_values(array_filter($ids));
+        if (! count($ids)) {
+            return 0;
+        }
+
+        return WaAnnouncementReminder::whereIn('id', $ids)->where('is_sent', false)->delete();
+    }
+
+    /**
+     * Cancel pending scheduled announcements so they never send.
+     */
+    public function bulkCancelScheduled(array $ids)
+    {
+        $ids = array_values(array_filter($ids));
+        if (! count($ids)) {
+            return 0;
+        }
+
+        return WaAnnouncement::whereIn('id', $ids)
+            ->where('is_scheduled', true)
+            ->where('status', 'scheduled')
+            ->update([
+                'is_scheduled' => false,
+                'status' => 'draft',
+                'scheduled_for' => null,
+            ]);
     }
 }

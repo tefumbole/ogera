@@ -197,6 +197,30 @@ class AnnouncementManagerController extends Controller
         return back()->with('message', 'Reminder deleted.');
     }
 
+    public function bulkDeleteReminders(Request $request)
+    {
+        $this->authorizeAnnouncements('announcements.delete');
+        $ids = array_values(array_filter((array) $request->input('ids', [])));
+        if (! count($ids)) {
+            return back()->with('not_permitted', 'Select at least one reminder.');
+        }
+        $deleted = $this->announcements->bulkDeleteReminders($ids);
+
+        return back()->with('message', $deleted . ' reminder(s) deleted. They will not fire.');
+    }
+
+    public function bulkCancelScheduled(Request $request)
+    {
+        $this->authorizeAnnouncements('announcements.delete');
+        $ids = array_values(array_filter((array) $request->input('ids', [])));
+        if (! count($ids)) {
+            return back()->with('not_permitted', 'Select at least one scheduled announcement.');
+        }
+        $count = $this->announcements->bulkCancelScheduled($ids);
+
+        return back()->with('message', $count . ' scheduled send(s) cancelled. They will not fire.');
+    }
+
     public function destroy($id)
     {
         $this->authorizeAnnouncements('announcements.delete');
