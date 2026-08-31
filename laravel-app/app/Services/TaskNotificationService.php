@@ -76,6 +76,16 @@ class TaskNotificationService extends Controller
             return false;
         }
 
+        if (empty(trim((string) $user->phone))) {
+            Log::warning('Task assignee skipped — empty phone', [
+                'task_id' => $task->id,
+                'assignment_id' => $assignment->id,
+                'user_id' => $assignment->user_id,
+            ]);
+
+            return false;
+        }
+
         $link = url('/task-invite/' . $assignment->invite_token);
         $userVars = TaskPersonalization::userVars($user);
         $description = TaskPersonalization::personalize($task->description ?: '', $userVars);
@@ -100,12 +110,18 @@ class TaskNotificationService extends Controller
         $assigneeNames = BeyondUser::whereIn('id', $task->assignments->pluck('user_id'))
             ->pluck('name')->filter()->implode(', ') ?: 'the assignee(s)';
 
+        $attempted = 0;
         $sent = 0;
         foreach ($task->ccRecipients as $cc) {
             $user = BeyondUser::find($cc->user_id);
-            if (! $user || empty($user->phone)) {
+            if (! $user) {
                 continue;
             }
+            if (empty(trim((string) $user->phone))) {
+                Log::warning('Task CC skipped — empty phone', ['task_id' => $task->id, 'user_id' => $cc->user_id]);
+                continue;
+            }
+            $attempted++;
             $start = $task->start_date
                 ? $task->start_date->format('d M Y') . ($task->start_time ? ' ' . substr((string) $task->start_time, 0, 5) : '')
                 : '—';
@@ -132,7 +148,7 @@ class TaskNotificationService extends Controller
             }
         }
 
-        return $sent;
+        return ['attempted' => $attempted, 'sent' => $sent];
     }
 
     public function notifyAccepted(TaskAssignment $assignment)
@@ -231,11 +247,45 @@ class TaskNotificationService extends Controller
     public function dispatchTaskNotifications(Task $task)
     {
         $task->load(['assignments', 'ccRecipients', 'attachments']);
+
+        $attempted = 0;
+        $succeeded = 0;
+
         foreach ($task->assignments as $assignment) {
-            $this->notifyAssignment($assignment);
+            $user = BeyondUser::find($assignment->user_id);
+            if (! $user) {
+                continue;
+            }
+            if (empty(trim((string) $user->phone))) {
+                Log::warning('Task assignee skipped — empty phone', [
+                    'task_id' => $task->id,
+                    'user_id' => $assignment->user_id,
+                ]);
+                continue;
+            }
+            $attempted++;
+            if ($this->notifyAssignment($assignment)) {
+                $succeeded++;
+            }
         }
-        $this->notifyCcOnAssignment($task);
-        $task->notifications_sent = true;
-        $task->save();
+
+        $cc = $this->notifyCcOnAssignment($task);
+        $attempted += (int) ($cc['attempted'] ?? 0);
+        $succeeded += (int) ($cc['sent'] ?? 0);
+
+        // Only mark fully sent when every reachable phone succeeded — otherwise
+        // cron can retry. If nobody had a phone, mark sent so we do not loop forever.
+        if ($attempted === 0 || $succeeded >= $attempted) {
+            $task->notifications_sent = true;
+            $task->save();
+        } else {
+            Log::warning('Task notifications partial — will retry', [
+                'task_id' => $task->id,
+                'attempted' => $attempted,
+                'succeeded' => $succeeded,
+            ]);
+            $task->notifications_sent = false;
+            $task->save();
+        }
     }
 }

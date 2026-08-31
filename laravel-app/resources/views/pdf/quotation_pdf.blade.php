@@ -4,8 +4,26 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>{{ $general_setting->site_title }}</title>
-    @php $invoiceLetterhead = $letterhead ?? \App\Support\Letterhead::ensureSynced(); @endphp
+    @php
+        $invoiceLetterhead = $letterhead ?? \App\Support\Letterhead::ensureSynced();
+        $invoiceCompact = true;
+    @endphp
     @include('pdf.partials._invoice_styles')
+    {{-- Quotation-only tighten: fit ~4 short lines + notes + signatures on one A4. --}}
+    <style type="text/css">
+        body { font-size: 9.5px; line-height: 1.28; }
+        .inv-title { font-size: 13px; margin: 0 0 5px; }
+        table.inv-meta { margin-bottom: 5px; }
+        table.inv-meta td { padding: 4px 6px; font-size: 9px; }
+        table.inv-items thead th { padding: 3px 4px; font-size: 9px; }
+        table.inv-items td { padding: 3px 4px; font-size: 9px; }
+        .inv-box { padding: 4px 6px; margin-bottom: 4px; }
+        .inv-note { font-size: 8.5px; line-height: 1.25; }
+        .inv-note ol, .inv-note ul { margin: 2px 0 0 14px; padding: 0; }
+        .inv-note li { margin: 0 0 2px; }
+        .inv-thanks { font-size: 9px; }
+        .inv-closing { margin-top: 6px; }
+    </style>
 </head>
 <body>
 @include('pdf.partials._invoice_open')
@@ -21,10 +39,6 @@
 @endphp
 
 <div class="inv-title">{{ trans('file.Quotation') }}</div>
-<div class="inv-ref">
-    <strong>{{ trans('file.reference') }}:</strong> {{ $lims_sale_data->reference_no }}<br>
-    <strong>{{ trans('file.Date') }}:</strong> {{ $lims_sale_data->created_at->format('d-m-Y') }}
-</div>
 
 <table class="inv-meta">
     <tr>

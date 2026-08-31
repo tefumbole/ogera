@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Quotation Approval - {{ $general_setting->site_title ?? 'Beyond' }}</title>
     <style>
         :root { --primary:#033d2e; --accent:#c6ab47; --text:#fff; --muted:#b8c7e6; }
         * { box-sizing: border-box; }
         body { margin:0; font-family: Nunito, system-ui, sans-serif; background: linear-gradient(180deg,#041f4a 0%,#033d2e 100%); color:var(--text); min-height:100vh; }
-        .wrap { max-width: 920px; margin: 0 auto; padding: 24px 16px 140px; }
+        .wrap { max-width: 920px; margin: 0 auto; padding: 24px 16px calc(160px + env(safe-area-inset-bottom, 0px)); }
         .hero { text-align:center; margin-bottom:20px; }
         .hero h1 { margin:0 0 8px; font-size:28px; }
         .hero p { color:var(--muted); margin:0; }
@@ -20,7 +20,8 @@
         .note-content li { margin:4px 0; }
         .note-content p { margin:0 0 10px; }
         .note-content strong, .note-content b { color:#fff; }
-        table.items { width:100%; border-collapse:collapse; margin-top:8px; }
+        .items-scroll { width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+        table.items { width:100%; min-width:480px; border-collapse:collapse; margin-top:8px; }
         table.items th, table.items td { border-bottom:1px solid rgba(255,255,255,.12); padding:10px 8px; text-align:left; font-size:14px; }
         table.items th { color:var(--accent); }
         .totals { text-align:right; margin-top:12px; color:#fff; }
@@ -35,8 +36,17 @@
         .btn-accent { background:var(--accent); color:#071711; }
         .btn-danger { background:#ef4444; color:#fff; }
         .btn-outline { background:#fff; color:#033d2e; }
-        .footer-bar { position:fixed; left:0; right:0; bottom:0; background:rgba(4,31,74,.96); border-top:1px solid rgba(255,255,255,.12); padding:14px 16px; }
+        .footer-bar { position:fixed; left:0; right:0; bottom:0; background:rgba(4,31,74,.96); border-top:1px solid rgba(255,255,255,.12); padding:14px 16px calc(14px + env(safe-area-inset-bottom, 0px)); z-index:50; }
         .footer-inner { max-width:920px; margin:0 auto; display:flex; flex-wrap:wrap; gap:12px; justify-content:space-between; align-items:center; }
+        .footer-actions { display:flex; gap:10px; flex-wrap:wrap; }
+        @media (max-width: 560px) {
+            .wrap { padding: 16px 12px calc(200px + env(safe-area-inset-bottom, 0px)); }
+            .hero h1 { font-size:22px; }
+            .card { padding:14px 14px; }
+            .footer-inner { flex-direction:column; align-items:stretch; gap:10px; }
+            .footer-actions { width:100%; }
+            .footer-actions .btn { flex:1 1 0; min-height:46px; }
+        }
         .modal-backdrop { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:1000; align-items:center; justify-content:center; padding:16px; }
         .modal-backdrop.open { display:flex; }
         .modal { background:#fff; color:#1f2a44; border-radius:16px; width:100%; max-width:720px; overflow:hidden; }
@@ -91,6 +101,7 @@
     @endphp
     <div class="card">
         <h3>Quoted items</h3>
+        <div class="items-scroll">
         <table class="items">
             <thead>
             <tr>
@@ -111,6 +122,7 @@
             @endforeach
             </tbody>
         </table>
+        </div>
         <div class="totals">
             <table class="totals-table">
                 <tr>
@@ -161,7 +173,7 @@
 <div class="footer-bar">
     <div class="footer-inner">
         <div style="color:var(--muted);font-size:13px;">Approve with signature, or reject with a comment.</div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <div class="footer-actions">
             <button type="button" class="btn btn-danger" id="btn-reject">Reject</button>
             <button type="button" class="btn btn-accent" id="btn-approve">Sign &amp; Approve</button>
         </div>

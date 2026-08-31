@@ -573,6 +573,9 @@ class QuotationController extends Controller
             $path = $this->buildQuotationPdf($id);
             $filename = 'quotation_'.preg_replace('/[^A-Za-z0-9_\-]/', '_', $lims_sale_data->reference_no).'.pdf';
             $this->wpPDFMessage($path, $lims_customer_data, $filename);
+            $slug = preg_replace('/[^A-Za-z0-9_\-]/', '_', $lims_sale_data->reference_no);
+            $this->sendApprovedQuotationPdfToStakeholders($lims_sale_data, $path, $slug, $lims_customer_data);
+            $message .= ' Creator and CC contacts also received a copy.';
         } catch (\Throwable $e) {
             \Log::error('Quotation WhatsApp PDF failed: '.$e->getMessage());
             $message = 'Quotation PDF could not be sent: '.$e->getMessage();
@@ -683,6 +686,61 @@ class QuotationController extends Controller
                 });
             } catch (\Throwable $e) {
                 \Log::warning('Approved quotation email skipped: '.$e->getMessage());
+            }
+        }
+
+        // Creator + CC get the same signed PDF the client received.
+        if ($pdfPath) {
+            $this->sendApprovedQuotationPdfToStakeholders($quotation, $pdfPath, $slug, $customer);
+        }
+    }
+
+    /**
+     * WhatsApp the signed quotation PDF to the creator and each CC contact.
+     */
+    protected function sendApprovedQuotationPdfToStakeholders(Quotation $quotation, $pdfPath, $slug, $customer = null)
+    {
+        $customer = $customer ?: Customer::find($quotation->customer_id);
+        $clientName = $customer ? $customer->name : 'Client';
+        $clientDigits = $customer ? preg_replace('/\D/', '', (string) $customer->phone_number) : '';
+        $filename = 'quotation_'.$slug.'.pdf';
+        $company = WhatsAppMessage::companyName();
+
+        $recipients = [];
+        $creator = User::find($quotation->user_id);
+        if ($creator && ! empty(trim((string) $creator->phone))) {
+            $recipients[] = ['phone' => $creator->phone, 'name' => $creator->name];
+        }
+        foreach ($quotation->ccCustomerIdList() as $ccId) {
+            $cc = Customer::find($ccId);
+            if (! $cc || empty(trim((string) $cc->phone_number))) {
+                continue;
+            }
+            $recipients[] = ['phone' => $cc->phone_number, 'name' => $cc->name];
+        }
+
+        $seen = [];
+        foreach ($recipients as $recipient) {
+            $digits = preg_replace('/\D/', '', (string) $recipient['phone']);
+            if ($digits === '' || isset($seen[$digits])) {
+                continue;
+            }
+            // Skip the primary client — they already received the PDF above.
+            if ($clientDigits !== '' && $digits === $clientDigits) {
+                continue;
+            }
+            $seen[$digits] = true;
+
+            try {
+                $caption = WhatsAppMessage::statusBlock('📄', 'CC — Signed Quotation PDF')
+                    .WhatsAppMessage::greeting($recipient['name'] ?: 'Team')
+                    ."From: *{$company}*\n\n"
+                    ."The signed quotation for *{$clientName}* (*{$quotation->reference_no}*) is attached — the same PDF sent to the client.\n"
+                    .WhatsAppMessage::footer();
+                $this->wpMessage($recipient['phone'], $caption);
+                $this->sendWhatsAppDocumentToPhone($recipient['phone'], $pdfPath, $filename);
+            } catch (\Throwable $e) {
+                \Log::warning('Quotation CC PDF skipped: '.$e->getMessage());
             }
         }
     }

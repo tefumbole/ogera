@@ -21,7 +21,8 @@ class WhatsAppMessage
 
     public static function statusBlock($emoji, $title)
     {
-        return $emoji . ' *' . strtoupper($title) . "*\n━━━━━━━━━━━━━━━━\n";
+        return $emoji . ' *' . strtoupper($title) . "*\n━━━━━━━━━━━━━━━━\n"
+            .'From: *'.self::companyName()."*\n\n";
     }
 
     public static function greeting($name)

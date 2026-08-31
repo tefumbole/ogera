@@ -27,8 +27,13 @@
         : 0;
 
     // Keep bands readable on one A4 page while still spanning full page width.
-    $invoiceHeaderHeight = $invoiceHeaderHeight ? min($invoiceHeaderHeight, 105) : 0;
-    $invoiceFooterHeight = $invoiceFooterHeight ? min($invoiceFooterHeight, 78) : 0;
+    // Quotation PDFs pass $invoiceCompact to reclaim vertical space for line items.
+    $invoiceCompact = ! empty($invoiceCompact);
+    $invoiceHeaderCap = $invoiceCompact ? 88 : 105;
+    $invoiceFooterCap = $invoiceCompact ? 64 : 78;
+    $invoiceHeaderHeight = $invoiceHeaderHeight ? min($invoiceHeaderHeight, $invoiceHeaderCap) : 0;
+    $invoiceFooterHeight = $invoiceFooterHeight ? min($invoiceFooterHeight, $invoiceFooterCap) : 0;
+    $invoiceContentPad = $invoiceCompact ? 14 : 18;
 
     $invoiceTopMargin = $invoiceHeaderHeight ? $invoiceHeaderHeight + 6 : 22;
     $invoiceBottomMargin = $invoiceFooterHeight ? $invoiceFooterHeight + 6 : 22;

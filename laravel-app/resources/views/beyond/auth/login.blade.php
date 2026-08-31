@@ -15,17 +15,6 @@
 @endphp
 
 @section('auth_body')
-<div class="flex rounded-lg bg-gray-100 p-1 mb-6" role="tablist">
-    <a href="{{ $signinUrl }}"
-       class="flex-1 text-center py-2 rounded-md text-sm font-bold transition {{ $activeTab === 'signin' ? 'bg-white text-brand-blue shadow' : 'text-gray-600 hover:text-brand-blue' }}">
-        Sign in
-    </a>
-    <a href="{{ $signupUrl }}"
-       class="flex-1 text-center py-2 rounded-md text-sm font-bold transition {{ $activeTab === 'signup' ? 'bg-white text-brand-blue shadow' : 'text-gray-600 hover:text-brand-blue' }}">
-        Sign up
-    </a>
-</div>
-
 @if($activeTab === 'signup')
 <form method="POST" action="{{ url('/signup') }}" class="space-y-4">
     @csrf

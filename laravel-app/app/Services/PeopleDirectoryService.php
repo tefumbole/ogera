@@ -288,6 +288,12 @@ class PeopleDirectoryService
             $existing = BeyondUser::where('phone', $customer->phone_number)->first();
         }
         if ($existing) {
+            $sourcePhone = trim((string) $customer->phone_number);
+            if ($sourcePhone !== '' && empty(trim((string) $existing->phone))) {
+                $existing->phone = $sourcePhone;
+                $existing->save();
+            }
+
             return $existing;
         }
 
@@ -317,6 +323,12 @@ class PeopleDirectoryService
             $existing = BeyondUser::where('phone', $user->phone)->first();
         }
         if ($existing) {
+            $sourcePhone = trim((string) $user->phone);
+            if ($sourcePhone !== '' && empty(trim((string) $existing->phone))) {
+                $existing->phone = $sourcePhone;
+                $existing->save();
+            }
+
             return $existing;
         }
 

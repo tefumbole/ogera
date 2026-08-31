@@ -50,9 +50,9 @@ class BookingNoteFormatter
      */
     public static function defaultQuotationNote($companyName = null)
     {
-        $company = trim((string) ($companyName ?: 'Beyond Tech World'));
+        $company = trim((string) ($companyName ?: \App\Support\SiteBrand::siteTitle()));
         if ($company === '') {
-            $company = 'Beyond Tech World';
+            $company = 'Ogera';
         }
         $company = e($company);
 
@@ -65,11 +65,9 @@ class BookingNoteFormatter
             .'<li><strong>Suppliers / fulfilment will be arranged upon cleared payments.</strong> '
             .'Procurement, reservation, or delivery of items proceeds only after payment has been received '
             .'and cleared as agreed with '.$company.'.</li>'
-            .'<li><strong>You reserve the right to request modifications.</strong> '
-            .'You may request changes to quantities, items, or terms. '
-            .'Revised quotations may be issued for your review before final acceptance.</li>'
             .'<li>By signing and approving, you confirm that you have reviewed the quoted items and totals, '
-            .'and you authorise '.$company.' to proceed toward order processing subject to payment and availability.</li>'
+            .'and you authorise '.$company.' to proceed toward order processing subject to payment and availability. '
+            .'You may request modifications; a revised quotation can be issued for your review.</li>'
             .'</ol>'
         );
     }

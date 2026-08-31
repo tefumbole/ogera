@@ -18,22 +18,43 @@ class QuotationApprovalController extends Controller
 {
     public function show($token)
     {
-        $quotation = $this->findOpenByToken($token);
+        $quotation = $this->findByToken($token);
         if (! $quotation) {
             return $this->expiredResponse();
         }
 
-        $lines = $this->lineItems($quotation);
-        $general_setting = GeneralSetting::first();
+        if ($quotation->isOpenForClientApproval()) {
+            $lines = $this->lineItems($quotation);
+            $general_setting = GeneralSetting::first();
 
-        return view('quotation.client_approval', compact('quotation', 'lines', 'general_setting'));
+            return view('quotation.client_approval', compact('quotation', 'lines', 'general_setting'));
+        }
+
+        if ((int) $quotation->quotation_status === Quotation::STATUS_APPROVED) {
+            return $this->statusResponse('approved', $quotation);
+        }
+
+        if ((int) $quotation->quotation_status === Quotation::STATUS_REJECTED) {
+            return $this->statusResponse('rejected', $quotation);
+        }
+
+        return $this->expiredResponse($quotation);
     }
 
     public function approve(Request $request, $token)
     {
         $quotation = $this->findOpenByToken($token);
         if (! $quotation) {
-            return $this->expiredResponse();
+            // Already answered — show a clear status instead of a generic expire.
+            $closed = $this->findByToken($token);
+            if ($closed && (int) $closed->quotation_status === Quotation::STATUS_APPROVED) {
+                return $this->statusResponse('approved', $closed);
+            }
+            if ($closed && (int) $closed->quotation_status === Quotation::STATUS_REJECTED) {
+                return $this->statusResponse('rejected', $closed);
+            }
+
+            return $this->expiredResponse($closed);
         }
 
         $data = $request->validate([
@@ -52,7 +73,7 @@ class QuotationApprovalController extends Controller
         $quotation->client_signed_at = now();
         $quotation->client_comment = $data['client_comment'] ?? null;
         $quotation->client_responded_at = now();
-        $quotation->client_approval_token = null;
+        // Keep client_approval_token so the same link can report "already approved".
         $quotation->save();
 
         $this->notifyStakeholders($quotation->fresh(), 'approved');
@@ -68,7 +89,15 @@ class QuotationApprovalController extends Controller
     {
         $quotation = $this->findOpenByToken($token);
         if (! $quotation) {
-            return $this->expiredResponse();
+            $closed = $this->findByToken($token);
+            if ($closed && (int) $closed->quotation_status === Quotation::STATUS_APPROVED) {
+                return $this->statusResponse('approved', $closed);
+            }
+            if ($closed && (int) $closed->quotation_status === Quotation::STATUS_REJECTED) {
+                return $this->statusResponse('rejected', $closed);
+            }
+
+            return $this->expiredResponse($closed);
         }
 
         $data = $request->validate([
@@ -78,7 +107,7 @@ class QuotationApprovalController extends Controller
         $quotation->quotation_status = Quotation::STATUS_REJECTED;
         $quotation->client_comment = $data['client_comment'];
         $quotation->client_responded_at = now();
-        $quotation->client_approval_token = null;
+        // Keep token so revisit shows "already rejected".
         $quotation->save();
 
         $this->notifyStakeholders($quotation->fresh(), 'rejected');
@@ -142,11 +171,38 @@ class QuotationApprovalController extends Controller
         return $quotation;
     }
 
-    protected function expiredResponse()
+    protected function expiredResponse($quotation = null)
     {
-        return response()->view('quotation.client_link_expired', [
+        return $this->statusResponse('expired', $quotation);
+    }
+
+    protected function statusResponse($status, $quotation = null)
+    {
+        $company = \App\Support\SiteBrand::siteTitle(GeneralSetting::first());
+        $ref = $quotation ? $quotation->reference_no : null;
+
+        if ($status === 'approved') {
+            $badge = 'Already approved';
+            $headline = 'This quotation has already been approved';
+            $body = 'Thank you — this quotation was signed and approved earlier. No further action is needed on this link. Contact '.$company.' if you need a fresh copy.';
+        } elseif ($status === 'rejected') {
+            $badge = 'Already rejected';
+            $headline = 'This quotation was already rejected';
+            $body = 'This quotation was rejected earlier. Contact '.$company.' if you need a revised quotation.';
+        } else {
+            $badge = 'Link expired';
+            $headline = 'This quotation link is no longer valid';
+            $body = 'This link has expired or is no longer available. If you still need to review or sign, please contact '.$company.' for a new link.';
+        }
+
+        return response()->view('quotation.client_link_status', [
             'general_setting' => GeneralSetting::first(),
-        ], 410);
+            'status' => $status,
+            'badge' => $badge,
+            'headline' => $headline,
+            'body' => $body,
+            'reference' => $ref,
+        ], $status === 'expired' ? 410 : 200);
     }
 
     protected function lineItems(Quotation $quotation)

@@ -250,8 +250,15 @@ class TaskService
             ->where('scheduled_for', '>=', $cutoff)
             ->get();
 
+        // Also retry immediate (non-scheduled) tasks that failed part-way so
+        // the remaining assignees/CC still get notified on the next cron tick.
+        $retry = Task::where('is_scheduled', false)
+            ->where('notifications_sent', false)
+            ->where('created_at', '>=', $cutoff)
+            ->get();
+
         $count = 0;
-        foreach ($due as $task) {
+        foreach ($due->merge($retry)->unique('id') as $task) {
             $notifier->dispatchTaskNotifications($task);
             $count++;
         }

@@ -45,7 +45,7 @@
             @endif
             <div class="mt-4 h-1 w-24 mx-auto rounded-full bg-brand-blue"></div>
         </div>
-        <div class="px-8 pb-8 pt-2">
+        <div class="px-5 sm:px-8 pb-8 pt-2">
             @if (session('success'))
                 <div class="mb-4 rounded-lg bg-green-50 border border-green-200 text-green-800 px-4 py-3 text-sm">{{ session('success') }}</div>
             @endif

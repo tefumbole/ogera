@@ -6,12 +6,35 @@ use App\Support\WhatsAppPhone;
 
 class BeyondWasenderService
 {
+    /** @var float */
+    protected static $lastSendAt = 0;
+
     public function isConfigured()
     {
         $key = config('services.whatsapp.wasender_api_key');
         $session = config('services.whatsapp.wasender_session_id');
 
         return ! empty($key) && ! empty($session) && strpos($key, 'your_') !== 0;
+    }
+
+    /**
+     * Pace outbound Wasender texts so a burst of assignees/CC does not trip
+     * the API rate limit and leave later recipients undelivered.
+     */
+    protected function throttleSend()
+    {
+        $intervalMs = max(1000, (int) config('services.whatsapp.min_send_interval_ms', 6000));
+        $interval = $intervalMs / 1000;
+        $now = microtime(true);
+
+        if (self::$lastSendAt > 0) {
+            $wait = $interval - ($now - self::$lastSendAt);
+            if ($wait > 0) {
+                usleep((int) round($wait * 1000000));
+            }
+        }
+
+        self::$lastSendAt = microtime(true);
     }
 
     public function formatPhone($phone)
@@ -53,6 +76,8 @@ class BeyondWasenderService
         }
 
         try {
+            $this->throttleSend();
+
             $to = $this->formatPhone($phone);
             if (! $to) {
                 return ['success' => false, 'error' => 'Invalid WhatsApp number'];
