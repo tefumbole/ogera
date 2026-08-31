@@ -16,8 +16,11 @@
     // edge-to-edge; content is padded inward via body margin.
     $invoicePageWidth = 793.7;
     $invoiceSideMargin = 0;
-    $invoiceContentPad = 18;
     $invoiceBandWidth = $invoicePageWidth;
+    // Default content inset; templates (e.g. quotation) may set $invoiceContentPad first.
+    if (! isset($invoiceContentPad)) {
+        $invoiceContentPad = 18;
+    }
 
     $invoiceHeaderHeight = $invoiceHasHeader
         ? (int) ceil($invoiceBandWidth * \App\Support\Letterhead::ratio($invoiceLetterhead['header_path'], 0.157))
@@ -33,7 +36,11 @@
     $invoiceFooterCap = $invoiceCompact ? 64 : 78;
     $invoiceHeaderHeight = $invoiceHeaderHeight ? min($invoiceHeaderHeight, $invoiceHeaderCap) : 0;
     $invoiceFooterHeight = $invoiceFooterHeight ? min($invoiceFooterHeight, $invoiceFooterCap) : 0;
-    $invoiceContentPad = $invoiceCompact ? 14 : 18;
+    // Allow templates to set a wider content inset (quotations use ~40px).
+    if (! isset($invoiceContentPad) || $invoiceContentPad === 18 || ($invoiceCompact && $invoiceContentPad === 14)) {
+        $invoiceContentPad = $invoiceCompact ? 14 : 18;
+    }
+    $invoiceContentPad = (int) $invoiceContentPad;
 
     $invoiceTopMargin = $invoiceHeaderHeight ? $invoiceHeaderHeight + 6 : 22;
     $invoiceBottomMargin = $invoiceFooterHeight ? $invoiceFooterHeight + 6 : 22;

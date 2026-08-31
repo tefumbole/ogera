@@ -7,22 +7,34 @@
     @php
         $invoiceLetterhead = $letterhead ?? \App\Support\Letterhead::ensureSynced();
         $invoiceCompact = true;
+        // Extra side inset so line items do not look edge-to-edge stretched under
+        // the full-bleed letterhead (sales invoices keep the shared pad).
+        $invoiceContentPad = 40;
     @endphp
     @include('pdf.partials._invoice_styles')
-    {{-- Quotation-only tighten: fit ~4 short lines + notes + signatures on one A4. --}}
+    {{-- Quotation-only: readable A4 proportions, not a stretched full-width sheet. --}}
     <style type="text/css">
-        body { font-size: 9.5px; line-height: 1.28; }
-        .inv-title { font-size: 13px; margin: 0 0 5px; }
-        table.inv-meta { margin-bottom: 5px; }
-        table.inv-meta td { padding: 4px 6px; font-size: 9px; }
-        table.inv-items thead th { padding: 3px 4px; font-size: 9px; }
-        table.inv-items td { padding: 3px 4px; font-size: 9px; }
+        body { font-size: 9px; line-height: 1.3; }
+        .inv-title { font-size: 12px; margin: 0 0 4px; letter-spacing: 0.2px; }
+        table.inv-meta { width: 100%; table-layout: fixed; margin-bottom: 6px; }
+        table.inv-meta td { width: 50%; padding: 5px 8px; font-size: 8.5px; line-height: 1.35; }
+        table.inv-items { table-layout: fixed; width: 100%; }
+        table.inv-items thead th { padding: 3px 4px; font-size: 8px; letter-spacing: 0.2px; }
+        table.inv-items td { padding: 3px 4px; font-size: 8.5px; word-wrap: break-word; overflow-wrap: break-word; }
+        table.inv-items td.inv-product { width: 46%; }
         .inv-box { padding: 4px 6px; margin-bottom: 4px; }
-        .inv-note { font-size: 8.5px; line-height: 1.25; }
-        .inv-note ol, .inv-note ul { margin: 2px 0 0 14px; padding: 0; }
+        .inv-note { font-size: 8px; line-height: 1.25; }
+        .inv-note ol, .inv-note ul { margin: 2px 0 0 12px; padding: 0; }
         .inv-note li { margin: 0 0 2px; }
-        .inv-thanks { font-size: 9px; }
-        .inv-closing { margin-top: 6px; }
+        .inv-thanks { font-size: 8px; }
+        .inv-summary-left { width: 58%; padding-right: 10px; }
+        .inv-summary-right { width: 42%; }
+        table.inv-totals tr.inv-grand th,
+        table.inv-totals tr.inv-grand td { font-size: 10px; }
+        table.inv-closing { margin-top: 8px; }
+        .inv-signature-img { max-height: 48px; }
+        .inv-codes-center { margin-top: 8px; }
+        .inv-watermark { width: 36%; left: 32%; top: 38%; opacity: 0.05; }
     </style>
 </head>
 <body>
@@ -36,6 +48,16 @@
         ? $lims_sale_data->status_label
         : \App\Quotation::statusLabel($lims_sale_data->quotation_status ?? null);
     $currencyCode = is_object($currency ?? null) ? ($currency->code ?? '') : (string) ($currency ?? '');
+    $showBatchCol = false;
+    $showTaxCol = false;
+    foreach ($lims_product_sale_data as $row) {
+        if (! empty($row->product_batch_id) || ! empty($row->multi_product_batch_id)) {
+            $showBatchCol = true;
+        }
+        if ((float) ($row->tax ?? 0) > 0) {
+            $showTaxCol = true;
+        }
+    }
 @endphp
 
 <div class="inv-title">{{ trans('file.Quotation') }}</div>
@@ -63,17 +85,22 @@
 
 <table class="inv-items">
     <colgroup>
-        <col style="width:4%"><col style="width:36%"><col style="width:11%"><col style="width:7%">
-        <col style="width:13%"><col style="width:10%"><col style="width:19%">
+        <col style="width:5%">
+        <col style="width:{{ $showBatchCol ? ($showTaxCol ? 38 : 44) : ($showTaxCol ? 48 : 54) }}%">
+        @if($showBatchCol)<col style="width:12%">@endif
+        <col style="width:8%">
+        <col style="width:14%">
+        @if($showTaxCol)<col style="width:10%">@endif
+        <col style="width:15%">
     </colgroup>
     <thead>
     <tr>
         <th class="inv-num">#</th>
         <th>{{ trans('file.product') }}</th>
-        <th>{{ trans('file.Batch No') }}</th>
+        @if($showBatchCol)<th>{{ trans('file.Batch No') }}</th>@endif
         <th class="inv-qty">{{ trans('file.qty') }}</th>
         <th class="inv-money">{{ trans('file.Unit Price') }}</th>
-        <th class="inv-money">{{ trans('file.Tax') }}</th>
+        @if($showTaxCol)<th class="inv-money">{{ trans('file.Tax') }}</th>@endif
         <th class="inv-money">Sub Total</th>
     </tr>
     </thead>
@@ -117,17 +144,19 @@
         ?>
         <tr class="{{ $rowClass }}">
             <td class="inv-num">{{ $key + 1 }}</td>
-            <td>{{ $product_name }}</td>
-            <td>{{ $product_batch_name }}</td>
+            <td class="inv-product">{{ $product_name }}</td>
+            @if($showBatchCol)<td>{{ $product_batch_name }}</td>@endif
             <td class="inv-qty">{{ $product_sale_data->qty + 0 }}</td>
             <td class="inv-money">{{ number_format((float) $product_sale_data->net_unit_price, 2) }}</td>
-            <td class="inv-money">
-                @if($product_sale_data->tax > 0)
-                    {{ number_format((float) $product_sale_data->tax, 2) }}
-                @else
-                    &mdash;
-                @endif
-            </td>
+            @if($showTaxCol)
+                <td class="inv-money">
+                    @if($product_sale_data->tax > 0)
+                        {{ number_format((float) $product_sale_data->tax, 2) }}
+                    @else
+                        &mdash;
+                    @endif
+                </td>
+            @endif
             <td class="inv-money">{{ number_format((float) $product_sale_data->total, 2) }}</td>
         </tr>
     @endforeach
@@ -213,6 +242,7 @@
         'clientSignedAt' => $lims_sale_data->client_signed_at ?? null,
         'qrData' => route('quotation.scan', $lims_sale_data->reference_no),
         'barcodeData' => $lims_sale_data->reference_no,
+        'qrSize' => 56,
     ];
 @endphp
 @include('pdf.partials._invoice_closing', $closing)
