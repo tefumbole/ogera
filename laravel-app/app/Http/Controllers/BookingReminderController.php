@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Booking;
 use App\BookingReminder;
+use App\Customer;
 use App\Support\WhatsAppMessage;
 use Auth;
 use Carbon\Carbon;
@@ -91,18 +92,47 @@ class BookingReminderController extends Controller
             $booking = $reminder->booking;
             $customer = optional($booking)->customer;
 
-            if (!$customer || empty(trim((string) $customer->phone_number))) {
+            $phones = [];
+            if ($customer && ! empty(trim((string) $customer->phone_number))) {
+                $phones[preg_replace('/\D/', '', (string) $customer->phone_number)] = [
+                    'name' => $customer->name,
+                    'phone' => $customer->phone_number,
+                ];
+            }
+
+            // CC contacts on the booking get the same reminder as the primary client.
+            if ($booking && ! empty($booking->cc_customer_ids)) {
+                foreach (array_filter(explode(',', $booking->cc_customer_ids)) as $ccId) {
+                    $cc = Customer::find((int) $ccId);
+                    if (! $cc || empty(trim((string) $cc->phone_number))) {
+                        continue;
+                    }
+                    $digits = preg_replace('/\D/', '', (string) $cc->phone_number);
+                    if ($digits === '' || isset($phones[$digits])) {
+                        continue;
+                    }
+                    $phones[$digits] = [
+                        'name' => $cc->name,
+                        'phone' => $cc->phone_number,
+                    ];
+                }
+            }
+
+            if (empty($phones)) {
                 continue;
             }
 
             try {
-                $msg = WhatsAppMessage::bookingScheduledReminder(
-                    $customer->name,
-                    $booking->reference_no,
-                    $reminder->remind_at->format('d M Y, H:i'),
-                    $reminder->message
-                );
-                $controller->sendWhatsAppToCustomer($customer, $msg);
+                $when = $reminder->remind_at->format('d M Y, H:i');
+                foreach ($phones as $recipient) {
+                    $msg = WhatsAppMessage::bookingScheduledReminder(
+                        $recipient['name'],
+                        $booking->reference_no,
+                        $when,
+                        $reminder->message
+                    );
+                    $controller->sendWhatsAppToPhone($recipient['phone'], $msg);
+                }
                 $reminder->update(['sent_at' => now()]);
             } catch (\Exception $e) {
                 \Log::warning('Booking reminder send failed for reminder #' . $reminder->id . ': ' . $e->getMessage());

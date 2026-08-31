@@ -225,21 +225,51 @@ class TaskNotificationService extends Controller
 
     public function notifyReminder(Task $task)
     {
-        $task->load('assignments');
+        $task->load(['assignments', 'ccRecipients']);
+        $deadline = $task->deadline
+            ? $task->deadline->format('d M Y') . ($task->deadline_time ? ' ' . substr((string) $task->deadline_time, 0, 5) : '')
+            : '—';
+        $brand = \App\Support\SiteBrand::siteTitle();
+        $tasksUrl = url('/user/tasks');
+        $hasOpenAssignee = false;
+
         foreach ($task->assignments as $assignment) {
             if (in_array($assignment->status, ['Completed', 'Declined'], true)) {
                 continue;
             }
+            $hasOpenAssignee = true;
             $user = BeyondUser::find($assignment->user_id);
             if (! $user || empty($user->phone)) {
                 continue;
             }
-            $deadline = $task->deadline
-                ? $task->deadline->format('d M Y') . ($task->deadline_time ? ' ' . substr((string) $task->deadline_time, 0, 5) : '')
-                : '—';
             $this->sendPhone(
                 $user->phone,
-                "⏰ *TASK REMINDER*\n━━━━━━━━━━━━━━━\n\nHello *" . ($user->name ?: 'Team Member') . "*,\n\nReminder for your task:\n\n▪️ *Task:* {$task->title}\n▪️ *Deadline:* {$deadline}\n\n👉 Update progress:\n" . url('/user/tasks') . "\n\n_" . \App\Support\SiteBrand::siteTitle() . "_"
+                "⏰ *TASK REMINDER*\n━━━━━━━━━━━━━━━\n\nHello *" . ($user->name ?: 'Team Member') . "*,\n\nReminder for your task:\n\n▪️ *Task:* {$task->title}\n▪️ *Deadline:* {$deadline}\n\n👉 Update progress:\n{$tasksUrl}\n\n_{$brand}_"
+            );
+        }
+
+        // CC must get the same reminder cadence as assignees (assignment / progress already notify CC).
+        if (! $hasOpenAssignee) {
+            return;
+        }
+
+        $assigneeNames = BeyondUser::whereIn('id', $task->assignments->pluck('user_id'))
+            ->pluck('name')->filter()->implode(', ') ?: 'the assignee(s)';
+
+        foreach ($task->ccRecipients as $cc) {
+            $user = BeyondUser::find($cc->user_id);
+            if (! $user || empty(trim((string) $user->phone))) {
+                if ($user) {
+                    Log::warning('Task CC reminder skipped — empty phone', [
+                        'task_id' => $task->id,
+                        'user_id' => $cc->user_id,
+                    ]);
+                }
+                continue;
+            }
+            $this->sendPhone(
+                $user->phone,
+                "⏰ *TASK CC — REMINDER*\n━━━━━━━━━━━━━━━\n\nHello *" . ($user->name ?: 'Team Member') . "*,\n\nReminder for a task you are CC'd on (assigned to *{$assigneeNames}*):\n\n▪️ *Task:* {$task->title}\n▪️ *Deadline:* {$deadline}\n\n👉 View tasks:\n{$tasksUrl}\n\n_{$brand}_"
             );
         }
     }
